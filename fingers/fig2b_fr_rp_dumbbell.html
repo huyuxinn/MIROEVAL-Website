@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F→R vs. R→P: Process-Report Alignment Gap</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    display: flex; justify-content: center; align-items: flex-start;
+    background: white;
+    font-family: 'Times New Roman', Times, serif;
+    margin: 0; padding: 0;
+}
+#chart {
+    width: 100%; height: auto; display: block;
+}
+
+/* Row & label smooth opacity */
+.row { transition: opacity 0.15s ease; }
+.ylbl { transition: opacity 0.15s ease; }
+
+/* Sort buttons */
+.sort-btn { cursor: pointer; }
+.sort-btn:hover text { fill: #666 !important; }
+
+/* ── Tooltip ── */
+.tooltip {
+    position: fixed; pointer-events: none;
+    background: white; border: 1px solid #e0e0e0;
+    border-radius: 8px; padding: 14px 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 13px; color: #333;
+    opacity: 0; transition: opacity 0.15s ease;
+    z-index: 100;
+}
+.tooltip.visible { opacity: 1; }
+
+.tooltip .tt-name {
+    font-size: 15px; font-weight: bold;
+    margin-bottom: 8px; padding-bottom: 6px;
+    border-bottom: 1px solid #eee;
+}
+.tooltip .tt-sub {
+    font-size: 11px; color: #999; margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+}
+.tooltip .tt-row {
+    display: flex; align-items: center; margin-bottom: 4px;
+}
+.tooltip .tt-dot {
+    display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; margin-right: 6px;
+    flex-shrink: 0; vertical-align: middle;
+}
+.tooltip .tt-lbl { color: #888; min-width: 50px; }
+.tooltip .tt-val { font-weight: bold; min-width: 40px; }
+.tooltip .tt-rank { color: #bbb; margin-left: auto; font-size: 11px; }
+.tooltip .tt-sep { margin: 6px 0; border-top: 1px solid #f0f0f0; }
+
+/* ── Comparison table ── */
+.tooltip .tt-table {
+    width: 100%; border-collapse: collapse; font-size: 12px;
+}
+.tooltip .tt-table th {
+    text-align: center; color: #999; font-weight: normal;
+    font-size: 11px; padding: 3px 10px; border-bottom: 1px solid #eee;
+}
+.tooltip .tt-table th:first-child { text-align: left; min-width: 55px; }
+.tooltip .tt-table td { text-align: center; padding: 4px 10px; }
+.tooltip .tt-table td:first-child { text-align: left; color: #666; }
+.tooltip .tt-table tr:last-child td {
+    padding-top: 6px; border-top: 1px solid #f0f0f0;
+}
+.tooltip .pos { color: #4CAF50; font-weight: 500; }
+.tooltip .neg { color: #E8696A; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<svg id="chart"></svg>
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+/* ═══════════════════════  DATA  ═══════════════════════ */
+const textRaw = [
+    {name:"ChatGPT",          fr:8.36, rp:5.98},
+    {name:"MiroThinker v1.7", fr:8.37, rp:5.94},
+    {name:"MiroThinker Base", fr:7.97, rp:5.63},
+    {name:"MiroThinker v1.0", fr:7.91, rp:5.66},
+    {name:"MiniMax",          fr:7.74, rp:5.30},
+    {name:"Gemini",           fr:7.29, rp:5.06},
+    {name:"GLM",              fr:7.71, rp:5.14},
+    {name:"Kimi",             fr:7.07, rp:4.68},
+    {name:"Qwen",             fr:5.96, rp:3.97},
+    {name:"Claude",           fr:6.88, rp:3.72},
+    {name:"Doubao",           fr:6.57, rp:3.68},
+];
+const multiRaw = [
+    {name:"OpenAI",           fr:7.72, rp:5.62},
+    {name:"MiroThinker v1.7", fr:8.07, rp:5.87},
+    {name:"MiroThinker v1.0", fr:8.00, rp:5.70},
+    {name:"Gemini",           fr:7.57, rp:4.90},
+    {name:"MiniMax",          fr:7.70, rp:5.20},
+    {name:"Manus",            fr:7.45, rp:5.45},
+    {name:"GLM",              fr:7.30, rp:4.70},
+    {name:"Qwen",             fr:6.17, rp:3.93},
+    {name:"Grok",             fr:7.24, rp:4.14},
+    {name:"Claude",           fr:5.96, rp:3.08},
+];
+
+function prepare(arr) {
+    arr.forEach(d => {
+        d.gap = +(d.fr - d.rp).toFixed(2);
+        d.isMiro = d.name.includes("MiroThinker");
+    });
+    const frS = [...arr].sort((a, b) => b.fr - a.fr);
+    const rpS = [...arr].sort((a, b) => b.rp - a.rp);
+    arr.forEach(d => {
+        d.frRank = frS.findIndex(p => p.name === d.name) + 1;
+        d.rpRank = rpS.findIndex(p => p.name === d.name) + 1;
+    });
+}
+prepare(textRaw);
+prepare(multiRaw);
+
+/* ═══════════════════════  CONSTANTS  ═══════════════════════ */
+const MIRO   = "#7AA383";
+const FR_COL = "#5B9BD5";
+const RP_COL = "#ED7D31";
+
+const W = 1172, H = 540;
+const labelW = 135, chartW = 420, padR = 15;
+const panelW = labelW + chartW + padR;          // 570
+const panelGap = W - 2 * panelW;                // 160
+const chartTop = 95, chartH = 380;
+const DOT_R = 5.5;
+
+const crossMap = { ChatGPT: "OpenAI", OpenAI: "ChatGPT" };
+function crossN(n) { return crossMap[n] || n; }
+
+function sortCmp(key) {
+    if (key === "fr") return (a, b) => b.fr - a.fr;
+    if (key === "rp") return (a, b) => b.rp - a.rp;
+    return (a, b) => b.gap - a.gap;                     // default: gap desc
+}
+
+/* ═══════════════════════  SVG  ═══════════════════════ */
+const svg = d3.select("#chart")
+    .attr("viewBox", `0 0 ${W} ${H}`)
+    .attr("preserveAspectRatio", "xMidYMid meet");
+
+svg.append("text")
+    .attr("x", W / 2).attr("y", 24)
+    .attr("text-anchor", "middle").attr("fill", "#1a1a2e")
+    .style("font-size", "17px").style("font-weight", "bold")
+    .style("font-family", "'Times New Roman',serif")
+    .text("F\u2192R vs. R\u2192P: Process-Report Alignment Gap");
+
+/* ═══════════════════════  PANEL FACTORY  ═══════════════════════ */
+const panels = {};
+
+function createPanel(id, rawData, title, xOff) {
+    const p = { id, data: rawData, sortBy: "gap" };
+    const g = svg.append("g").attr("transform", `translate(${xOff},0)`);
+
+    /* ── Title ── */
+    g.append("text")
+        .attr("x", labelW + chartW / 2).attr("y", 52)
+        .attr("text-anchor", "middle").attr("fill", "#333")
+        .style("font-size", "15px").style("font-weight", "bold")
+        .style("font-family", "'Times New Roman',serif")
+        .text(title);
+
+    /* ── Sort buttons ── */
+    const sG = g.append("g")
+        .attr("transform", `translate(${labelW + chartW / 2},${74})`);
+
+    sG.append("text").attr("x", -72).attr("text-anchor", "end")
+        .attr("dominant-baseline", "central").attr("fill", "#ccc")
+        .style("font-size", "10px").style("font-family", "'Times New Roman',serif")
+        .text("Sort:");
+
+    const btnD = [
+        { key: "gap", label: "Gap", x: -40 },
+        { key: "fr",  label: "F\u2192R", x: 10 },
+        { key: "rp",  label: "R\u2192P", x: 60 },
+    ];
+    const btns = sG.selectAll(".sort-btn").data(btnD).enter()
+        .append("g").attr("class", "sort-btn")
+        .attr("transform", d => `translate(${d.x},0)`)
+        .style("cursor", "pointer");
+
+    btns.append("text")
+        .attr("text-anchor", "middle").attr("dominant-baseline", "central")
+        .attr("fill", d => d.key === "gap" ? "#555" : "#bbb")
+        .style("font-size", "10px")
+        .style("font-family", "'Times New Roman',serif")
+        .style("font-weight", d => d.key === "gap" ? "bold" : "normal")
+        .text(d => d.label);
+
+    btns.append("line").attr("class", "sort-ul")
+        .attr("x1", -14).attr("x2", 14).attr("y1", 8).attr("y2", 8)
+        .attr("stroke", "#555").attr("stroke-width", 1.5)
+        .style("opacity", d => d.key === "gap" ? 1 : 0);
+
+    btns.on("click", function(_, d) {
+        p.sortBy = d.key;
+        const sorted = [...p.data].sort(sortCmp(d.key));
+        p.yScale.domain(sorted.map(m => m.name));
+
+        p.rows.transition().duration(600).ease(d3.easeCubicInOut)
+            .attr("transform", m => `translate(0,${p.yScale(m.name)})`);
+        p.labels.transition().duration(600).ease(d3.easeCubicInOut)
+            .attr("y", m => p.yScale(m.name));
+
+        btns.select("text")
+            .attr("fill", b => b.key === d.key ? "#555" : "#bbb")
+            .style("font-weight", b => b.key === d.key ? "bold" : "normal");
+        btns.select(".sort-ul")
+            .style("opacity", b => b.key === d.key ? 1 : 0);
+    });
+
+    /* ── Chart area ── */
+    const cG = g.append("g").attr("transform", `translate(${labelW},${chartTop})`);
+
+    // Scales
+    const allV = rawData.flatMap(d => [d.fr, d.rp]);
+    const xSc = d3.scaleLinear()
+        .domain([d3.min(allV) - 0.3, d3.max(allV) + 0.3])
+        .range([0, chartW]).nice();
+
+    const sorted0 = [...rawData].sort(sortCmp("gap"));
+    const ySc = d3.scalePoint()
+        .domain(sorted0.map(d => d.name))
+        .range([0, chartH]).padding(0.5);
+
+    p.xScale = xSc;
+    p.yScale = ySc;
+
+    // X grid
+    cG.selectAll(".xg").data(xSc.ticks()).enter()
+        .append("line").attr("class", "xg")
+        .attr("x1", d => xSc(d)).attr("x2", d => xSc(d))
+        .attr("y1", 0).attr("y2", chartH)
+        .attr("stroke", "#ececec").attr("stroke-width", 0.4);
+
+    // X axis
+    const xAx = cG.append("g").attr("transform", `translate(0,${chartH})`)
+        .call(d3.axisBottom(xSc).ticks(6));
+    xAx.select(".domain").remove();
+    xAx.selectAll("line").attr("stroke", "#ddd");
+    xAx.selectAll("text").attr("fill", "#aaa").style("font-size", "10px")
+        .style("font-family", "'Times New Roman',serif");
+
+    // X label
+    cG.append("text")
+        .attr("x", chartW / 2).attr("y", chartH + 36)
+        .attr("text-anchor", "middle").attr("fill", "#555")
+        .style("font-size", "12px").style("font-family", "'Times New Roman',serif")
+        .text("Score");
+
+    /* ── Dumbbell rows ── */
+    const rowsG = cG.append("g");
+    const rows = rowsG.selectAll(".row").data(rawData, d => d.name).enter()
+        .append("g").attr("class", "row")
+        .attr("transform", d => `translate(0,${ySc(d.name)})`);
+
+    // Invisible hit area (covers label + chart width)
+    rows.append("rect").attr("class", "hit")
+        .attr("x", -labelW).attr("y", -16)
+        .attr("width", labelW + chartW).attr("height", 32)
+        .attr("fill", "transparent").style("cursor", "pointer");
+
+    // Connecting line
+    rows.append("line").attr("class", "dline")
+        .attr("x1", d => xSc(d.rp)).attr("x2", d => xSc(d.fr))
+        .attr("y1", 0).attr("y2", 0)
+        .attr("stroke", d => d.isMiro ? MIRO : "#D0D0D0")
+        .attr("stroke-width", d => d.isMiro ? 2.0 : 1.2)
+        .attr("stroke-linecap", "round");
+
+    // F→R dot (blue)
+    rows.append("circle").attr("class", "fr-dot")
+        .attr("cx", d => xSc(d.fr)).attr("cy", 0).attr("r", DOT_R)
+        .attr("fill", FR_COL).attr("stroke", "white").attr("stroke-width", 0.5);
+
+    // R→P dot (orange)
+    rows.append("circle").attr("class", "rp-dot")
+        .attr("cx", d => xSc(d.rp)).attr("cy", 0).attr("r", DOT_R)
+        .attr("fill", RP_COL).attr("stroke", "white").attr("stroke-width", 0.5);
+
+    // Gap annotation
+    rows.append("text").attr("class", "gap-txt")
+        .attr("x", d => xSc((d.fr + d.rp) / 2)).attr("y", -10)
+        .attr("text-anchor", "middle").attr("fill", "#888")
+        .style("font-size", "9px").style("font-family", "'Times New Roman',serif")
+        .text(d => `\u0394${d.gap.toFixed(1)}`);
+
+    p.rows = rows;
+
+    /* ── Y labels (pointer-events: none so hit rects get events) ── */
+    const lG = g.append("g").attr("transform", `translate(${labelW - 8},${chartTop})`);
+    const labels = lG.selectAll(".ylbl").data(rawData, d => d.name).enter()
+        .append("text").attr("class", "ylbl")
+        .attr("x", 0).attr("y", d => ySc(d.name))
+        .attr("text-anchor", "end").attr("dominant-baseline", "central")
+        .attr("fill", d => d.isMiro ? MIRO : "#555")
+        .style("font-size", "11px")
+        .style("font-weight", d => d.isMiro ? "bold" : "normal")
+        .style("font-family", "'Times New Roman',serif")
+        .style("pointer-events", "none")
+        .text(d => d.name);
+
+    p.labels = labels;
+
+    /* ── Legend ── */
+    const leg = cG.append("g").attr("transform", `translate(${chartW - 55},${chartH - 35})`);
+    leg.append("circle").attr("cx", 0).attr("cy", 0).attr("r", 4).attr("fill", FR_COL);
+    leg.append("text").attr("x", 8).attr("y", 0)
+        .attr("dominant-baseline", "central").attr("fill", "#555")
+        .style("font-size", "10px").style("font-family", "'Times New Roman',serif")
+        .text("F\u2192R");
+    leg.append("circle").attr("cx", 0).attr("cy", 18).attr("r", 4).attr("fill", RP_COL);
+    leg.append("text").attr("x", 8).attr("y", 18)
+        .attr("dominant-baseline", "central").attr("fill", "#555")
+        .style("font-size", "10px").style("font-family", "'Times New Roman',serif")
+        .text("R\u2192P");
+
+    panels[id] = p;
+    return p;
+}
+
+createPanel("text",  textRaw,  "Text-Only",  0);
+createPanel("multi", multiRaw, "Multimodal", panelW + panelGap);
+
+/* ═══════════════════════  TOOLTIP  ═══════════════════════ */
+const tooltip = document.getElementById("tooltip");
+
+function posTip(ev) {
+    const tw = parseInt(tooltip.style.width) || 260;
+    let l = ev.clientX + 16, t = ev.clientY - 20;
+    if (l + tw > window.innerWidth - 10) l = ev.clientX - tw - 16;
+    if (t + 220 > window.innerHeight - 10) t = window.innerHeight - 230;
+    if (t < 10) t = 10;
+    tooltip.style.left = l + "px";
+    tooltip.style.top  = t + "px";
+}
+
+function showSimple(ev, d, pid) {
+    const lab = pid === "text" ? "Text-Only" : "Multimodal";
+    const n = panels[pid].data.length;
+    const nc = d.isMiro ? MIRO : "#555";
+    tooltip.style.width = "240px";
+    tooltip.innerHTML = `
+        <div class="tt-name" style="color:${nc}">${d.name}</div>
+        <div class="tt-sub">${lab}</div>
+        <div class="tt-row">
+            <span class="tt-dot" style="background:${FR_COL}"></span>
+            <span class="tt-lbl">F\u2192R</span>
+            <span class="tt-val">${d.fr.toFixed(2)}</span>
+            <span class="tt-rank">#${d.frRank} / ${n}</span>
+        </div>
+        <div class="tt-row">
+            <span class="tt-dot" style="background:${RP_COL}"></span>
+            <span class="tt-lbl">R\u2192P</span>
+            <span class="tt-val">${d.rp.toFixed(2)}</span>
+            <span class="tt-rank">#${d.rpRank} / ${n}</span>
+        </div>
+        <div class="tt-sep"></div>
+        <div class="tt-row">
+            <span class="tt-lbl" style="margin-left:14px">Gap (\u0394)</span>
+            <span class="tt-val">${d.gap.toFixed(2)}</span>
+        </div>`;
+    posTip(ev);
+    tooltip.classList.add("visible");
+}
+
+function showCross(ev, d, cd, pid) {
+    const isT = pid === "text";
+    const tD = isT ? d : cd, mD = isT ? cd : d;
+    const dn = d.name === cd.name ? d.name
+        : (isT ? `${d.name} / ${cd.name}` : `${cd.name} / ${d.name}`);
+    const nc = d.isMiro ? MIRO : "#555";
+    const fd = mD.fr - tD.fr, rd = mD.rp - tD.rp, gd = mD.gap - tD.gap;
+    const fm = v => {
+        const s = v >= 0 ? "+" : "", c = v >= 0 ? "pos" : "neg";
+        return `<span class="${c}">${s}${v.toFixed(2)}</span>`;
+    };
+    tooltip.style.width = "340px";
+    tooltip.innerHTML = `
+        <div class="tt-name" style="color:${nc}">${dn}</div>
+        <table class="tt-table">
+            <tr><th></th><th>Text-Only</th><th>Multimodal</th><th>Diff</th></tr>
+            <tr>
+                <td><span class="tt-dot" style="background:${FR_COL}"></span>F\u2192R</td>
+                <td>${tD.fr.toFixed(2)}</td><td>${mD.fr.toFixed(2)}</td><td>${fm(fd)}</td>
+            </tr>
+            <tr>
+                <td><span class="tt-dot" style="background:${RP_COL}"></span>R\u2192P</td>
+                <td>${tD.rp.toFixed(2)}</td><td>${mD.rp.toFixed(2)}</td><td>${fm(rd)}</td>
+            </tr>
+            <tr>
+                <td>Gap (\u0394)</td>
+                <td>${tD.gap.toFixed(2)}</td><td>${mD.gap.toFixed(2)}</td><td>${fm(gd)}</td>
+            </tr>
+        </table>`;
+    posTip(ev);
+    tooltip.classList.add("visible");
+}
+
+function hideTip() { tooltip.classList.remove("visible"); }
+
+/* ═══════════════════════  INTERACTIONS  ═══════════════════════ */
+Object.values(panels).forEach(panel => {
+    const oId = panel.id === "text" ? "multi" : "text";
+    const other = panels[oId];
+
+    panel.rows.select(".hit")
+        .on("mouseenter", function(ev, d) {
+            const cn = crossN(d.name);
+            const cd = other.data.find(p => p.name === cn);
+
+            /* ── Current panel: highlight one, dim rest ── */
+            panel.rows.style("opacity", p => p.name === d.name ? 1 : 0.15);
+            panel.labels.style("opacity", p => p.name === d.name ? 1 : 0.15);
+
+            const me = panel.rows.filter(p => p.name === d.name);
+            me.select(".fr-dot").attr("r", DOT_R * 1.4);
+            me.select(".rp-dot").attr("r", DOT_R * 1.4);
+            me.select(".dline").attr("stroke-width", d.isMiro ? 3 : 2.5);
+
+            /* ── Other panel ── */
+            if (cd) {
+                other.rows.style("opacity", p => p.name === cn ? 1 : 0.15);
+                other.labels.style("opacity", p => p.name === cn ? 1 : 0.15);
+                const them = other.rows.filter(p => p.name === cn);
+                them.select(".fr-dot").attr("r", DOT_R * 1.4);
+                them.select(".rp-dot").attr("r", DOT_R * 1.4);
+                them.select(".dline").attr("stroke-width", cd.isMiro ? 3 : 2.5);
+                showCross(ev, d, cd, panel.id);
+            } else {
+                other.rows.style("opacity", 0.15);
+                other.labels.style("opacity", 0.15);
+                showSimple(ev, d, panel.id);
+            }
+        })
+        .on("mousemove", function(ev, d) {
+            const cd = other.data.find(p => p.name === crossN(d.name));
+            if (cd) showCross(ev, d, cd, panel.id);
+            else showSimple(ev, d, panel.id);
+        })
+        .on("mouseleave", function() {
+            [panel, other].forEach(p => {
+                p.rows.style("opacity", 1);
+                p.rows.selectAll(".fr-dot, .rp-dot").attr("r", DOT_R);
+                p.rows.each(function(dd) {
+                    d3.select(this).select(".dline")
+                        .attr("stroke-width", dd.isMiro ? 2.0 : 1.2);
+                });
+                p.labels.style("opacity", 1);
+            });
+            hideTip();
+        });
+});
+</script>
+</body>
+</html>

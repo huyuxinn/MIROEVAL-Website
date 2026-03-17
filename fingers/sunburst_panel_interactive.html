@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Query Distribution Overview</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #fff; font-family: 'Times New Roman', Times, serif; }
+#container { width: 2100px; height: 1050px; position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+#main-title {
+  position: absolute; top: 12px; left: 0; right: 0;
+  text-align: center; font-size: 32px; font-weight: bold; color: #333;
+}
+.panel-title { font-size: 28px; color: #333; margin-bottom: 6px; }
+#sunburst-panel { position: absolute; left: 80px;  top: 111px; width: 860px; }
+#domain-panel   { position: absolute; left: 1000px; top: 111px; width: 1040px; height: 470px; }
+#task-panel     { position: absolute; left: 1000px; top: 611px; width: 1040px; height: 420px; }
+svg { overflow: visible; }
+
+/* tooltip */
+#tooltip {
+  position: fixed; pointer-events: none;
+  background: rgba(255,255,255,0.97); border: 1px solid #ddd; border-radius: 8px;
+  padding: 14px 18px; font-family: 'Times New Roman', serif; font-size: 15px;
+  color: #333; box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  opacity: 0; transition: opacity 0.15s; max-width: 400px; z-index: 1000; line-height: 1.6;
+}
+.tt-title { font-size: 17px; font-weight: bold; margin-bottom: 6px; border-bottom: 1px solid #eee; padding-bottom: 6px; }
+.tt-row { display: flex; justify-content: space-between; gap: 16px; }
+.tt-dot {
+  display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+  margin-right: 6px; vertical-align: middle;
+}
+</style>
+</head>
+<body>
+<div id="container">
+  <div id="main-title">Query Distribution Overview</div>
+  <div id="sunburst-panel"><div class="panel-title"><b>(a)</b> Domain &times; Task</div></div>
+  <div id="domain-panel"><div class="panel-title"><b>(b)</b> Domain Distribution</div></div>
+  <div id="task-panel"><div class="panel-title"><b>(c)</b> Task Distribution</div></div>
+</div>
+<div id="tooltip"></div>
+
+<script>
+/* ===========================================================
+   DATA
+   =========================================================== */
+const sortedDomains = ['tech','finance','science','engineering','medical','business',
+                       'policy','legal','humanities','cybersecurity','lifestyle','education'];
+const domainCounts = {tech:20,finance:17,science:13,engineering:8,medical:8,business:8,
+                      policy:8,legal:5,humanities:4,cybersecurity:4,lifestyle:3,education:2};
+const sortedTasks = ['DEC','CMP','ENM','POL','CAU','SUR','TRD','DAT','COD','EDT'];
+const taskCounts = {DEC:17,CMP:16,ENM:15,POL:12,CAU:11,SUR:11,TRD:7,DAT:5,COD:3,EDT:3};
+const cross = {
+  tech:{COD:3,CMP:7,ENM:3,CAU:2,DEC:2,SUR:2,POL:1},
+  finance:{DAT:2,DEC:3,SUR:1,CAU:2,ENM:3,TRD:3,EDT:3},
+  science:{CAU:4,SUR:3,CMP:4,DAT:1,ENM:1},
+  engineering:{DEC:2,SUR:1,TRD:1,CMP:1,CAU:2,ENM:1},
+  medical:{SUR:3,DEC:2,ENM:1,DAT:1,CMP:1},
+  business:{ENM:3,POL:2,DEC:3},
+  policy:{DEC:2,POL:4,TRD:1,CMP:1},
+  humanities:{SUR:1,CAU:1,ENM:2},
+  cybersecurity:{CMP:2,DEC:1,TRD:1},
+  lifestyle:{DAT:1,ENM:1,DEC:1},
+  education:{DEC:1,TRD:1},
+  legal:{POL:5}
+};
+const domainLabels = {
+  tech:'Tech',finance:'Finance',science:'Science',engineering:'Engineering',
+  medical:'Medical',business:'Business',policy:'Policy',legal:'Legal',
+  humanities:'Humanities',cybersecurity:'Cybersecurity',lifestyle:'Lifestyle',education:'Education'
+};
+const taskFull = {
+  DEC:'Decision & Recommendation',CMP:'Comparative Analysis',
+  ENM:'Fact Enumeration & Verification',POL:'Policy & Regulation Analysis',
+  CAU:'Causal Explanation',SUR:'Survey & Synthesis',
+  TRD:'Trend & Forecast',DAT:'Data Analysis & Computation',
+  COD:'Code Generation',EDT:'Document Editing'
+};
+const domainColors = {
+  tech:'#8FA88E',finance:'#E8D5A3',science:'#A8C5B8',engineering:'#9BB09A',
+  medical:'#B5C4B1',business:'#D8CDBA',policy:'#B8AEBB',legal:'#C4A9A5',
+  humanities:'#C5D5C0',cybersecurity:'#CDD5CC',lifestyle:'#E0C8C5',education:'#EDE3C6'
+};
+const taskColors = {
+  DEC:'#8FA88E',CMP:'#E8D5A3',ENM:'#A8C5B8',POL:'#B8AEBB',CAU:'#9BB09A',
+  SUR:'#B5C4B1',TRD:'#D8CDBA',DAT:'#E0C8C5',COD:'#C4A9A5',EDT:'#C5D5C0'
+};
+const FONT = "'Times New Roman', Times, serif";
+const CT = '#333';
+
+/* ===========================================================
+   UTILITIES
+   =========================================================== */
+function lightenHex(hex, factor) {
+  let r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  r = Math.round(r+(255-r)*factor); g = Math.round(g+(255-g)*factor); b = Math.round(b+(255-b)*factor);
+  return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
+}
+function nodeColor(d) {
+  if (d.depth===0) return 'rgba(255,255,255,0)';
+  if (d.depth===1) return domainColors[d.data.name];
+  const base = domainColors[d.parent.data.name];
+  const idx = d.parent.children.indexOf(d);
+  return lightenHex(base, Math.min(0.15+0.08*idx, 0.50));
+}
+
+/* ===========================================================
+   TOOLTIP
+   =========================================================== */
+const tip = d3.select('#tooltip');
+function showTip(ev, html) {
+  tip.html(html).style('opacity',1)
+     .style('left',(ev.clientX+18)+'px').style('top',(ev.clientY-10)+'px');
+}
+function moveTip(ev) {
+  tip.style('left',(ev.clientX+18)+'px').style('top',(ev.clientY-10)+'px');
+}
+function hideTip() { tip.style('opacity',0); }
+
+function domTipHTML(dom) {
+  const c = domainCounts[dom];
+  const rows = sortedTasks.filter(t=>cross[dom]&&cross[dom][t])
+    .map(t=>`<div class="tt-row"><span><span class="tt-dot" style="background:${taskColors[t]}"></span>${taskFull[t]}</span><b>${cross[dom][t]}</b></div>`).join('');
+  return `<div class="tt-title"><span class="tt-dot" style="background:${domainColors[dom]}"></span>${domainLabels[dom]} &mdash; ${c} queries (${c}%)</div>${rows}`;
+}
+function tskTipHTML(task) {
+  const c = taskCounts[task];
+  const rows = sortedDomains.filter(d=>cross[d]&&cross[d][task])
+    .map(d=>`<div class="tt-row"><span><span class="tt-dot" style="background:${domainColors[d]}"></span>${domainLabels[d]}</span><b>${cross[d][task]}</b></div>`).join('');
+  return `<div class="tt-title"><span class="tt-dot" style="background:${taskColors[task]}"></span>${taskFull[task]} &mdash; ${c} queries (${c}%)</div>${rows}`;
+}
+function crossTipHTML(dom, task) {
+  return `<div class="tt-title">${domainLabels[dom]} &times; ${taskFull[task]}</div><div style="font-size:16px">${cross[dom][task]} queries</div>`;
+}
+
+/* ===========================================================
+   SUNBURST  (a)
+   =========================================================== */
+const sbW = 860, sbH = 860, sbCx = sbW/2, sbCy = sbH/2;
+const IR = 100, MR = 215, OR = 390;
+
+const sbSvg = d3.select('#sunburst-panel').append('svg').attr('width',sbW).attr('height',sbH);
+const sbG   = sbSvg.append('g').attr('transform',`translate(${sbCx},${sbCy})`);
+
+// hierarchy
+const treeData = { name:'root', children: sortedDomains.map(dom=>({
+  name: dom,
+  children: sortedTasks.filter(t=>cross[dom]&&cross[dom][t])
+    .map(t=>({ name:t, domain:dom, value:cross[dom][t] }))
+}))};
+const hier = d3.hierarchy(treeData).sum(d=>d.value||0);
+d3.partition().size([2*Math.PI, 1])(hier);
+const nodes = hier.descendants();
+
+function gIR(d){ return [0,IR,MR][d.depth]; }
+function gOR(d){ return [IR,MR,OR][d.depth]; }
+
+const arcGen = d3.arc()
+  .startAngle(d=>d.x0).endAngle(d=>d.x1)
+  .innerRadius(d=>gIR(d)).outerRadius(d=>gOR(d));
+
+// arcs
+// Draw order: outer ring (back) → inner ring → root (front)
+// so inner ring covers outer ring's stroke bleed at the MR boundary
+const drawNodes = [...nodes].sort((a,b) => b.depth - a.depth);
+const arcs = sbG.selectAll('.sb-arc').data(drawNodes).enter().append('path')
+  .attr('class','sb-arc')
+  .attr('fill', d=>nodeColor(d))
+  .attr('stroke','#fff').attr('stroke-width',1)
+  .style('cursor', d=>d.depth>0?'pointer':'default');
+
+// centre text
+sbG.append('text').attr('text-anchor','middle').attr('dy','-0.15em')
+  .style('font-size','24px').style('font-weight','bold').style('font-family',FONT).style('fill',CT)
+  .text('N = 100');
+sbG.append('text').attr('text-anchor','middle').attr('dy','1.4em')
+  .style('font-size','18px').style('font-family',FONT).style('fill','#666')
+  .text('70 Text \u00b7 30 Multimodal');
+
+// label helpers
+function lblTf(d){
+  const a=(d.x0+d.x1)/2, r=(gIR(d)+gOR(d))/2, deg=a*180/Math.PI;
+  return `rotate(${deg-90}) translate(${r},0) rotate(${deg<180?0:180})`;
+}
+function lblAnc(d){
+  if(d.depth===1) return 'middle';  // centre in ring width
+  return ((d.x0+d.x1)/2)<Math.PI?'start':'end';
+}
+function lblVis(d){
+  const arcLen = (d.x1-d.x0)*(gIR(d)+gOR(d))/2;
+  if(d.depth===1) return arcLen > 38;
+  return arcLen > 28;
+}
+
+// Canvas-based text measurement (matches Plotly auto-scaling behaviour)
+const _mc = document.createElement('canvas').getContext('2d');
+function textW(str, px){ _mc.font = `bold ${px}px Times New Roman`; return _mc.measureText(str).width; }
+const ringW = MR - IR - 12; // usable radial width for inner-ring text
+const BASE_FS = 22;
+
+// clip-path as safety net
+sbG.append('defs').append('clipPath').attr('id','clip-inner')
+  .append('path').attr('d', d3.arc()({
+    innerRadius: IR-2, outerRadius: MR+2, startAngle: 0, endAngle: 2*Math.PI
+  }));
+const innerLblG = sbG.append('g').attr('clip-path','url(#clip-inner)');
+
+// domain labels (depth 1) — auto-scaled font to fit ring width
+const domLbls = innerLblG.selectAll('.sb-dlbl').data(nodes.filter(d=>d.depth===1)).enter()
+  .append('text').attr('class','sb-dlbl sb-lbl')
+  .attr('transform',lblTf).attr('text-anchor',lblAnc)
+  .style('font-family',FONT).style('fill',CT)
+  .style('opacity',0)
+  .each(function(d){
+    const name = domainLabels[d.data.name];
+    const w = textW(name, BASE_FS);
+    const fs = w > ringW ? Math.floor(BASE_FS * ringW / w) : BASE_FS;
+    d3.select(this).style('font-size', fs+'px');
+  });
+domLbls.append('tspan').attr('dy','-0.45em').style('font-weight','bold').text(d=>domainLabels[d.data.name]);
+domLbls.append('tspan').attr('x',0).attr('dy','1.15em').text(d=>d.value);
+
+// task labels (depth 2)
+sbG.selectAll('.sb-tlbl').data(nodes.filter(d=>d.depth===2)).enter()
+  .append('text').attr('class','sb-tlbl sb-lbl')
+  .attr('transform',lblTf).attr('text-anchor',lblAnc)
+  .style('font-family',FONT).style('fill',CT).style('font-size','18px')
+  .style('opacity',0)
+  .text(d=>`${d.data.name} ${d.value}`);
+
+/* ===========================================================
+   DOMAIN BAR  (b)
+   =========================================================== */
+const dM={t:5,r:50,b:48,l:160}, dW=1020, dH=430;
+const dCW=dW-dM.l-dM.r, dCH=dH-dM.t-dM.b;
+
+const dSvg = d3.select('#domain-panel').append('svg').attr('width',dW).attr('height',dH);
+const dG   = dSvg.append('g').attr('transform',`translate(${dM.l},${dM.t})`);
+
+const xMax = 25;
+const dX = d3.scaleLinear().domain([0,xMax]).range([0,dCW]);
+const dY = d3.scaleBand().domain(sortedDomains).range([0,dCH]).padding(0.18);
+
+// grid + axis
+dG.selectAll('.dg').data(dX.ticks(5)).enter().append('line')
+  .attr('x1',d=>dX(d)).attr('x2',d=>dX(d)).attr('y1',0).attr('y2',dCH)
+  .attr('stroke','#eee');
+dG.append('line').attr('x1',0).attr('x2',dCW).attr('y1',dCH).attr('y2',dCH).attr('stroke','#ccc');
+dG.append('g').attr('transform',`translate(0,${dCH})`).call(d3.axisBottom(dX).ticks(5))
+  .call(g=>{g.select('.domain').remove(); g.selectAll('text').style('font-size','18px').style('font-family',FONT).style('fill',CT);});
+dG.append('text').attr('x',dCW/2).attr('y',dCH+42).attr('text-anchor','middle')
+  .style('font-size','20px').style('font-family',FONT).style('fill',CT).text('Number of Queries');
+
+// bar groups
+const dGrp = dG.selectAll('.dgrp').data(sortedDomains).enter().append('g').attr('class','dgrp').style('cursor','pointer');
+// hit area
+dGrp.append('rect').attr('x',-dM.l).attr('y',d=>dY(d)-2).attr('width',dCW+dM.l+60).attr('height',dY.bandwidth()+4).attr('fill','transparent');
+// y label
+dGrp.append('text').attr('class','dy-lbl').attr('x',-14).attr('y',d=>dY(d)+dY.bandwidth()/2)
+  .attr('text-anchor','end').attr('dy','0.35em')
+  .style('font-size','20px').style('font-family',FONT).style('fill',CT)
+  .text(d=>domainLabels[d]);
+// bar
+const dBars = dGrp.append('rect').attr('class','d-bar')
+  .attr('x',0).attr('y',d=>dY(d)).attr('height',dY.bandwidth()).attr('width',0)
+  .attr('fill',d=>domainColors[d]).attr('stroke','#fff').attr('stroke-width',0.5).attr('rx',2);
+// value
+const dVals = dGrp.append('text').attr('class','d-val')
+  .attr('x',d=>dX(domainCounts[d])+8).attr('y',d=>dY(d)+dY.bandwidth()/2).attr('dy','0.35em')
+  .style('font-size','22px').style('font-weight','bold').style('font-family',FONT).style('fill',CT)
+  .style('opacity',0).text(d=>domainCounts[d]);
+
+/* ===========================================================
+   TASK BAR  (c)
+   =========================================================== */
+const tM={t:5,r:50,b:48,l:65}, tW=1020, tH=360;
+const tCW=tW-tM.l-tM.r, tCH=tH-tM.t-tM.b;
+
+const tSvg = d3.select('#task-panel').append('svg').attr('width',tW).attr('height',tH);
+const tG   = tSvg.append('g').attr('transform',`translate(${tM.l},${tM.t})`);
+
+const tX = d3.scaleLinear().domain([0,xMax]).range([0,tCW]);
+const tY = d3.scaleBand().domain(sortedTasks).range([0,tCH]).padding(0.18);
+
+tG.selectAll('.tg').data(tX.ticks(5)).enter().append('line')
+  .attr('x1',d=>tX(d)).attr('x2',d=>tX(d)).attr('y1',0).attr('y2',tCH)
+  .attr('stroke','#eee');
+tG.append('line').attr('x1',0).attr('x2',tCW).attr('y1',tCH).attr('y2',tCH).attr('stroke','#ccc');
+tG.append('g').attr('transform',`translate(0,${tCH})`).call(d3.axisBottom(tX).ticks(5))
+  .call(g=>{g.select('.domain').remove(); g.selectAll('text').style('font-size','18px').style('font-family',FONT).style('fill',CT);});
+tG.append('text').attr('x',tCW/2).attr('y',tCH+42).attr('text-anchor','middle')
+  .style('font-size','20px').style('font-family',FONT).style('fill',CT).text('Number of Queries');
+
+const tGrp = tG.selectAll('.tgrp').data(sortedTasks).enter().append('g').attr('class','tgrp').style('cursor','pointer');
+tGrp.append('rect').attr('x',-tM.l).attr('y',d=>tY(d)-2).attr('width',tCW+tM.l+60).attr('height',tY.bandwidth()+4).attr('fill','transparent');
+tGrp.append('text').attr('class','ty-lbl').attr('x',-10).attr('y',d=>tY(d)+tY.bandwidth()/2)
+  .attr('text-anchor','end').attr('dy','0.35em')
+  .style('font-size','20px').style('font-family',FONT).style('fill',CT).text(d=>d);
+const tBars = tGrp.append('rect').attr('class','t-bar')
+  .attr('x',0).attr('y',d=>tY(d)).attr('height',tY.bandwidth()).attr('width',0)
+  .attr('fill',d=>taskColors[d]).attr('stroke','#fff').attr('stroke-width',0.5).attr('rx',2);
+const tTxts = tGrp.append('text').attr('class','t-txt')
+  .attr('x',d=>tX(taskCounts[d])+8).attr('y',d=>tY(d)+tY.bandwidth()/2).attr('dy','0.35em')
+  .style('font-size','20px').style('font-family',FONT).style('fill',CT).style('opacity',0);
+tTxts.append('tspan').text(d=>`${taskFull[d]}  `);
+tTxts.append('tspan').style('font-weight','bold').text(d=>taskCounts[d]);
+
+/* ===========================================================
+   CROSS-CHART HIGHLIGHTING
+   =========================================================== */
+let animating = true;
+
+function highlightDomain(dom) {
+  const tr = d3.transition().duration(250);
+  arcs.transition(tr).style('opacity', d=>{
+    if(d.depth===0) return 0.25;
+    if(d.depth===1) return d.data.name===dom?1:0.10;
+    return d.parent.data.name===dom?1:0.10;
+  });
+  sbG.selectAll('.sb-lbl').transition(tr).style('opacity', d=>{
+    if(!lblVis(d)) return 0;
+    if(d.depth===1) return d.data.name===dom?1:0.10;
+    return d.parent.data.name===dom?1:0.10;
+  });
+  dGrp.transition(tr).style('opacity', d=>d===dom?1:0.10);
+  tGrp.transition(tr).style('opacity', d=>cross[dom]&&cross[dom][d]?1:0.10);
+}
+
+function highlightTask(task) {
+  const tr = d3.transition().duration(250);
+  arcs.transition(tr).style('opacity', d=>{
+    if(d.depth===0) return 0.25;
+    if(d.depth===2) return d.data.name===task?1:0.10;
+    if(d.depth===1) return cross[d.data.name]&&cross[d.data.name][task]?1:0.10;
+    return 0.10;
+  });
+  sbG.selectAll('.sb-lbl').transition(tr).style('opacity', d=>{
+    if(!lblVis(d)) return 0;
+    if(d.depth===2) return d.data.name===task?1:0.10;
+    if(d.depth===1) return cross[d.data.name]&&cross[d.data.name][task]?1:0.10;
+    return 0.10;
+  });
+  dGrp.transition(tr).style('opacity', d=>cross[d]&&cross[d][task]?1:0.10);
+  tGrp.transition(tr).style('opacity', d=>d===task?1:0.10);
+}
+
+function highlightCross(dom, task) {
+  const tr = d3.transition().duration(250);
+  arcs.transition(tr).style('opacity', d=>{
+    if(d.depth===0) return 0.25;
+    if(d.depth===1) return d.data.name===dom?1:0.10;
+    if(d.depth===2) return (d.parent.data.name===dom&&d.data.name===task)?1:
+                           d.parent.data.name===dom?0.35:0.10;
+    return 0.10;
+  });
+  sbG.selectAll('.sb-lbl').transition(tr).style('opacity', d=>{
+    if(!lblVis(d)) return 0;
+    if(d.depth===1) return d.data.name===dom?1:0.10;
+    if(d.depth===2) return (d.parent.data.name===dom&&d.data.name===task)?1:0.10;
+    return 0.10;
+  });
+  dGrp.transition(tr).style('opacity', d=>d===dom?1:0.10);
+  tGrp.transition(tr).style('opacity', d=>d===task?1:0.10);
+}
+
+function resetHL() {
+  const tr = d3.transition().duration(300);
+  arcs.transition(tr).style('opacity',1);
+  sbG.selectAll('.sb-lbl').transition(tr).style('opacity', d=>lblVis(d)?1:0);
+  dGrp.transition(tr).style('opacity',1);
+  tGrp.transition(tr).style('opacity',1);
+}
+
+/* ===========================================================
+   HOVER EVENTS
+   =========================================================== */
+arcs.on('mouseenter', function(ev,d){
+  if(animating||d.depth===0) return;
+  if(d.depth===1){ highlightDomain(d.data.name); showTip(ev,domTipHTML(d.data.name)); }
+  else { highlightCross(d.parent.data.name,d.data.name); showTip(ev,crossTipHTML(d.parent.data.name,d.data.name)); }
+}).on('mousemove',moveTip).on('mouseleave',function(){ if(!animating){resetHL();hideTip();} });
+
+dGrp.on('mouseenter', function(ev,d){ if(animating)return; highlightDomain(d); showTip(ev,domTipHTML(d)); })
+  .on('mousemove',moveTip).on('mouseleave',function(){ if(!animating){resetHL();hideTip();} });
+
+tGrp.on('mouseenter', function(ev,d){ if(animating)return; highlightTask(d); showTip(ev,tskTipHTML(d)); })
+  .on('mousemove',moveTip).on('mouseleave',function(){ if(!animating){resetHL();hideTip();} });
+
+/* ===========================================================
+   ENTRY ANIMATIONS
+   =========================================================== */
+const T0 = 300, DUR = 800, STG = 55;
+
+// -- sunburst: sweep open --
+arcs.attr('d', d=>arcGen({x0:d.x0, x1:d.x0, depth:d.depth}));
+arcs.transition()
+  .delay(d=> d.depth===0? T0 : T0 + (d.depth-1)*350)
+  .duration(DUR).ease(d3.easeCubicOut)
+  .attrTween('d', function(d){
+    const interp = d3.interpolate(d.x0, d.x1);
+    return t=>arcGen({x0:d.x0, x1:interp(t), depth:d.depth});
+  });
+
+// sunburst labels fade in
+sbG.selectAll('.sb-lbl').transition()
+  .delay(d=> T0 + (d.depth-1)*350 + DUR*0.65)
+  .duration(450)
+  .style('opacity', d=>lblVis(d)?1:0);
+
+// -- domain bars grow --
+dBars.transition().delay((_,i)=> T0 + i*STG).duration(DUR)
+  .ease(d3.easeBackOut.overshoot(0.4))
+  .attr('width', d=>dX(domainCounts[d]));
+dVals.transition().delay((_,i)=> T0 + i*STG + DUR*0.7).duration(400).style('opacity',1);
+
+// -- task bars grow --
+tBars.transition().delay((_,i)=> T0 + 180 + i*STG).duration(DUR)
+  .ease(d3.easeBackOut.overshoot(0.4))
+  .attr('width', d=>tX(taskCounts[d]));
+tTxts.transition().delay((_,i)=> T0 + 180 + i*STG + DUR*0.7).duration(400).style('opacity',1);
+
+// unlock hover after animations
+setTimeout(()=>{ animating = false; }, 2200);
+
+// ── auto-fit to viewport ──
+function fitToViewport() {
+  const s = Math.min(window.innerWidth / 2100, window.innerHeight / 1050);
+  const el = document.getElementById('container');
+  el.style.transform = `scale(${s})`;
+}
+fitToViewport();
+window.addEventListener('resize', fitToViewport);
+</script>
+</body>
+</html>

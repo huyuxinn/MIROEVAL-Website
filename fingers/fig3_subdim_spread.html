@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sub-dimension Score Spread</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    display: flex; justify-content: center; align-items: center;
+    background: white;
+    font-family: 'Times New Roman', Times, serif;
+}
+#chart { width: 100%; height: auto; display: block; }
+.dim-row { transition: opacity 0.15s ease; }
+
+/* ── Tooltip ── */
+.tooltip {
+    position: fixed; pointer-events: none;
+    background: white; border: 1px solid #e0e0e0;
+    border-radius: 8px; padding: 16px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.13);
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 13px; color: #333;
+    opacity: 0; transition: opacity 0.15s ease;
+    z-index: 100; width: 320px;
+}
+.tooltip.visible { opacity: 1; }
+
+.tooltip .tt-dim {
+    font-size: 15px; font-weight: bold; color: #333;
+    margin-bottom: 2px;
+}
+.tooltip .tt-panel {
+    font-size: 11px; color: #999; margin-bottom: 10px;
+    padding-bottom: 8px; border-bottom: 1px solid #eee;
+}
+.tooltip .tt-list { margin-bottom: 10px; }
+.tooltip .tt-item {
+    display: flex; align-items: center;
+    padding: 2.5px 0; font-size: 12px;
+}
+.tooltip .tt-rank {
+    width: 18px; text-align: right; color: #ccc;
+    margin-right: 6px; font-size: 11px;
+}
+.tooltip .tt-dot {
+    display: inline-block; width: 7px; height: 7px;
+    border-radius: 50%; margin-right: 5px; flex-shrink: 0;
+}
+.tooltip .tt-model { flex: 1; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tooltip .tt-bar-bg {
+    width: 70px; height: 5px; background: #f0f0f0;
+    border-radius: 3px; overflow: hidden; margin: 0 6px; flex-shrink: 0;
+}
+.tooltip .tt-bar-fill { height: 100%; border-radius: 3px; }
+.tooltip .tt-score {
+    width: 38px; text-align: right; font-weight: bold;
+    color: #444; font-size: 12px; flex-shrink: 0;
+}
+.tooltip .tt-footer {
+    display: flex; justify-content: space-between;
+    padding-top: 8px; border-top: 1px solid #eee;
+    font-size: 11px; color: #999;
+}
+.tooltip .tt-footer span { font-weight: 500; }
+</style>
+</head>
+<body>
+
+<svg id="chart"></svg>
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+/* ═══════════════════  DATA (exact match with Python)  ═══════════════════ */
+const reportText = {
+    "Coverage":            {kimi:8.0,mirov17:7.9,mirobase:7.9,chatgpt:7.8,miro:7.9,gemini:7.7,claude:7.3,doubao:7.3,minimax:7.0,glm:7.0,qwen:6.4,grok:6.7,deepseek:6.1,manus:6.1},
+    "Insight":             {kimi:8.0,mirov17:7.5,mirobase:7.5,chatgpt:7.4,miro:7.2,gemini:7.7,claude:7.2,doubao:6.3,minimax:6.3,glm:6.3,qwen:6.5,grok:5.6,deepseek:5.8,manus:5.5},
+    "Instruct\nFollowing": {kimi:7.9,mirov17:8.5,mirobase:8.4,chatgpt:8.2,miro:8.4,gemini:8.0,claude:7.4,doubao:7.5,minimax:7.4,glm:7.5,qwen:7.0,grok:7.5,deepseek:7.1,manus:6.8},
+    "Clarity":             {kimi:7.6,mirov17:8.0,mirobase:7.9,chatgpt:7.7,miro:8.0,gemini:7.0,claude:7.1,doubao:6.7,minimax:7.1,glm:6.8,qwen:6.8,grok:6.5,deepseek:6.9,manus:6.6},
+};
+const reportMulti = {
+    "Coverage":            {mirov17:6.950,miro:6.949,openai:6.970,gemini:6.914,claude:6.997,glm:6.467,grok:6.362,minimax:5.936,manus:5.621,qwen:4.323},
+    "Insight":             {mirov17:6.915,miro:6.921,openai:6.438,gemini:7.183,claude:6.838,glm:5.651,grok:5.061,minimax:4.848,manus:4.744,qwen:4.340},
+    "Instruct\nFollowing": {mirov17:7.699,miro:7.579,openai:7.117,gemini:6.667,claude:6.184,glm:6.946,grok:6.562,minimax:6.424,manus:6.064,qwen:4.771},
+    "Clarity":             {mirov17:7.231,miro:7.262,openai:6.844,gemini:6.040,claude:5.910,glm:6.342,grok:5.702,minimax:5.957,manus:5.717,qwen:4.894},
+    "TaskSpec":            {mirov17:5.141,miro:5.339,openai:5.242,gemini:4.648,claude:5.002,glm:4.212,grok:3.820,minimax:3.766,manus:3.651,qwen:2.794},
+};
+const processText = {
+    "Search\nBreadth":     {chatgpt:7.74,mirov17:7.44,mirobase:7.55,miro:7.57,minimax:7.19,gemini:7.54,glm:7.62,kimi:7.75,qwen:7.44,claude:7.43,doubao:5.93},
+    "Analysis\nDepth":     {chatgpt:6.73,mirov17:6.44,mirobase:5.63,miro:5.72,minimax:6.22,gemini:6.66,glm:5.94,kimi:5.94,qwen:6.41,claude:4.26,doubao:4.16},
+    "Refinement":          {chatgpt:7.67,mirov17:7.57,mirobase:7.13,miro:6.98,minimax:7.03,gemini:7.59,glm:6.71,kimi:7.10,qwen:7.58,claude:5.17,doubao:5.96},
+    "Critical\nThinking":  {chatgpt:7.47,mirov17:7.16,mirobase:7.09,miro:6.96,minimax:6.25,gemini:6.41,glm:5.93,kimi:6.76,qwen:7.41,claude:4.70,doubao:5.57},
+};
+const processMulti = {
+    "Search\nBreadth":     {openai:6.55,mirov17:6.50,miro:6.40,gemini:6.97,minimax:5.10,manus:5.24,glm:5.27,qwen:5.70,grok:4.19,claude:7.48},
+    "Analysis\nDepth":     {openai:6.21,mirov17:5.70,miro:5.50,gemini:6.53,minimax:5.90,manus:5.72,glm:5.23,qwen:5.13,grok:4.43,claude:2.88},
+    "Refinement":          {openai:7.38,mirov17:7.20,miro:6.83,gemini:7.10,minimax:6.50,manus:6.07,glm:5.57,qwen:5.07,grok:5.24,claude:3.88},
+    "Critical\nThinking":  {openai:7.00,mirov17:6.30,miro:5.97,gemini:5.83,minimax:4.37,manus:4.34,glm:4.47,qwen:5.77,grok:4.24,claude:2.92},
+};
+
+/* ── Model display names ── */
+const NAME = {
+    chatgpt:"ChatGPT", mirov17:"MiroThinker v1.7", mirobase:"MiroThinker Base",
+    miro:"MiroThinker v1.0", openai:"OpenAI", gemini:"Gemini", claude:"Claude",
+    doubao:"Doubao", minimax:"MiniMax", glm:"GLM", qwen:"Qwen", grok:"Grok",
+    deepseek:"DeepSeek", manus:"Manus", kimi:"Kimi",
+};
+function isMiro(k) { return k.includes("miro"); }
+
+/* ═══════════════════  LAYOUT  ═══════════════════ */
+const MIRO_COL   = "#7AA383";
+const DOT_COL    = "#C0C0C0";
+const RANGE_COL  = "#E8E8E8";
+
+const W = 1400, H = 770;
+const panelW = 580, panelH = 315;
+const gapH = 160, gapV = 26;
+const px0 = (W - 2 * panelW - gapH) / 2;          // 40
+const py0 = 58;
+const labelW = 105, chartW = panelW - labelW;       // 475
+const titleOff = 15, chartOff = 35, chartH = 260;
+
+/* ═══════════════════  SVG  ═══════════════════ */
+const svg = d3.select("#chart")
+    .attr("viewBox", `0 0 ${W} ${H}`)
+    .attr("preserveAspectRatio", "xMidYMid meet");
+
+/* Suptitle */
+svg.append("text")
+    .attr("x", W / 2).attr("y", 30)
+    .attr("text-anchor", "middle").attr("fill", "#1a1a2e")
+    .style("font-size", "20px").style("font-weight", "bold")
+    .style("font-family", "'Times New Roman',serif")
+    .text("Sub-dimension Score Spread: Where Models Converge vs. Diverge");
+
+/* ═══════════════════  PANEL FACTORY  ═══════════════════ */
+const panelState = {};
+
+function drawPanel(id, dimData, title, px, py) {
+    const dims = Object.keys(dimData);
+    const n = dims.length;
+    const g = svg.append("g").attr("transform", `translate(${px},${py})`);
+
+    /* Title */
+    g.append("text")
+        .attr("x", labelW + chartW / 2).attr("y", titleOff)
+        .attr("text-anchor", "middle").attr("fill", "#333")
+        .style("font-size", "16px").style("font-weight", "bold")
+        .style("font-family", "'Times New Roman',serif")
+        .text(title);
+
+    /* Chart group */
+    const cG = g.append("g").attr("transform", `translate(${labelW},${chartOff})`);
+
+    /* Y scale — first dim at bottom, last at top (matching matplotlib) */
+    const yPad = 25;
+    const yPos = i => {
+        if (n === 1) return chartH / 2;
+        return (chartH - yPad) - i * ((chartH - 2 * yPad) / (n - 1));
+    };
+    const step = n > 1 ? (chartH - 2 * yPad) / (n - 1) : chartH;
+    const barH = step * 0.27;
+
+    /* X scale */
+    const allV = dims.flatMap(d => Object.values(dimData[d]));
+    const xSc = d3.scaleLinear()
+        .domain([d3.min(allV) - 0.3, d3.max(allV) + 0.6])
+        .range([0, chartW]).nice();
+
+    /* X grid */
+    cG.selectAll(".xg").data(xSc.ticks()).enter()
+        .append("line")
+        .attr("x1", d => xSc(d)).attr("x2", d => xSc(d))
+        .attr("y1", 0).attr("y2", chartH)
+        .attr("stroke", "#f0f0f0").attr("stroke-width", 0.4);
+
+    /* X axis */
+    const xAx = cG.append("g").attr("transform", `translate(0,${chartH})`)
+        .call(d3.axisBottom(xSc).tickSize(4));
+    xAx.select(".domain").remove();
+    xAx.selectAll("line").attr("stroke", "#aaa");
+    xAx.selectAll("text").attr("fill", "#aaa")
+        .style("font-size", "11.5px").style("font-family", "'Times New Roman',serif");
+
+    /* Pre-process dimensions */
+    const processed = dims.map((dim, i) => {
+        const models = dimData[dim];
+        const entries = Object.entries(models).map(([k, v]) => ({
+            key: k, name: NAME[k] || k, score: v, miro: isMiro(k)
+        }));
+        const scores = entries.map(e => e.score);
+        const vmin = d3.min(scores), vmax = d3.max(scores);
+        const spread = +(vmax - vmin).toFixed(2);
+        const avg = +(d3.mean(scores)).toFixed(2);
+        entries.sort((a, b) => b.score - a.score);
+        return { dim, entries, vmin, vmax, spread, avg, cy: yPos(i), n: entries.length };
+    });
+
+    /* Row groups */
+    const rows = cG.selectAll(".dim-row").data(processed).enter()
+        .append("g").attr("class", "dim-row")
+        .attr("transform", d => `translate(0,${d.cy})`);
+
+    /* Background highlight */
+    rows.append("rect").attr("class", "row-bg")
+        .attr("x", -labelW).attr("y", -step * 0.42)
+        .attr("width", labelW + chartW + 55).attr("height", step * 0.84)
+        .attr("fill", "#f7f7f7").attr("rx", 4).attr("opacity", 0);
+
+    /* Range bar */
+    rows.append("rect").attr("class", "range-bar")
+        .attr("x", d => xSc(d.vmin))
+        .attr("y", -barH / 2)
+        .attr("width", d => Math.max(0, xSc(d.vmax) - xSc(d.vmin)))
+        .attr("height", barH)
+        .attr("fill", RANGE_COL)
+        .attr("stroke", "#ddd").attr("stroke-width", 0.5);
+
+    /* Individual dots */
+    rows.each(function(dimD) {
+        const rg = d3.select(this);
+        /* Draw non-miro dots first (lower z), then miro dots on top */
+        dimD.entries.filter(e => !e.miro).forEach(e => {
+            rg.append("circle")
+                .attr("cx", xSc(e.score)).attr("cy", 0).attr("r", 3.2)
+                .attr("fill", DOT_COL).attr("stroke", "white").attr("stroke-width", 0.3);
+        });
+        dimD.entries.filter(e => e.miro).forEach(e => {
+            rg.append("circle")
+                .attr("cx", xSc(e.score)).attr("cy", 0).attr("r", 4.5)
+                .attr("fill", MIRO_COL).attr("stroke", "white").attr("stroke-width", 0.3);
+        });
+    });
+
+    /* Spread annotation */
+    rows.append("text").attr("class", "spread-txt")
+        .attr("x", d => xSc(d.vmax) + 6).attr("y", 0)
+        .attr("dominant-baseline", "central")
+        .attr("fill", d => d.spread > 2.0 ? "#D9534F" : "#888")
+        .style("font-size", "11.5px").style("font-weight", "bold")
+        .style("font-family", "'Times New Roman',serif")
+        .text(d => `\u0394${d.spread.toFixed(1)}`);
+
+    /* Y-axis labels (inside row group so they dim together) */
+    rows.each(function(dimD) {
+        const rg = d3.select(this);
+        const lines = dimD.dim.split("\n");
+        const lbl = rg.append("text")
+            .attr("x", -8).attr("text-anchor", "end")
+            .attr("fill", "#444")
+            .style("font-size", "12.5px")
+            .style("font-family", "'Times New Roman',serif")
+            .style("pointer-events", "none");
+        if (lines.length === 1) {
+            lbl.attr("dominant-baseline", "central").text(lines[0]);
+        } else {
+            lbl.append("tspan").attr("x", -8).attr("dy", "-0.55em").text(lines[0]);
+            lbl.append("tspan").attr("x", -8).attr("dy", "1.15em").text(lines[1]);
+        }
+    });
+
+    /* Hit area (on top) */
+    rows.append("rect").attr("class", "hit")
+        .attr("x", -labelW).attr("y", -step * 0.45)
+        .attr("width", labelW + chartW + 55).attr("height", step * 0.9)
+        .attr("fill", "transparent").style("cursor", "pointer");
+
+    panelState[id] = { rows, processed, title };
+}
+
+/* ── Create 4 panels ── */
+drawPanel("rt", reportText,   "Report Sub-dims (Text-Only)",   px0,            py0);
+drawPanel("rm", reportMulti,  "Report Sub-dims (Multimodal)",  px0+panelW+gapH, py0);
+drawPanel("pt", processText,  "Process Sub-dims (Text-Only)",  px0,            py0+panelH+gapV);
+drawPanel("pm", processMulti, "Process Sub-dims (Multimodal)", px0+panelW+gapH, py0+panelH+gapV);
+
+/* ── Legend ── */
+const legY = py0 + 2 * panelH + gapV + 20;
+const legG = svg.append("g").attr("transform", `translate(${W/2},${legY})`);
+/* MiroThinker */
+legG.append("circle").attr("cx", -200).attr("cy", 0).attr("r", 5).attr("fill", MIRO_COL);
+legG.append("text").attr("x", -192).attr("y", 0)
+    .attr("dominant-baseline", "central").attr("fill", "#555")
+    .style("font-size", "12.5px").style("font-family", "'Times New Roman',serif")
+    .text("MiroThinker");
+/* Other models */
+legG.append("circle").attr("cx", -70).attr("cy", 0).attr("r", 3.5).attr("fill", DOT_COL);
+legG.append("text").attr("x", -63).attr("y", 0)
+    .attr("dominant-baseline", "central").attr("fill", "#555")
+    .style("font-size", "12.5px").style("font-family", "'Times New Roman',serif")
+    .text("Other models");
+/* Min-Max range */
+legG.append("rect").attr("x", 60).attr("y", -6).attr("width", 24).attr("height", 12)
+    .attr("fill", RANGE_COL).attr("stroke", "#ddd").attr("stroke-width", 0.5).attr("rx", 2);
+legG.append("text").attr("x", 90).attr("y", 0)
+    .attr("dominant-baseline", "central").attr("fill", "#555")
+    .style("font-size", "12.5px").style("font-family", "'Times New Roman',serif")
+    .text("Min-Max range");
+
+/* ═══════════════════  TOOLTIP  ═══════════════════ */
+const tooltip = document.getElementById("tooltip");
+
+function showLeaderboard(ev, dimD, panelTitle) {
+    const dimName = dimD.dim.replace(/\n/g, " ");
+    let items = "";
+
+    dimD.entries.forEach((e, i) => {
+        const dc = e.miro ? MIRO_COL : DOT_COL;
+        const ns = e.miro ? `color:${MIRO_COL};font-weight:bold` : "color:#666";
+        const bw = (e.score / 10) * 70;                     /* 0-10 → 0-70px */
+        const bc = e.miro ? MIRO_COL : "#ddd";
+        items += `<div class="tt-item">
+            <span class="tt-rank">${i + 1}</span>
+            <span class="tt-dot" style="background:${dc}"></span>
+            <span class="tt-model" style="${ns}">${e.name}</span>
+            <div class="tt-bar-bg"><div class="tt-bar-fill" style="width:${bw}px;background:${bc}"></div></div>
+            <span class="tt-score">${e.score.toFixed(2)}</span>
+        </div>`;
+    });
+
+    const spColor = dimD.spread > 2.0 ? "#D9534F" : "#888";
+    tooltip.innerHTML = `
+        <div class="tt-dim">${dimName}</div>
+        <div class="tt-panel">${panelTitle}</div>
+        <div class="tt-list">${items}</div>
+        <div class="tt-footer">
+            <span>Avg: ${dimD.avg.toFixed(2)}</span>
+            <span style="color:${spColor}">Spread (\u0394): ${dimD.spread.toFixed(1)}</span>
+        </div>`;
+
+    posTip(ev);
+    tooltip.classList.add("visible");
+}
+
+function posTip(ev) {
+    const tw = 320;
+    const th = tooltip.offsetHeight || 350;
+    let l = ev.clientX + 16, t = ev.clientY - 20;
+    if (l + tw > window.innerWidth - 10) l = ev.clientX - tw - 16;
+    if (t + th > window.innerHeight - 10) t = window.innerHeight - th - 10;
+    if (t < 10) t = 10;
+    tooltip.style.left = l + "px";
+    tooltip.style.top  = t + "px";
+}
+
+function hideTip() { tooltip.classList.remove("visible"); }
+
+/* ═══════════════════  INTERACTIONS  ═══════════════════ */
+Object.values(panelState).forEach(state => {
+    state.rows.select(".hit")
+        .on("mouseenter", function(ev, dimD) {
+            /* Highlight this row, dim others */
+            state.rows.style("opacity", p => p === dimD ? 1 : 0.2);
+            d3.select(this.parentNode).select(".row-bg").attr("opacity", 1);
+            showLeaderboard(ev, dimD, state.title);
+        })
+        .on("mousemove", function(ev) { posTip(ev); })
+        .on("mouseleave", function() {
+            state.rows.style("opacity", 1);
+            state.rows.select(".row-bg").attr("opacity", 0);
+            hideTip();
+        });
+});
+</script>
+</body>
+</html>

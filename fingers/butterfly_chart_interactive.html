@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Model Performance Across Dimensions</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Times New Roman', Times, serif;
+  background: #fff;
+  padding: 20px 30px;
+  color: #333;
+}
+
+/* ── Toolbar ── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.model-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: #f5f5f5;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12px;
+  color: #555;
+  transition: all 0.2s;
+  user-select: none;
+}
+.model-btn:hover { background: #eee; }
+.model-btn.active {
+  border-color: #7AA383;
+  background: #f0f7f2;
+  color: #7AA383;
+  font-weight: bold;
+}
+.model-btn.ours { color: #7AA383; font-weight: bold; }
+.model-btn img {
+  width: 22px; height: 22px;
+  object-fit: contain;
+  border-radius: 3px;
+  background: #fff;
+}
+.filter-hint {
+  font-size: 11px;
+  color: #bbb;
+  margin-left: 6px;
+  font-style: italic;
+}
+
+/* ── View Controls ── */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 6px;
+}
+.view-toggle {
+  display: inline-flex;
+  border: 2px solid #e0e0e0;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.view-toggle button {
+  padding: 5px 18px;
+  border: none;
+  background: #fff;
+  cursor: pointer;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12px;
+  color: #888;
+  transition: all 0.25s;
+}
+.view-toggle button:hover { background: #f5f5f5; }
+.view-toggle button.active {
+  background: #7AA383;
+  color: #fff;
+  font-weight: bold;
+}
+.modality-toggle {
+  display: none;
+}
+.modality-toggle.show {
+  display: inline-flex;
+  border: 2px solid #e0e0e0;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.modality-toggle button {
+  padding: 5px 18px;
+  border: none;
+  background: #fff;
+  cursor: pointer;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12px;
+  color: #888;
+  transition: all 0.25s;
+}
+.modality-toggle button:hover { background: #f5f5f5; }
+.modality-toggle button.active {
+  background: #8A94A8;
+  color: #fff;
+  font-weight: bold;
+}
+.modality-toggle button.active[data-mod="Text-Only"] {
+  background: #7AA383;
+}
+
+/* ── Title ── */
+.chart-title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #1a1a2e;
+  margin-bottom: 18px;
+}
+
+/* ── Chart Container ── */
+#chart-container {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+#chart-container svg {
+  width: 100%;
+  height: auto;
+}
+
+/* ── Tooltip ── */
+.tooltip {
+  position: fixed;
+  display: none;
+  background: rgba(18, 18, 24, 0.92);
+  color: #fff;
+  border-radius: 10px;
+  padding: 14px 18px;
+  pointer-events: none;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 13px;
+  min-width: 180px;
+  line-height: 1.5;
+}
+.tooltip.show { display: block; }
+.tooltip .tt-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+.tooltip .tt-logo {
+  width: 24px; height: 24px;
+  border-radius: 4px;
+  background: #fff;
+  object-fit: contain;
+}
+.tooltip .tt-name {
+  font-size: 15px;
+  font-weight: bold;
+}
+.tooltip .tt-dim { color: #aaa; font-size: 11px; }
+.tooltip .tt-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+.tooltip .tt-label { color: #aaa; }
+.tooltip .tt-val { font-weight: bold; }
+.tooltip .tt-val.green { color: #a4d4ae; }
+
+/* ── Legend ── */
+.legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #7AA383;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.legend-swatch {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border-radius: 3px;
+}
+
+/* ── Delta annotation ── */
+.delta-label {
+  font-size: 10px;
+  font-weight: bold;
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+
+<div class="chart-title">Model Performance Across Dimensions</div>
+
+<!-- Model filter toolbar -->
+<div class="toolbar" id="model-toolbar"></div>
+
+<!-- View controls -->
+<div class="controls">
+  <div class="view-toggle" id="view-toggle">
+    <button class="active" data-view="split">Split View</button>
+    <button data-view="compare">Compare View</button>
+  </div>
+  <div class="modality-toggle" id="modality-toggle">
+    <button class="active" data-mod="Text-Only">Text-Only</button>
+    <button data-mod="MultiModal">MultiModal</button>
+  </div>
+</div>
+
+<!-- Chart -->
+<div id="chart-container"></div>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="legend-item">
+    <span class="legend-swatch" style="background:#8FB396;"></span>
+    v1.7 = MiroThinker-1.7 (Ours)
+  </div>
+  <div class="legend-item">
+    <span class="legend-swatch" style="background:#B0C8B0;"></span>
+    v1.7-mini = MiroThinker-1.7-mini (Ours)
+  </div>
+</div>
+
+<!-- Tooltip -->
+<div class="tooltip" id="tooltip">
+  <div class="tt-header">
+    <img class="tt-logo" src="" alt="">
+    <span class="tt-name"></span>
+  </div>
+  <div class="tt-body"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+//  DATA & CONFIG
+// ══════════════════════════════════════════════════════════════
+const DATA = {
+  "Text-Only": {
+    "Report": {"MiroThinker-1.7":74.3,"MiroThinker-1.7-mini":74.0,"OpenAI":73.8,"Gemini":71.2,"Claude":67.3,"ChatGLM":63.2,"MiniMax":63.3,"Doubao":64.2,"Qwen":60.0,"Grok":58.7,"Manus":55.4},
+    "Factuality": {"MiroThinker-1.7":79.7,"MiroThinker-1.7-mini":76.4,"OpenAI":83.4,"Gemini":71.7,"Claude":69.5,"ChatGLM":72.4,"MiniMax":73.4,"Doubao":64.2,"Qwen":73.2,"Grok":64.3,"Manus":75.2},
+    "Process": {"MiroThinker-1.7":72.7,"MiroThinker-1.7-mini":68.5,"OpenAI":73.1,"Gemini":67.1,"Claude":55.1,"ChatGLM":65.6,"MiniMax":67.1,"Doubao":61.1,"Qwen":53.1}
+  },
+  "MultiModal": {
+    "Report": {"MiroThinker-1.7":66.9,"OpenAI":65.3,"Gemini":63.9,"Claude":63.1,"ChatGLM":59.0,"MiniMax":53.1,"Grok":55.0,"Manus":51.4,"Qwen":41.0},
+    "Factuality": {"MiroThinker-1.7":78.4,"OpenAI":77.0,"Gemini":73.7,"Claude":70.7,"ChatGLM":71.6,"MiniMax":71.0,"Grok":71.5,"Manus":70.0,"Qwen":69.9},
+    "Process": {"MiroThinker-1.7":66.2,"OpenAI":66.4,"Gemini":63.6,"MiniMax":60.7,"Manus":60.3,"ChatGLM":56.3,"Qwen":54.2,"Grok":52.4,"Claude":45.2}
+  }
+};
+
+const DIMS = ["Report", "Factuality", "Process"];
+const MODALITIES = ["Text-Only", "MultiModal"];
+
+const MODEL_COLORS = {
+  "MiroThinker-1.7":      "#8FB396",
+  "MiroThinker-1.7-mini": "#B0C8B0",
+  "OpenAI":               "#C8C8C8",
+  "Gemini":               "#D5D5D5",
+  "Claude":               "#D7D7D7",
+  "ChatGLM":              "#D9D9D9",
+  "MiniMax":              "#DBDBDB",
+  "Doubao":               "#DCDCDC",
+  "Qwen":                 "#DEDEDE",
+  "Grok":                 "#DFDFDF",
+  "Manus":                "#E1E1E1",
+};
+
+const LOGO_MAP = {
+  "MiroThinker-1.7": "miromind.png",
+  "MiroThinker-1.7-mini": "miromind.png",
+  "OpenAI": "openai.png",
+  "Gemini": "google.png",
+  "Claude": "anthropic.jpg",
+  "ChatGLM": "zhipu.png",
+  "MiniMax": "minimax.png",
+  "Qwen": "tongyi.png",
+  "Grok": "grok.png",
+  "Manus": "manus.png",
+  "Doubao": "seed.png",
+};
+
+const DISPLAY_NAMES = {
+  "MiroThinker-1.7": "v1.7",
+  "MiroThinker-1.7-mini": "v1.7-mini",
+};
+
+const OURS_COLOR = "#7AA383";
+
+// All unique model names (union across all cells)
+const ALL_MODELS = [...new Set(
+  MODALITIES.flatMap(m => DIMS.flatMap(d => Object.keys(DATA[m][d] || {})))
+)];
+
+function isOurs(name) { return name.includes("MiroThinker"); }
+function displayName(name) { return DISPLAY_NAMES[name] || name; }
+function logoPath(name) { return "../logos/" + (LOGO_MAP[name] || ""); }
+
+// ══════════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════════
+let viewMode = "split";        // "split" | "compare"
+let currentModality = "Text-Only";
+let selectedModels = new Set();
+let hoveredModel = null;
+
+// ══════════════════════════════════════════════════════════════
+//  LAYOUT
+// ══════════════════════════════════════════════════════════════
+const SVG_W = 1500, SPLIT_H = 820, COMPARE_H = 470;
+const MARGIN = { top: 20, right: 35, bottom: 10, left: 100 };
+const COL_GAP = 65, ROW_GAP = 22;
+const CELL_INNER = { left: 82, right: 50, top: 17, bottom: 4 };
+const ANIM_MS = 550;
+
+function layoutParams(numRows) {
+  const usableW = SVG_W - MARGIN.left - MARGIN.right;
+  const svgH = numRows === 1 ? COMPARE_H : SPLIT_H;
+  const usableH = svgH - MARGIN.top - MARGIN.bottom;
+  const cellW = (usableW - (DIMS.length - 1) * COL_GAP) / DIMS.length;
+  const cellH = (usableH - (numRows - 1) * ROW_GAP) / numRows;
+  const plotW = cellW - CELL_INNER.left - CELL_INNER.right;
+  const plotH = cellH - CELL_INNER.top - CELL_INNER.bottom;
+  return { svgH, cellW, cellH, plotW, plotH };
+}
+
+// ══════════════════════════════════════════════════════════════
+//  SCALES
+// ══════════════════════════════════════════════════════════════
+function makeXScale(scores, plotW, colIdx) {
+  const vals = Object.values(scores);
+  const mn = Math.min(...vals), mx = Math.max(...vals);
+  let xStart = Math.max(0, Math.floor(mn / 5) * 5 - 5);
+  let xEnd = Math.floor(mx / 5) * 5 + 5;
+  if (colIdx === 0) xEnd += (xEnd - xStart) / 15;
+  return d3.scaleLinear().domain([xStart, xEnd]).range([0, plotW]);
+}
+
+function makeYScale(sortedNames, plotH) {
+  return d3.scaleBand()
+    .domain(sortedNames)
+    .range([plotH, 0])
+    .paddingInner(0.35)
+    .paddingOuter(0.15);
+}
+
+function sortedItems(scores) {
+  return Object.entries(scores)
+    .map(([name, val]) => ({ name, val }))
+    .sort((a, b) => a.val - b.val);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════════════════════════
+const container = d3.select("#chart-container");
+let svg, gridG;
+
+function initSVG(numRows) {
+  const lp = layoutParams(numRows);
+  container.selectAll("svg").remove();
+  svg = container.append("svg")
+    .attr("viewBox", `0 0 ${SVG_W} ${lp.svgH}`)
+    .attr("preserveAspectRatio", "xMidYMid meet");
+  gridG = svg.append("g")
+    .attr("transform", `translate(${MARGIN.left},${MARGIN.top})`);
+  return lp;
+}
+
+function drawCell(parentG, modality, dim, colIdx, lp, animateIn) {
+  const scores = DATA[modality][dim] || {};
+  const items = sortedItems(scores);
+  const names = items.map(d => d.name);
+  const xScale = makeXScale(scores, lp.plotW, colIdx);
+  const yScale = makeYScale(names, lp.plotH);
+  const barH = yScale.bandwidth();
+
+  // Gridlines
+  const gridlines = parentG.selectAll(".gridline").data(xScale.ticks(5));
+  gridlines.enter().append("line").attr("class", "gridline")
+    .merge(gridlines)
+    .attr("x1", d => xScale(d)).attr("x2", d => xScale(d))
+    .attr("y1", 0).attr("y2", lp.plotH)
+    .attr("stroke", "#ececec").attr("stroke-width", 0.5);
+  gridlines.exit().remove();
+
+  // X axis ticks
+  const xticks = parentG.selectAll(".xtick").data(xScale.ticks(5));
+  xticks.enter().append("text").attr("class", "xtick")
+    .merge(xticks)
+    .attr("x", d => xScale(d)).attr("y", lp.plotH + 14)
+    .attr("text-anchor", "middle").attr("font-size", 8).attr("fill", "#ddd")
+    .text(d => d);
+  xticks.exit().remove();
+
+  // Bar groups — data join keyed by model name
+  const groups = parentG.selectAll(".bar-group").data(items, d => d.name);
+
+  // EXIT
+  groups.exit()
+    .transition().duration(ANIM_MS / 2)
+    .style("opacity", 0)
+    .remove();
+
+  // ENTER
+  const enter = groups.enter().append("g")
+    .attr("class", "bar-group")
+    .attr("data-model", d => d.name)
+    .attr("transform", d => `translate(0, ${yScale(d.name)})`)
+    .style("opacity", animateIn ? 0 : 1)
+    .on("mouseenter", (ev, d) => onBarEnter(ev, d, modality, dim, items))
+    .on("mousemove", (ev) => moveTooltip(ev))
+    .on("mouseleave", onBarLeave);
+
+  // Bar rect
+  enter.append("rect")
+    .attr("class", "bar")
+    .attr("x", 0).attr("y", 0)
+    .attr("height", barH)
+    .attr("rx", 2).attr("ry", 2)
+    .attr("fill", d => MODEL_COLORS[d.name] || "#ccc")
+    .attr("opacity", 0.92)
+    .attr("width", animateIn ? 0 : d => xScale(d.val));
+
+  // Logo
+  enter.append("image")
+    .attr("class", "logo")
+    .attr("href", d => logoPath(d.name))
+    .attr("x", -CELL_INNER.left + 2)
+    .attr("y", d => (barH - 18) / 2)
+    .attr("width", 18).attr("height", 18)
+    .attr("preserveAspectRatio", "xMidYMid meet");
+
+  // Model name label
+  enter.append("text")
+    .attr("class", "model-label")
+    .attr("x", -CELL_INNER.left + 24)
+    .attr("y", barH / 2)
+    .attr("dy", "0.35em")
+    .attr("font-size", 9)
+    .attr("fill", d => isOurs(d.name) ? OURS_COLOR : "#555")
+    .attr("font-weight", d => isOurs(d.name) ? "bold" : "normal")
+    .text(d => displayName(d.name));
+
+  // Score label
+  enter.append("text")
+    .attr("class", "score-label")
+    .attr("x", animateIn ? 3 : d => xScale(d.val) + 3)
+    .attr("y", barH / 2)
+    .attr("dy", "0.35em")
+    .attr("font-size", 9)
+    .attr("font-weight", "bold")
+    .attr("fill", d => isOurs(d.name) ? OURS_COLOR : "#999")
+    .text(d => d.val);
+
+  // Animate in
+  if (animateIn) {
+    enter.transition().duration(ANIM_MS).delay((d, i) => i * 40)
+      .style("opacity", 1);
+    enter.select("rect.bar")
+      .transition().duration(ANIM_MS).delay((d, i) => i * 40)
+      .attr("width", d => xScale(d.val));
+    enter.select("text.score-label")
+      .transition().duration(ANIM_MS).delay((d, i) => i * 40)
+      .attr("x", d => xScale(d.val) + 3);
+  }
+
+  // UPDATE (for transitions)
+  const merged = enter.merge(groups);
+  if (!animateIn) {
+    // Smooth transition for existing elements
+    merged.transition().duration(ANIM_MS)
+      .attr("transform", d => `translate(0, ${yScale(d.name)})`)
+      .style("opacity", 1);
+    merged.select("rect.bar")
+      .transition().duration(ANIM_MS)
+      .attr("height", barH)
+      .attr("width", d => xScale(d.val))
+      .attr("fill", d => MODEL_COLORS[d.name] || "#ccc");
+    merged.select("text.score-label")
+      .transition().duration(ANIM_MS)
+      .attr("x", d => xScale(d.val) + 3)
+      .attr("y", barH / 2)
+      .text(d => d.val);
+    merged.select("text.model-label")
+      .attr("y", barH / 2);
+    merged.select("image.logo")
+      .attr("y", d => (barH - 18) / 2);
+  }
+
+  // Re-bindmouse events on merged
+  merged
+    .on("mouseenter", (ev, d) => onBarEnter(ev, d, modality, dim, items))
+    .on("mousemove", (ev) => moveTooltip(ev))
+    .on("mouseleave", onBarLeave);
+
+  // Store scale references on DOM node for delta annotations
+  parentG.node().__xScale = xScale;
+  parentG.node().__yScale = yScale;
+  parentG.node().__barH = barH;
+  parentG.node().__items = items;
+}
+
+function renderSplit(animateIn = true) {
+  const lp = initSVG(2);
+
+  MODALITIES.forEach((mod, rowIdx) => {
+    const rowY = rowIdx * (lp.cellH + ROW_GAP);
+
+    // Row label (rotated)
+    const labelColor = rowIdx === 0 ? "#7AA383" : "#8A94A8";
+    gridG.append("text")
+      .attr("class", "row-label")
+      .attr("transform", `translate(-55, ${rowY + lp.cellH / 2}) rotate(-90)`)
+      .attr("text-anchor", "middle")
+      .attr("font-size", 13).attr("font-weight", "bold")
+      .attr("fill", labelColor)
+      .text(mod);
+
+    DIMS.forEach((dim, colIdx) => {
+      const cellX = colIdx * (lp.cellW + COL_GAP);
+      const cellG = gridG.append("g")
+        .attr("class", "cell")
+        .attr("id", `cell-${rowIdx}-${colIdx}`)
+        .attr("data-mod", mod).attr("data-dim", dim)
+        .attr("transform", `translate(${cellX}, ${rowY})`);
+
+      // Column title (top row only)
+      if (rowIdx === 0) {
+        cellG.append("text")
+          .attr("class", "col-title")
+          .attr("x", CELL_INNER.left + lp.plotW / 2)
+          .attr("y", -2)
+          .attr("text-anchor", "middle")
+          .attr("font-size", 14).attr("font-weight", "bold")
+          .attr("fill", "#333")
+          .text(dim);
+      }
+
+      // Plot area
+      const plotG = cellG.append("g")
+        .attr("class", "plot-area")
+        .attr("transform", `translate(${CELL_INNER.left}, ${CELL_INNER.top})`);
+
+      drawCell(plotG, mod, dim, colIdx, lp, animateIn);
+    });
+  });
+  applyVisualState();
+}
+
+function renderCompare(modality, animateIn = true) {
+  const lp = initSVG(1);
+  const rowY = 0;
+
+  // Row label
+  const labelColor = modality === "Text-Only" ? "#7AA383" : "#8A94A8";
+  gridG.append("text")
+    .attr("class", "row-label")
+    .attr("transform", `translate(-55, ${rowY + lp.cellH / 2}) rotate(-90)`)
+    .attr("text-anchor", "middle")
+    .attr("font-size", 13).attr("font-weight", "bold")
+    .attr("fill", labelColor)
+    .text(modality);
+
+  DIMS.forEach((dim, colIdx) => {
+    const cellX = colIdx * (lp.cellW + COL_GAP);
+    const cellG = gridG.append("g")
+      .attr("class", "cell")
+      .attr("id", `cell-0-${colIdx}`)
+      .attr("data-mod", modality).attr("data-dim", dim)
+      .attr("transform", `translate(${cellX}, ${rowY})`);
+
+    // Column title
+    cellG.append("text")
+      .attr("class", "col-title")
+      .attr("x", CELL_INNER.left + lp.plotW / 2)
+      .attr("y", -2)
+      .attr("text-anchor", "middle")
+      .attr("font-size", 14).attr("font-weight", "bold")
+      .attr("fill", "#333")
+      .text(dim);
+
+    const plotG = cellG.append("g")
+      .attr("class", "plot-area")
+      .attr("transform", `translate(${CELL_INNER.left}, ${CELL_INNER.top})`);
+
+    drawCell(plotG, modality, dim, colIdx, lp, animateIn);
+  });
+  applyVisualState();
+}
+
+function transitionCompare(newModality) {
+  const lp = layoutParams(1);
+
+  // Update row label
+  const labelColor = newModality === "Text-Only" ? "#7AA383" : "#8A94A8";
+  gridG.select(".row-label")
+    .transition().duration(ANIM_MS / 2)
+    .style("opacity", 0)
+    .transition().duration(ANIM_MS / 2)
+    .text(newModality)
+    .attr("fill", labelColor)
+    .style("opacity", 1);
+
+  // Update cell data attributes
+  gridG.selectAll(".cell").attr("data-mod", newModality);
+
+  DIMS.forEach((dim, colIdx) => {
+    const plotG = gridG.select(`#cell-0-${colIdx} .plot-area`);
+    drawCell(plotG, newModality, dim, colIdx, lp, false);
+  });
+
+  setTimeout(() => applyVisualState(), ANIM_MS + 50);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  FEATURE 1: HOVER CROSS-HIGHLIGHT + TOOLTIP
+// ══════════════════════════════════════════════════════════════
+const tooltip = d3.select("#tooltip");
+
+function onBarEnter(ev, d, modality, dim, items) {
+  hoveredModel = d.name;
+  applyVisualState();
+
+  // Rank info
+  const sorted = [...items].sort((a, b) => b.val - a.val);
+  const rank = sorted.findIndex(x => x.name === d.name) + 1;
+  const top = sorted[0].val;
+  const gap = d.val - top;
+
+  tooltip.select(".tt-logo").attr("src", logoPath(d.name));
+  tooltip.select(".tt-name").text(d.name);
+
+  let bodyHTML = `
+    <div class="tt-dim" style="margin-bottom:6px;">${modality} · ${dim}</div>
+    <div class="tt-row"><span class="tt-label">Score</span><span class="tt-val">${d.val}</span></div>
+    <div class="tt-row"><span class="tt-label">Rank</span><span class="tt-val">#${rank} / ${items.length}</span></div>
+    <div class="tt-row"><span class="tt-label">Gap from #1</span><span class="tt-val ${gap === 0 ? 'green' : ''}">${gap === 0 ? '—' : gap.toFixed(1)}</span></div>
+  `;
+  tooltip.select(".tt-body").html(bodyHTML);
+  tooltip.classed("show", true);
+  moveTooltip(ev);
+}
+
+function moveTooltip(ev) {
+  const pad = 15;
+  let x = ev.clientX + pad, y = ev.clientY + pad;
+  const rect = tooltip.node().getBoundingClientRect();
+  if (x + rect.width > window.innerWidth - 10) x = ev.clientX - rect.width - pad;
+  if (y + rect.height > window.innerHeight - 10) y = ev.clientY - rect.height - pad;
+  tooltip.style("left", x + "px").style("top", y + "px");
+}
+
+function onBarLeave() {
+  hoveredModel = null;
+  tooltip.classed("show", false);
+  applyVisualState();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  FEATURE 3: MODEL FILTER + DELTA ANNOTATIONS
+// ══════════════════════════════════════════════════════════════
+function buildToolbar() {
+  const tb = d3.select("#model-toolbar");
+  ALL_MODELS.forEach(name => {
+    const btn = tb.append("button")
+      .attr("class", "model-btn" + (isOurs(name) ? " ours" : ""))
+      .attr("data-model", name)
+      .on("click", (ev) => {
+        if (ev.ctrlKey || ev.metaKey) {
+          // Multi-select toggle
+          if (selectedModels.has(name)) selectedModels.delete(name);
+          else selectedModels.add(name);
+        } else {
+          // Single select toggle
+          if (selectedModels.size === 1 && selectedModels.has(name)) {
+            selectedModels.clear();
+          } else {
+            selectedModels.clear();
+            selectedModels.add(name);
+          }
+        }
+        applyVisualState();
+        updateToolbarUI();
+      });
+    btn.append("img").attr("src", logoPath(name));
+    btn.append("span").text(displayName(name));
+  });
+}
+
+function updateToolbarUI() {
+  d3.selectAll(".model-btn").each(function() {
+    const name = this.dataset.model;
+    d3.select(this).classed("active", selectedModels.has(name));
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+//  VISUAL STATE (unified highlight / filter logic)
+// ══════════════════════════════════════════════════════════════
+function applyVisualState() {
+  const hasFilter = selectedModels.size > 0;
+  const hasHover = hoveredModel !== null;
+
+  d3.selectAll(".bar-group").each(function() {
+    const el = d3.select(this);
+    const name = el.attr("data-model");
+
+    let opacity = 1;
+    if (hasFilter && !selectedModels.has(name)) {
+      opacity = 0.12;
+    }
+    if (hasHover) {
+      if (hasFilter) {
+        // Hover within filter context
+        if (name === hoveredModel && selectedModels.has(name)) opacity = 1;
+        else if (selectedModels.has(name)) opacity = 0.55;
+        // filtered-out stay at 0.12
+      } else {
+        // No filter, pure hover
+        opacity = name === hoveredModel ? 1 : 0.18;
+      }
+    }
+
+    el.transition().duration(120)
+      .style("opacity", opacity);
+
+    // Highlight stroke
+    const bar = el.select("rect.bar");
+    if ((hasFilter && selectedModels.has(name)) || (!hasFilter && hasHover && name === hoveredModel)) {
+      bar.attr("stroke", "#666").attr("stroke-width", 1.2);
+    } else {
+      bar.attr("stroke", "none").attr("stroke-width", 0);
+    }
+  });
+
+  // Delta annotations
+  drawDeltaAnnotations();
+}
+
+function drawDeltaAnnotations() {
+  // Remove old deltas
+  d3.selectAll(".delta-group").remove();
+
+  if (selectedModels.size !== 2) return;
+  const [modelA, modelB] = [...selectedModels];
+
+  d3.selectAll(".cell").each(function() {
+    const cellG = d3.select(this);
+    const plotG = cellG.select(".plot-area");
+    const node = plotG.node();
+    if (!node || !node.__xScale) return;
+    const xScale = node.__xScale;
+    const yScale = node.__yScale;
+    const barH = node.__barH;
+    const items = node.__items;
+
+    const a = items.find(d => d.name === modelA);
+    const b = items.find(d => d.name === modelB);
+    if (!a || !b) return;
+
+    const delta = (a.val - b.val).toFixed(1);
+    const sign = delta > 0 ? "+" : "";
+    const midY = (yScale(a.name) + barH / 2 + yScale(b.name) + barH / 2) / 2;
+    const maxX = Math.max(xScale(a.val), xScale(b.val));
+
+    const dg = plotG.append("g").attr("class", "delta-group");
+
+    // Connecting line
+    dg.append("line")
+      .attr("x1", maxX + 16).attr("x2", maxX + 16)
+      .attr("y1", yScale(a.name) + barH / 2)
+      .attr("y2", yScale(b.name) + barH / 2)
+      .attr("stroke", "#7AA383").attr("stroke-width", 1.5)
+      .attr("stroke-dasharray", "3,2");
+
+    // Bracket ends
+    [a, b].forEach(m => {
+      dg.append("line")
+        .attr("x1", maxX + 12).attr("x2", maxX + 20)
+        .attr("y1", yScale(m.name) + barH / 2)
+        .attr("y2", yScale(m.name) + barH / 2)
+        .attr("stroke", "#7AA383").attr("stroke-width", 1.5);
+    });
+
+    // Delta text
+    dg.append("text")
+      .attr("class", "delta-label")
+      .attr("x", maxX + 24)
+      .attr("y", midY)
+      .attr("dy", "0.35em")
+      .attr("fill", delta >= 0 ? "#7AA383" : "#c0392b")
+      .attr("font-size", 10)
+      .text(sign + delta);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+//  VIEW MODE & MODALITY TOGGLE (Feature 2)
+// ══════════════════════════════════════════════════════════════
+d3.selectAll("#view-toggle button").on("click", function() {
+  const mode = this.dataset.view;
+  if (mode === viewMode) return;
+  viewMode = mode;
+  d3.selectAll("#view-toggle button").classed("active", false);
+  d3.select(this).classed("active", true);
+
+  const modToggle = d3.select("#modality-toggle");
+  if (mode === "compare") {
+    modToggle.classed("show", true);
+    renderCompare(currentModality, true);
+  } else {
+    modToggle.classed("show", false);
+    renderSplit(true);
+  }
+});
+
+d3.selectAll("#modality-toggle button").on("click", function() {
+  const mod = this.dataset.mod;
+  if (mod === currentModality) return;
+  currentModality = mod;
+  d3.selectAll("#modality-toggle button").classed("active", false);
+  d3.select(this).classed("active", true);
+  transitionCompare(mod);
+});
+
+// ══════════════════════════════════════════════════════════════
+//  ESC to clear filter
+// ══════════════════════════════════════════════════════════════
+document.addEventListener("keydown", (ev) => {
+  if (ev.key === "Escape") {
+    selectedModels.clear();
+    updateToolbarUI();
+    applyVisualState();
+  }
+});
+
+// ══════════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════════
+buildToolbar();
+renderSplit(true);
+</script>
+</body>
+</html>

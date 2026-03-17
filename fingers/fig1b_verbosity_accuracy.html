@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verbosity vs. Factual Accuracy</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: white;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 13px;
+    color: #333;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    width: 270px;
+    z-index: 100;
+}
+.tooltip.visible { opacity: 1; }
+
+.tooltip .tt-name {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+}
+.tooltip .tt-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+.tooltip .tt-label { color: #999; }
+.tooltip .tt-value { font-weight: bold; color: #333; }
+
+.tooltip .tt-bar-section { margin-top: 12px; }
+.tooltip .tt-bar-title {
+    font-size: 11px;
+    color: #999;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.tooltip .tt-bar {
+    display: flex;
+    height: 12px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+.tooltip .tt-legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+    font-size: 12px;
+}
+.tooltip .tt-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    margin-right: 6px;
+    flex-shrink: 0;
+}
+.tooltip .tt-legend-name { flex: 1; color: #666; }
+.tooltip .tt-legend-val { color: #333; font-weight: 500; min-width: 50px; text-align: right; }
+.tooltip .tt-legend-pct { color: #999; min-width: 48px; text-align: right; }
+</style>
+</head>
+<body>
+
+<svg id="chart"></svg>
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+/* ── Data (exact match with Python) ── */
+const data = [
+    {name:"ChatGPT",              stmts:16193, wrong:270, conflict:36,  unknown:653,  acc:0.8142, group:"openai"},
+    {name:"MiroThinker v1.7-235B",stmts:18124, wrong:284, conflict:63,  unknown:905,  acc:0.7912, group:"miro"},
+    {name:"MiroThinker v1.7-30B", stmts:21823, wrong:246, conflict:0,   unknown:802,  acc:0.7617, group:"miro"},
+    {name:"MiroThinker v1.0",     stmts:17325, wrong:408, conflict:53,  unknown:992,  acc:0.7599, group:"miro"},
+    {name:"DeepSeek",             stmts:11562, wrong:176, conflict:0,   unknown:367,  acc:0.7303, group:"other"},
+    {name:"Qwen",                 stmts:19640, wrong:343, conflict:19,  unknown:481,  acc:0.721,  group:"other"},
+    {name:"Gemini",               stmts:44259, wrong:684, conflict:94,  unknown:1370, acc:0.7206, group:"other"},
+    {name:"Manus",                stmts:8893,  wrong:272, conflict:32,  unknown:593,  acc:0.7182, group:"other"},
+    {name:"MiniMax",              stmts:21600, wrong:670, conflict:59,  unknown:1176, acc:0.7151, group:"other"},
+    {name:"Claude",               stmts:22694, wrong:422, conflict:44,  unknown:1153, acc:0.7008, group:"other"},
+    {name:"GLM",                  stmts:20221, wrong:724, conflict:46,  unknown:1196, acc:0.6946, group:"other"},
+    {name:"Grok",                 stmts:6805,  wrong:472, conflict:37,  unknown:862,  acc:0.6599, group:"other"},
+    {name:"Kimi",                 stmts:61739, wrong:595, conflict:0,   unknown:1256, acc:0.6542, group:"other"},
+    {name:"Doubao",               stmts:43160, wrong:780, conflict:0,   unknown:1393, acc:0.6487, group:"other"},
+];
+
+data.forEach(d => {
+    d.x = d.stmts / 1000;
+    d.y = d.acc * 100;
+    d.correct = d.stmts - d.wrong - d.conflict - d.unknown;
+});
+
+/* ── Colors (exact match with Python) ── */
+const MIRO_COLOR  = "#7AA383";
+const OPENAI_COLOR = "#555555";
+const OTHER_COLOR  = "#B0B0B0";
+
+const COMP_COLORS = {
+    correct:  "#6BAF7B",
+    wrong:    "#E8696A",
+    conflict: "#F0A55E",
+    unknown:  "#B8B8B8",
+};
+
+function colorOf(g)  { return g === "miro" ? MIRO_COLOR : g === "openai" ? OPENAI_COLOR : OTHER_COLOR; }
+function edgeOf(g)   { return g === "miro" ? "#5A8A63"  : g === "openai" ? "#333"       : "#999"; }
+function radiusOf(g) { return g === "miro" ? 8          : g === "openai" ? 7.5           : 6; }
+function alphaOf(g)  { return g === "miro" ? 0.9        : g === "openai" ? 0.85          : 0.6; }
+function zOf(g)      { return g === "miro" ? 10         : g === "openai" ? 8              : 5; }
+function lblColor(g) { return g === "miro" ? MIRO_COLOR : g === "openai" ? "#333"        : "#777"; }
+function lblWeight(g){ return g === "miro" ? "bold"     : "normal"; }
+
+/* ── Label offsets ──
+   Python uses textcoords="offset fontsize" with fontsize=7.
+   1 unit = 7pt × (96/72) ≈ 9.3 px.  SVG y is inverted vs matplotlib. */
+const U = 9.3;
+const labelCfg = {
+    "Kimi":                  {dx:  0.8*U, dy:  0.8*U, anchor:"start"},
+    "Doubao":                {dx:  0.8*U, dy: -0.6*U, anchor:"start"},
+    "Gemini":                {dx:  0.8*U, dy: -0.6*U, anchor:"start"},
+    "MiroThinker v1.7-30B":  {dx:  0.8*U, dy:  0.8*U, anchor:"start"},
+    "MiroThinker v1.0":      {dx: -0.8*U, dy:  0,     anchor:"end"},
+    "Qwen":                  {dx:  0.8*U, dy: -0.6*U, anchor:"start"},
+    "MiniMax":               {dx: -0.8*U, dy:  0.5*U, anchor:"end"},
+    "GLM":                   {dx:  0.8*U, dy:  0.7*U, anchor:"start"},
+};
+const defaultLbl = {dx: 0.8*U, dy: 0, anchor: "start"};
+function lblOff(name) { return labelCfg[name] || defaultLbl; }
+
+/* ── SVG setup ── */
+const W = 900, H = 600;
+const margin = {top: 50, right: 40, bottom: 60, left: 80};
+const iW = W - margin.left - margin.right;
+const iH = H - margin.top  - margin.bottom;
+
+const svg = d3.select("#chart").attr("width", W).attr("height", H);
+
+/* Glow filter for hover */
+const defs = svg.append("defs");
+const filt = defs.append("filter")
+    .attr("id", "glow").attr("x","-50%").attr("y","-50%")
+    .attr("width","200%").attr("height","200%");
+filt.append("feGaussianBlur").attr("stdDeviation","3").attr("result","blur");
+const merge = filt.append("feMerge");
+merge.append("feMergeNode").attr("in","blur");
+merge.append("feMergeNode").attr("in","SourceGraphic");
+
+const g = svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);
+
+/* ── Scales ── */
+const xExt = d3.extent(data, d=>d.x);
+const yExt = d3.extent(data, d=>d.y);
+const xPad = (xExt[1]-xExt[0])*0.05;
+const yPad = (yExt[1]-yExt[0])*0.08;
+
+const x = d3.scaleLinear()
+    .domain([xExt[0]-xPad*2, xExt[1]+xPad]).range([0,iW]).nice();
+const y = d3.scaleLinear()
+    .domain([yExt[0]-yPad, yExt[1]+yPad]).range([iH,0]).nice();
+
+/* ── Grid ── */
+g.append("g").attr("transform",`translate(0,${iH})`)
+    .call(d3.axisBottom(x).tickSize(-iH).tickFormat(""))
+    .call(g => { g.selectAll("line").attr("stroke","#ececec").attr("stroke-width",0.5); g.select(".domain").remove(); });
+g.append("g")
+    .call(d3.axisLeft(y).tickSize(-iW).tickFormat(""))
+    .call(g => { g.selectAll("line").attr("stroke","#ececec").attr("stroke-width",0.5); g.select(".domain").remove(); });
+
+/* ── Axes ── */
+const xAx = g.append("g").attr("transform",`translate(0,${iH})`).call(d3.axisBottom(x));
+xAx.selectAll("text").attr("fill","#888").style("font-size","12px").style("font-family","'Times New Roman',serif");
+xAx.selectAll("line").attr("stroke","#ddd");
+xAx.select(".domain").attr("stroke","#ddd");
+
+const yAx = g.append("g").call(d3.axisLeft(y));
+yAx.selectAll("text").attr("fill","#888").style("font-size","12px").style("font-family","'Times New Roman',serif");
+yAx.selectAll("line").attr("stroke","#ddd");
+yAx.select(".domain").attr("stroke","#ddd");
+
+/* top & right spines */
+g.append("line").attr("x1",0).attr("y1",0).attr("x2",iW).attr("y2",0).attr("stroke","#ddd");
+g.append("line").attr("x1",iW).attr("y1",0).attr("x2",iW).attr("y2",iH).attr("stroke","#ddd");
+
+/* ── Axis labels ── */
+svg.append("text")
+    .attr("x", margin.left + iW/2).attr("y", H - 14)
+    .attr("text-anchor","middle").attr("fill","#333")
+    .style("font-size","15px").style("font-family","'Times New Roman',serif")
+    .text("Total Atomic Statements (×1000)");
+
+svg.append("text")
+    .attr("transform","rotate(-90)")
+    .attr("x", -(margin.top + iH/2)).attr("y", 22)
+    .attr("text-anchor","middle").attr("fill","#333")
+    .style("font-size","15px").style("font-family","'Times New Roman',serif")
+    .text("Avg Task-Level Accuracy (%)");
+
+/* ── Title ── */
+svg.append("text")
+    .attr("x", margin.left + iW/2).attr("y", 28)
+    .attr("text-anchor","middle").attr("fill","#1a1a2e")
+    .style("font-size","19px").style("font-weight","bold")
+    .style("font-family","'Times New Roman',serif")
+    .text("Verbosity vs. Factual Accuracy");
+
+/* ── Efficient Expression Zone triangle ── */
+const xD = x.domain(), yD = y.domain();
+const xR = xD[1]-xD[0], yR = yD[1]-yD[0];
+
+const tri = [
+    [x(xD[0]),             y(yD[1])],
+    [x(xD[0] + 0.40*xR),  y(yD[1])],
+    [x(xD[0]),             y(yD[0] + 0.40*yR)],
+];
+g.append("polygon")
+    .attr("points", tri.map(p=>p.join(",")).join(" "))
+    .attr("fill", MIRO_COLOR).attr("fill-opacity", 0.08)
+    .attr("stroke", MIRO_COLOR).attr("stroke-opacity", 0.30)
+    .attr("stroke-width", 0.8).attr("stroke-dasharray","5,3");
+
+const tlx = x(xD[0] + 0.03*xR), tly = y(yD[1] - 0.06*yR);
+const triTxt = g.append("text").attr("x",tlx).attr("y",tly)
+    .attr("fill",MIRO_COLOR).attr("fill-opacity",0.7)
+    .style("font-size","10px").style("font-style","italic")
+    .style("font-family","'Times New Roman',serif");
+triTxt.append("tspan").attr("x",tlx).attr("dy","0").text("Efficient");
+triTxt.append("tspan").attr("x",tlx).attr("dy","1.5em").text("Expression");
+triTxt.append("tspan").attr("x",tlx).attr("dy","1.5em").text("Zone");
+
+/* ── Draw points & labels (sorted by z-order) ── */
+const sorted = [...data].sort((a,b) => zOf(a.group) - zOf(b.group));
+
+const points = g.selectAll(".dot").data(sorted).enter()
+    .append("circle").attr("class","dot")
+    .attr("cx", d=>x(d.x)).attr("cy", d=>y(d.y))
+    .attr("r",  d=>radiusOf(d.group))
+    .attr("fill", d=>colorOf(d.group))
+    .attr("fill-opacity", d=>alphaOf(d.group))
+    .attr("stroke", d=>edgeOf(d.group))
+    .attr("stroke-width", 0.8)
+    .style("cursor","pointer")
+    .style("transition","r 0.15s ease, fill-opacity 0.15s ease");
+
+const labels = g.selectAll(".lbl").data(sorted).enter()
+    .append("text").attr("class","lbl")
+    .attr("x", d => x(d.x) + lblOff(d.name).dx)
+    .attr("y", d => y(d.y) + lblOff(d.name).dy)
+    .attr("text-anchor", d => lblOff(d.name).anchor)
+    .attr("dominant-baseline","central")
+    .attr("fill", d=>lblColor(d.group))
+    .style("font-size","10px")
+    .style("font-weight", d=>lblWeight(d.group))
+    .style("font-family","'Times New Roman',serif")
+    .style("transition","opacity 0.15s ease")
+    .text(d=>d.name);
+
+/* ── Tooltip ── */
+const tooltip = document.getElementById("tooltip");
+
+function showTip(ev, d) {
+    const pct = v => (v / d.stmts * 100).toFixed(1);
+    const fmt = v => v.toLocaleString();
+
+    tooltip.innerHTML = `
+        <div class="tt-name" style="color:${colorOf(d.group)}">${d.name}</div>
+        <div class="tt-row">
+            <span class="tt-label">Accuracy</span>
+            <span class="tt-value">${d.y.toFixed(2)}%</span>
+        </div>
+        <div class="tt-row">
+            <span class="tt-label">Total Statements</span>
+            <span class="tt-value">${fmt(d.stmts)}</span>
+        </div>
+        <div class="tt-bar-section">
+            <div class="tt-bar-title">Composition</div>
+            <div class="tt-bar">
+                <div style="width:${pct(d.correct)}%;background:${COMP_COLORS.correct}"></div>
+                <div style="width:${pct(d.wrong)}%;background:${COMP_COLORS.wrong}"></div>
+                <div style="width:${pct(d.conflict)}%;background:${COMP_COLORS.conflict}"></div>
+                <div style="width:${pct(d.unknown)}%;background:${COMP_COLORS.unknown}"></div>
+            </div>
+            <div class="tt-legend-item">
+                <div class="tt-legend-dot" style="background:${COMP_COLORS.correct}"></div>
+                <span class="tt-legend-name">Correct</span>
+                <span class="tt-legend-val">${fmt(d.correct)}</span>
+                <span class="tt-legend-pct">${pct(d.correct)}%</span>
+            </div>
+            <div class="tt-legend-item">
+                <div class="tt-legend-dot" style="background:${COMP_COLORS.wrong}"></div>
+                <span class="tt-legend-name">Wrong</span>
+                <span class="tt-legend-val">${fmt(d.wrong)}</span>
+                <span class="tt-legend-pct">${pct(d.wrong)}%</span>
+            </div>
+            <div class="tt-legend-item">
+                <div class="tt-legend-dot" style="background:${COMP_COLORS.conflict}"></div>
+                <span class="tt-legend-name">Conflict</span>
+                <span class="tt-legend-val">${fmt(d.conflict)}</span>
+                <span class="tt-legend-pct">${pct(d.conflict)}%</span>
+            </div>
+            <div class="tt-legend-item">
+                <div class="tt-legend-dot" style="background:${COMP_COLORS.unknown}"></div>
+                <span class="tt-legend-name">Unknown</span>
+                <span class="tt-legend-val">${fmt(d.unknown)}</span>
+                <span class="tt-legend-pct">${pct(d.unknown)}%</span>
+            </div>
+        </div>`;
+
+    const ttW = 270, ttH = 310;
+    let left = ev.clientX + 16;
+    let top  = ev.clientY - 20;
+    if (left + ttW > window.innerWidth  - 10) left = ev.clientX - ttW - 16;
+    if (top  + ttH > window.innerHeight - 10) top  = window.innerHeight - ttH - 10;
+    if (top < 10) top = 10;
+
+    tooltip.style.left = left + "px";
+    tooltip.style.top  = top  + "px";
+    tooltip.classList.add("visible");
+}
+
+function hideTip() { tooltip.classList.remove("visible"); }
+
+/* ── Hover interaction ── */
+points
+    .on("mouseenter", function(ev, d) {
+        points.attr("fill-opacity", p => p === d ? 1 : 0.15);
+        labels.style("opacity",     p => p === d ? 1 : 0.15);
+        d3.select(this)
+            .attr("r", radiusOf(d.group) * 1.5)
+            .attr("filter", "url(#glow)");
+        showTip(ev, d);
+    })
+    .on("mousemove", function(ev, d) { showTip(ev, d); })
+    .on("mouseleave", function(ev, d) {
+        points.attr("fill-opacity", p => alphaOf(p.group));
+        labels.style("opacity", 1);
+        d3.select(this)
+            .attr("r", radiusOf(d.group))
+            .attr("filter", null);
+        hideTip();
+    });
+</script>
+</body>
+</html>
