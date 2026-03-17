@@ -711,6 +711,10 @@
         }
 
         /* Process table: sticky first column */
+        #lb-process .leaderboard-table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
         #lb-process .leaderboard-table thead th:first-child {
             position: sticky;
             left: 0;
@@ -956,6 +960,7 @@
 
         .table-header-group {
             text-align: center !important;
+            background: var(--bg-tertiary) !important;
             border-bottom: 2px solid var(--accent-primary) !important;
             color: var(--accent-warm) !important;
             font-size: 0.8rem !important;
@@ -963,10 +968,15 @@
             letter-spacing: 0 !important;
         }
 
+        /* Ensure all first-row header cells have uniform background */
+        .leaderboard-table thead tr:first-child th {
+            background: var(--bg-tertiary);
+        }
+
         .leaderboard-table thead tr.sub-header th {
             font-size: 0.7rem;
             padding: 8px 12px;
-            background: var(--bg-secondary);
+            background: var(--bg-tertiary);
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -1282,7 +1292,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18.5C5 19.8 5 16 3 15.5"/><path d="M15 21v-3.2c0.1-0.9 0-1.5-0.5-2.1C17.3 15.4 20 14.2 20 9.5C20 8.2 19.5 7 18.7 6.1C19 5.2 19 4 18.4 3C18.4 3 17.3 2.7 15 4.3C13.7 3.9 12.3 3.9 11 4.3C8.7 2.7 7.6 3 7.6 3C7 4 7 5.2 7.3 6.1C6.5 7 6 8.2 6 9.5C6 14.2 8.7 15.4 11.5 15.7C11 16.3 10.9 16.9 11 17.8V21"/></svg>
                     MiroFlow
                 </a>
-                <a href="https://huggingface.co/miromind-ai/MiroThinker-v1.0-72B" target="_blank" class="hero-link secondary">
+                <a href="https://huggingface.co/miromind-ai/MiroThinker-1.7" target="_blank" class="hero-link secondary">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><circle cx="12" cy="13" r="8.5"/><path d="M8 10.5C8 10.5 8.5 9 9.5 9.5" stroke-width="1.5"/><path d="M16 10.5C16 10.5 15.5 9 14.5 9.5" stroke-width="1.5"/><path d="M9 15C10 16.5 14 16.5 15 15"/><path d="M7.5 5.5C6 4 4 5.5 4.5 7.5"/><path d="M16.5 5.5C18 4 20 5.5 19.5 7.5"/></svg>
                     Model Weights
                 </a>
@@ -2390,7 +2400,7 @@
             <div class="footer-links">
                 <a href="https://dr.miromind.ai" target="_blank">Online Demo</a>
                 <a href="https://github.com/MiroMindAI/MiroThinker" target="_blank">GitHub</a>
-                <a href="https://huggingface.co/miromind-ai/MiroThinker-v1.0-72B" target="_blank">HuggingFace</a>
+                <a href="https://huggingface.co/miromind-ai/MiroThinker-1.7" target="_blank">HuggingFace</a>
                 <a href="https://arxiv.org/abs/placeholder" target="_blank">Paper</a>
             </div>
             <div class="footer-copyright">
