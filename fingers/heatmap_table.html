@@ -35,12 +35,12 @@ body{
 
 /* ── Table wrapper ── */
 .table-container{
-  overflow-x:auto; padding:0;
+  overflow-x:hidden; padding:0;
   transition:opacity .25s ease;
 }
 
 /* ── Table ── */
-table{ border-collapse:separate; border-spacing:1px; margin:0 auto 0 0; }
+table{ border-collapse:separate; border-spacing:1px; margin:0 auto 0 0; transform-origin:top left; }
 
 .corner-cell{ background:transparent; border:none; }
 
@@ -447,13 +447,28 @@ document.querySelectorAll('.tab').forEach(btn=>{
       currentTab = key;
       sortCol = -1; sortDir = 'desc';
       render(key);
-      requestAnimationFrame(()=>{ ct.style.opacity='1'; });
+      requestAnimationFrame(()=>{ fitTable(); ct.style.opacity='1'; });
     }, 260);
   });
 });
 
+/* ════════════════════════  FIT TABLE  ════════════════════════ */
+function fitTable(){
+  const ct = document.getElementById('table-container');
+  const tbl = ct.querySelector('table');
+  if(!tbl) return;
+  tbl.style.transform = '';
+  const cw = ct.clientWidth;
+  const tw = tbl.scrollWidth;
+  if(tw > cw){
+    tbl.style.transform = 'scale(' + (cw/tw) + ')';
+  }
+}
+
 /* ════════════════════════  INIT  ════════════════════════ */
 render('text');
+requestAnimationFrame(fitTable);
+window.addEventListener('resize', fitTable);
 </script>
 </body>
 </html>
