@@ -75,37 +75,40 @@ body {
 <script>
 /* ═══════════════════  DATA (exact match with Python)  ═══════════════════ */
 const reportText = {
-    "Coverage":            {kimi:8.0,mirov17:7.9,mirobase:7.9,chatgpt:7.8,miro:7.9,gemini:7.7,claude:7.3,doubao:7.3,minimax:7.0,glm:7.0,qwen:6.4,grok:6.7,deepseek:6.1,manus:6.1},
-    "Insight":             {kimi:8.0,mirov17:7.5,mirobase:7.5,chatgpt:7.4,miro:7.2,gemini:7.7,claude:7.2,doubao:6.3,minimax:6.3,glm:6.3,qwen:6.5,grok:5.6,deepseek:5.8,manus:5.5},
-    "Instruct\nFollowing": {kimi:7.9,mirov17:8.5,mirobase:8.4,chatgpt:8.2,miro:8.4,gemini:8.0,claude:7.4,doubao:7.5,minimax:7.4,glm:7.5,qwen:7.0,grok:7.5,deepseek:7.1,manus:6.8},
-    "Clarity":             {kimi:7.6,mirov17:8.0,mirobase:7.9,chatgpt:7.7,miro:8.0,gemini:7.0,claude:7.1,doubao:6.7,minimax:7.1,glm:6.8,qwen:6.8,grok:6.5,deepseek:6.9,manus:6.6},
+    "Coverage":            {chatgpt:7.82, kimi:8.04, gemini:7.74, claude:7.33, minimax:6.98, glm:6.99, qwen:6.40, manus:6.12, doubao:7.29, grok:6.70, miromini:7.88, mirov17:7.92, miroh1:8.06},
+    "Insight":             {chatgpt:7.43, kimi:7.98, gemini:7.66, claude:7.20, minimax:6.27, glm:6.28, qwen:6.47, manus:5.48, doubao:6.28, grok:5.60, miromini:7.50, mirov17:7.47, miroh1:8.02},
+    "Instruct\nFollowing": {chatgpt:8.16, kimi:7.86, gemini:8.01, claude:7.35, minimax:7.42, glm:7.45, qwen:6.99, manus:6.79, doubao:7.46, grok:7.50, miromini:8.44, mirov17:8.47, miroh1:8.53},
+    "Clarity":             {chatgpt:7.71, kimi:7.63, gemini:7.01, claude:7.12, minimax:7.06, glm:6.75, qwen:6.78, manus:6.56, doubao:6.72, grok:6.50, miromini:7.87, mirov17:8.01, miroh1:8.11},
+    "Query\nSpec":         {chatgpt:6.86, kimi:7.19, gemini:6.49, claude:6.11, minimax:5.61, glm:5.68, qwen:5.26, manus:4.75, doubao:5.79, grok:5.87, miromini:6.80, mirov17:6.82, miroh1:7.04},
 };
 const reportMulti = {
-    "Coverage":            {mirov17:6.950,miro:6.949,openai:6.970,gemini:6.914,claude:6.997,glm:6.467,grok:6.362,minimax:5.936,manus:5.621,qwen:4.323},
-    "Insight":             {mirov17:6.915,miro:6.921,openai:6.438,gemini:7.183,claude:6.838,glm:5.651,grok:5.061,minimax:4.848,manus:4.744,qwen:4.340},
-    "Instruct\nFollowing": {mirov17:7.699,miro:7.579,openai:7.117,gemini:6.667,claude:6.184,glm:6.946,grok:6.562,minimax:6.424,manus:6.064,qwen:4.771},
-    "Clarity":             {mirov17:7.231,miro:7.262,openai:6.844,gemini:6.040,claude:5.910,glm:6.342,grok:5.702,minimax:5.957,manus:5.717,qwen:4.894},
-    "TaskSpec":            {mirov17:5.141,miro:5.339,openai:5.242,gemini:4.648,claude:5.002,glm:4.212,grok:3.820,minimax:3.766,manus:3.651,qwen:2.794},
+    "Coverage":            {openai:7.06, gemini:7.24, claude:6.89, glm:6.71, grok:6.18, minimax:6.31, manus:5.87, qwen:4.68, mirov17:7.26, miroh1:7.27},
+    "Insight":             {openai:6.39, gemini:7.08, claude:6.68, glm:6.02, grok:5.25, minimax:5.33, manus:5.02, qwen:4.63, mirov17:6.92, miroh1:7.60},
+    "Instruct\nFollowing": {openai:7.48, gemini:7.24, claude:6.28, glm:7.17, grok:6.89, minimax:6.91, manus:6.50, qwen:5.29, mirov17:7.86, miroh1:7.86},
+    "Clarity":             {openai:7.05, gemini:6.25, claude:5.93, glm:6.54, grok:6.04, minimax:6.20, manus:6.12, qwen:5.26, mirov17:7.51, miroh1:7.83},
+    "Query\nSpec":         {openai:5.34, gemini:4.98, claude:5.07, glm:4.41, grok:3.97, minimax:3.89, manus:3.85, qwen:2.76, mirov17:5.00, miroh1:5.50},
 };
 const processText = {
-    "Search\nBreadth":     {chatgpt:7.74,mirov17:7.44,mirobase:7.55,miro:7.57,minimax:7.19,gemini:7.54,glm:7.62,kimi:7.75,qwen:7.44,claude:7.43,doubao:5.93},
-    "Analysis\nDepth":     {chatgpt:6.73,mirov17:6.44,mirobase:5.63,miro:5.72,minimax:6.22,gemini:6.66,glm:5.94,kimi:5.94,qwen:6.41,claude:4.26,doubao:4.16},
-    "Refinement":          {chatgpt:7.67,mirov17:7.57,mirobase:7.13,miro:6.98,minimax:7.03,gemini:7.59,glm:6.71,kimi:7.10,qwen:7.58,claude:5.17,doubao:5.96},
-    "Critical\nThinking":  {chatgpt:7.47,mirov17:7.16,mirobase:7.09,miro:6.96,minimax:6.25,gemini:6.41,glm:5.93,kimi:6.76,qwen:7.41,claude:4.70,doubao:5.57},
+    "Search\nBreadth":     {chatgpt:7.74, kimi:7.75, gemini:7.54, claude:7.96, minimax:7.19, glm:7.62, qwen:7.44, manus:6.28, doubao:5.93, grok:5.09, miromini:7.55, mirov17:7.44, miroh1:7.51},
+    "Analysis\nDepth":     {chatgpt:6.73, kimi:5.94, gemini:6.66, claude:5.96, minimax:6.22, glm:5.94, qwen:6.41, manus:5.84, doubao:4.16, grok:4.94, miromini:5.63, mirov17:6.44, miroh1:6.43},
+    "Refinement":          {chatgpt:7.67, kimi:7.10, gemini:7.59, claude:6.79, minimax:7.01, glm:6.71, qwen:7.50, manus:6.06, doubao:5.96, grok:6.10, miromini:7.13, mirov17:7.57, miroh1:7.40},
+    "Critical\nThinking":  {chatgpt:7.47, kimi:6.76, gemini:6.41, claude:5.72, minimax:6.25, glm:5.93, qwen:7.41, manus:5.35, doubao:5.57, grok:5.46, miromini:7.09, mirov17:7.16, miroh1:6.90},
+    "Efficiency":          {chatgpt:6.37, kimi:5.35, gemini:5.90, claude:6.28, minimax:6.35, glm:5.90, qwen:6.32, manus:6.86, doubao:5.33, grok:6.47, miromini:5.90, mirov17:6.46, miroh1:6.81},
 };
 const processMulti = {
-    "Search\nBreadth":     {openai:6.55,mirov17:6.50,miro:6.40,gemini:6.97,minimax:5.10,manus:5.24,glm:5.27,qwen:5.70,grok:4.19,claude:7.48},
-    "Analysis\nDepth":     {openai:6.21,mirov17:5.70,miro:5.50,gemini:6.53,minimax:5.90,manus:5.72,glm:5.23,qwen:5.13,grok:4.43,claude:2.88},
-    "Refinement":          {openai:7.38,mirov17:7.20,miro:6.83,gemini:7.10,minimax:6.50,manus:6.07,glm:5.57,qwen:5.07,grok:5.24,claude:3.88},
-    "Critical\nThinking":  {openai:7.00,mirov17:6.30,miro:5.97,gemini:5.83,minimax:4.37,manus:4.34,glm:4.47,qwen:5.77,grok:4.24,claude:2.92},
+    "Search\nBreadth":     {openai:6.55, gemini:6.97, glm:5.27, minimax:5.10, manus:5.24, qwen:5.70, grok:4.19, claude:7.52, mirov17:6.50, miroh1:6.67},
+    "Analysis\nDepth":     {openai:6.21, gemini:6.53, glm:5.23, minimax:5.90, manus:5.72, qwen:5.13, grok:4.43, claude:6.07, mirov17:5.70, miroh1:6.07},
+    "Refinement":          {openai:7.38, gemini:7.10, glm:5.57, minimax:6.50, manus:6.07, qwen:5.87, grok:5.24, claude:6.96, mirov17:7.20, miroh1:7.30},
+    "Critical\nThinking":  {openai:7.00, gemini:5.83, glm:4.47, minimax:4.37, manus:4.34, qwen:5.77, grok:4.24, claude:5.93, mirov17:6.30, miroh1:6.23},
+    "Efficiency":          {openai:5.45, gemini:4.70, glm:5.43, minimax:6.30, manus:6.59, qwen:5.13, grok:5.95, claude:6.00, mirov17:5.77, miroh1:6.07},
 };
 
 /* ── Model display names ── */
 const NAME = {
-    chatgpt:"ChatGPT", mirov17:"MiroThinker v1.7", mirobase:"MiroThinker Base",
-    miro:"MiroThinker v1.0", openai:"OpenAI", gemini:"Gemini", claude:"Claude",
-    doubao:"Doubao", minimax:"MiniMax", glm:"GLM", qwen:"Qwen", grok:"Grok",
-    deepseek:"DeepSeek", manus:"Manus", kimi:"Kimi",
+    chatgpt:"OpenAI", openai:"OpenAI", kimi:"Kimi", gemini:"Gemini", claude:"Claude",
+    minimax:"MiniMax", glm:"GLM", qwen:"Qwen", manus:"Manus", deepseek:"DeepSeek",
+    doubao:"Doubao", grok:"Grok",
+    miromini:"MiroThinker 1.7-mini", mirov17:"MiroThinker 1.7", miroh1:"MiroThinker H1",
 };
 function isMiro(k) { return k.includes("miro"); }
 

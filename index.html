@@ -752,8 +752,8 @@
         }
         #lb-process .leaderboard-table thead tr:first-child th:nth-child(3),
         #lb-process .leaderboard-table thead tr:nth-child(2) th:nth-child(3),
-        #lb-process .leaderboard-table thead tr.sub-header th:nth-child(10),
-        #lb-process .leaderboard-table tbody td:nth-child(11) {
+        #lb-process .leaderboard-table thead tr.sub-header th:nth-child(11),
+        #lb-process .leaderboard-table tbody td:nth-child(12) {
             border-left: 1.5px dashed #C8C3BA;
         }
 
@@ -1780,7 +1780,7 @@
                 <div class="finding-card">
                     <div class="finding-num">Finding 02</div>
                     <h4>Strong Output &#8800; Strong Process</h4>
-                    <p>Claude-Opus-4.6 produces reports of reasonable quality (67.3) but its Process score (55.1) is among the lowest, revealing that a polished report can mask a weak research procedure.</p>
+                    <p>Claude-Opus-4.6 shows the largest gap between Findings→Report coverage (82.1) and Report→Process traceability (47.6), a 34.5-point disconnect revealing that polished reports can mask weak research grounding.</p>
                 </div>
                 <div class="finding-card">
                     <div class="finding-num">Finding 03</div>
@@ -1790,7 +1790,7 @@
                 <div class="finding-card">
                     <div class="finding-num">Finding 04</div>
                     <h4>Precision-Volume Trade-off in Factuality</h4>
-                    <p>ChatGLM Agent generates the most claims (4,096 right) but also the most wrong ones (580). MiroThinker-1.7 achieves balance: 3,334 right claims with only 181 wrong — the fewest among top systems.</p>
+                    <p>ChatGLM Agent generates the most claims (4,096 right) but also the most wrong ones (580). MiroThinker-H1 achieves the best balance: 3,746 right claims with only 161 wrong — the fewest among all systems.</p>
                 </div>
             </div>
 
@@ -1989,32 +1989,45 @@
                             <tbody>
                                 <tr class="highlight">
                                     <td class="rank-cell"><span class="rank-badge rank-1">1</span></td>
-                                    <td class="model-name">OpenAI Deep Research</td>
-                                    <td class="score-cell best">73.8</td>
-                                    <td class="score-cell best">83.4</td>
-                                    <td class="score-cell">73.1</td>
-                                    <td class="score-cell best">76.8</td>
-                                    <td class="score-cell">65.3</td>
-                                    <td class="score-cell">77.0</td>
-                                    <td class="score-cell">66.4</td>
-                                    <td class="score-cell">69.5</td>
-                                    <td class="overall-score top" style="border-left: 2px solid var(--border-color)">76.8</td>
+                                    <td class="model-name miro">MiroThinker-H1</td>
+                                    <td class="score-cell best">76.6</td>
+                                    <td class="score-cell">81.1</td>
+                                    <td class="score-cell best">73.9</td>
+                                    <td class="score-cell best">77.2</td>
+                                    <td class="score-cell best">71.5</td>
+                                    <td class="score-cell best">78.5</td>
+                                    <td class="score-cell best">69.8</td>
+                                    <td class="score-cell best">73.3</td>
+                                    <td class="overall-score top" style="border-left: 2px solid var(--border-color)">76.0</td>
                                 </tr>
                                 <tr class="highlight">
                                     <td class="rank-cell"><span class="rank-badge rank-2">2</span></td>
-                                    <td class="model-name miro">MiroThinker-1.7</td>
-                                    <td class="score-cell">74.3</td>
-                                    <td class="score-cell">79.7</td>
-                                    <td class="score-cell best">72.7</td>
-                                    <td class="score-cell">75.6</td>
-                                    <td class="score-cell best">66.9</td>
-                                    <td class="score-cell best">78.4</td>
-                                    <td class="score-cell best">66.2</td>
-                                    <td class="score-cell best">70.5</td>
-                                    <td class="overall-score top" style="border-left: 2px solid var(--border-color)">74.0</td>
+                                    <td class="model-name">OpenAI Deep Research</td>
+                                    <td class="score-cell">73.8</td>
+                                    <td class="score-cell best">83.4</td>
+                                    <td class="score-cell">73.1</td>
+                                    <td class="score-cell">76.8</td>
+                                    <td class="score-cell">66.7</td>
+                                    <td class="score-cell">77.0</td>
+                                    <td class="score-cell">66.4</td>
+                                    <td class="score-cell">70.0</td>
+                                    <td class="overall-score top" style="border-left: 2px solid var(--border-color)">74.8</td>
                                 </tr>
                                 <tr class="highlight">
                                     <td class="rank-cell"><span class="rank-badge rank-3">3</span></td>
+                                    <td class="model-name miro">MiroThinker-1.7</td>
+                                    <td class="score-cell">74.3</td>
+                                    <td class="score-cell">79.7</td>
+                                    <td class="score-cell">72.7</td>
+                                    <td class="score-cell">75.6</td>
+                                    <td class="score-cell">69.0</td>
+                                    <td class="score-cell">78.4</td>
+                                    <td class="score-cell">66.2</td>
+                                    <td class="score-cell">71.2</td>
+                                    <td class="overall-score top" style="border-left: 2px solid var(--border-color)">74.3</td>
+                                </tr>
+                                <tr class="highlight">
+                                    <td class="rank-cell"><span class="rank-badge rank-other">4</span></td>
                                     <td class="model-name miro">MiroThinker-1.7-mini</td>
                                     <td class="score-cell">74.0</td>
                                     <td class="score-cell">76.4</td>
@@ -2027,20 +2040,20 @@
                                     <td class="overall-score" style="border-left: 2px solid var(--border-color)">–</td>
                                 </tr>
                                 <tr>
-                                    <td class="rank-cell"><span class="rank-badge rank-other">4</span></td>
+                                    <td class="rank-cell"><span class="rank-badge rank-other">5</span></td>
                                     <td class="model-name">Gemini-3.1-Pro Deep Research</td>
                                     <td class="score-cell">71.2</td>
                                     <td class="score-cell">71.7</td>
                                     <td class="score-cell">67.1</td>
                                     <td class="score-cell">70.0</td>
-                                    <td class="score-cell">63.9</td>
+                                    <td class="score-cell">66.4</td>
                                     <td class="score-cell">73.7</td>
                                     <td class="score-cell">63.6</td>
-                                    <td class="score-cell">67.1</td>
-                                    <td class="overall-score" style="border-left: 2px solid var(--border-color)">69.1</td>
+                                    <td class="score-cell">67.9</td>
+                                    <td class="overall-score" style="border-left: 2px solid var(--border-color)">69.4</td>
                                 </tr>
                                 <tr>
-                                    <td class="rank-cell"><span class="rank-badge rank-other">5</span></td>
+                                    <td class="rank-cell"><span class="rank-badge rank-other">6</span></td>
                                     <td class="model-name">Kimi-K2.5 Deep Research</td>
                                     <td class="score-cell">75.7</td>
                                     <td class="score-cell">66.7</td>
@@ -2053,59 +2066,72 @@
                                     <td class="overall-score" style="border-left: 2px solid var(--border-color)">–</td>
                                 </tr>
                                 <tr>
-                                    <td class="rank-cell"><span class="rank-badge rank-other">6</span></td>
+                                    <td class="rank-cell"><span class="rank-badge rank-other">7</span></td>
                                     <td class="model-name">MiniMax-M2.5 Research</td>
                                     <td class="score-cell">63.3</td>
                                     <td class="score-cell">73.4</td>
                                     <td class="score-cell">67.1</td>
                                     <td class="score-cell">67.9</td>
-                                    <td class="score-cell">53.1</td>
+                                    <td class="score-cell">56.8</td>
                                     <td class="score-cell">71.0</td>
                                     <td class="score-cell">60.7</td>
-                                    <td class="score-cell">61.6</td>
-                                    <td class="overall-score" style="border-left: 2px solid var(--border-color)">66.0</td>
+                                    <td class="score-cell">62.8</td>
+                                    <td class="overall-score" style="border-left: 2px solid var(--border-color)">66.4</td>
                                 </tr>
                                 <tr>
-                                    <td class="rank-cell"><span class="rank-badge rank-other">7</span></td>
+                                    <td class="rank-cell"><span class="rank-badge rank-other">8</span></td>
+                                    <td class="model-name">Claude-Opus-4.6 Research</td>
+                                    <td class="score-cell">67.3</td>
+                                    <td class="score-cell">69.5</td>
+                                    <td class="score-cell">66.7</td>
+                                    <td class="score-cell">67.8</td>
+                                    <td class="score-cell">62.5</td>
+                                    <td class="score-cell">70.7</td>
+                                    <td class="score-cell">66.0</td>
+                                    <td class="score-cell">66.4</td>
+                                    <td class="overall-score" style="border-left: 2px solid var(--border-color)">67.4</td>
+                                </tr>
+                                <tr>
+                                    <td class="rank-cell"><span class="rank-badge rank-other">9</span></td>
                                     <td class="model-name">ChatGLM Agent</td>
                                     <td class="score-cell">63.2</td>
                                     <td class="score-cell">72.4</td>
                                     <td class="score-cell">65.6</td>
                                     <td class="score-cell">67.1</td>
-                                    <td class="score-cell">59.0</td>
+                                    <td class="score-cell">61.6</td>
                                     <td class="score-cell">71.6</td>
                                     <td class="score-cell">56.3</td>
-                                    <td class="score-cell">62.3</td>
-                                    <td class="overall-score" style="border-left: 2px solid var(--border-color)">65.6</td>
+                                    <td class="score-cell">63.2</td>
+                                    <td class="overall-score" style="border-left: 2px solid var(--border-color)">65.9</td>
                                 </tr>
                                 <tr>
-                                    <td class="rank-cell"><span class="rank-badge rank-other">8</span></td>
+                                    <td class="rank-cell"><span class="rank-badge rank-other">10</span></td>
+                                    <td class="model-name">Manus-1.6-Max Wide Research</td>
+                                    <td class="score-cell">55.4</td>
+                                    <td class="score-cell">75.2</td>
+                                    <td class="score-cell">64.2</td>
+                                    <td class="score-cell">64.9</td>
+                                    <td class="score-cell">54.3</td>
+                                    <td class="score-cell">70.0</td>
+                                    <td class="score-cell">60.3</td>
+                                    <td class="score-cell">61.5</td>
+                                    <td class="overall-score" style="border-left: 2px solid var(--border-color)">63.9</td>
+                                </tr>
+                                <tr>
+                                    <td class="rank-cell"><span class="rank-badge rank-other">11</span></td>
                                     <td class="model-name">Qwen-3.5-Plus Deep Research</td>
                                     <td class="score-cell">60.0</td>
                                     <td class="score-cell">73.2</td>
                                     <td class="score-cell">61.1</td>
                                     <td class="score-cell">64.8</td>
-                                    <td class="score-cell">41.0</td>
+                                    <td class="score-cell">44.6</td>
                                     <td class="score-cell">69.9</td>
                                     <td class="score-cell">54.2</td>
-                                    <td class="score-cell">55.0</td>
-                                    <td class="overall-score" style="border-left: 2px solid var(--border-color)">61.8</td>
+                                    <td class="score-cell">56.2</td>
+                                    <td class="overall-score" style="border-left: 2px solid var(--border-color)">62.2</td>
                                 </tr>
                                 <tr>
-                                    <td class="rank-cell"><span class="rank-badge rank-other">9</span></td>
-                                    <td class="model-name">Claude-Opus-4.6 Research</td>
-                                    <td class="score-cell">67.3</td>
-                                    <td class="score-cell">69.5</td>
-                                    <td class="score-cell">55.1</td>
-                                    <td class="score-cell">64.0</td>
-                                    <td class="score-cell">63.1</td>
-                                    <td class="score-cell">70.7</td>
-                                    <td class="score-cell">45.2</td>
-                                    <td class="score-cell">59.7</td>
-                                    <td class="overall-score" style="border-left: 2px solid var(--border-color)">62.7</td>
-                                </tr>
-                                <tr>
-                                    <td class="rank-cell"><span class="rank-badge rank-other">10</span></td>
+                                    <td class="rank-cell"><span class="rank-badge rank-other">12</span></td>
                                     <td class="model-name">Doubao Deep Research</td>
                                     <td class="score-cell">64.2</td>
                                     <td class="score-cell">64.2</td>
@@ -2118,43 +2144,17 @@
                                     <td class="overall-score" style="border-left: 2px solid var(--border-color)">–</td>
                                 </tr>
                                 <tr>
-                                    <td class="rank-cell"><span class="rank-badge rank-other">11</span></td>
-                                    <td class="model-name">Manus-1.6-Max Wide Research</td>
-                                    <td class="score-cell">55.4</td>
-                                    <td class="score-cell">75.2</td>
-                                    <td class="score-cell na">–</td>
-                                    <td class="score-cell na">–</td>
-                                    <td class="score-cell">51.4</td>
-                                    <td class="score-cell">70.0</td>
-                                    <td class="score-cell">60.3</td>
-                                    <td class="score-cell">60.6</td>
-                                    <td class="overall-score" style="border-left: 2px solid var(--border-color)">–</td>
-                                </tr>
-                                <tr>
-                                    <td class="rank-cell"><span class="rank-badge rank-other">12</span></td>
+                                    <td class="rank-cell"><span class="rank-badge rank-other">13</span></td>
                                     <td class="model-name">Grok Deep Research</td>
                                     <td class="score-cell">58.7</td>
                                     <td class="score-cell">64.3</td>
-                                    <td class="score-cell na">–</td>
-                                    <td class="score-cell na">–</td>
-                                    <td class="score-cell">55.0</td>
+                                    <td class="score-cell">58.3</td>
+                                    <td class="score-cell">60.4</td>
+                                    <td class="score-cell">56.3</td>
                                     <td class="score-cell">71.5</td>
                                     <td class="score-cell">52.4</td>
-                                    <td class="score-cell">59.6</td>
-                                    <td class="overall-score" style="border-left: 2px solid var(--border-color)">–</td>
-                                </tr>
-                                <tr class="section-divider">
-                                    <td class="rank-cell">–</td>
-                                    <td class="model-name miro">MiroThinker-H1</td>
-                                    <td class="score-cell na">–</td>
-                                    <td class="score-cell na">–</td>
-                                    <td class="score-cell na">–</td>
-                                    <td class="score-cell na">–</td>
-                                    <td class="score-cell na">–</td>
-                                    <td class="score-cell na">–</td>
-                                    <td class="score-cell na">–</td>
-                                    <td class="score-cell na">–</td>
-                                    <td class="overall-score" style="border-left: 2px solid var(--border-color)">–</td>
+                                    <td class="score-cell">60.1</td>
+                                    <td class="overall-score" style="border-left: 2px solid var(--border-color)">60.3</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -2195,20 +2195,19 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td class="model-name">OpenAI Deep Research</td><td class="score-cell">78.0</td><td class="score-cell">74.0</td><td class="score-cell">82.0</td><td class="score-cell">77.0</td><td class="score-cell">68.6</td><td class="score-cell">69.7</td><td class="score-cell">64.4</td><td class="score-cell">71.2</td><td class="score-cell">68.4</td><td class="score-cell">52.4</td><td class="overall-score top" style="border-left: 2px solid var(--border-color)">73.8</td></tr>
-                                <tr class="highlight"><td class="model-name miro">MiroThinker-1.7</td><td class="score-cell">79.0</td><td class="score-cell">75.0</td><td class="score-cell">85.0</td><td class="score-cell">80.0</td><td class="score-cell best">68.2</td><td class="score-cell">69.5</td><td class="score-cell">69.2</td><td class="score-cell">77.0</td><td class="score-cell">72.3</td><td class="score-cell">51.4</td><td class="overall-score top" style="border-left: 2px solid var(--border-color)">74.3</td></tr>
-                                <tr class="highlight"><td class="model-name miro">MiroThinker-1.7-mini</td><td class="score-cell">79.0</td><td class="score-cell">75.0</td><td class="score-cell">84.0</td><td class="score-cell">79.0</td><td class="score-cell">68.0</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">74.0</td></tr>
-                                <tr class="highlight"><td class="model-name miro">MiroThinker-1.5</td><td class="score-cell">79.0</td><td class="score-cell">72.0</td><td class="score-cell best">84.0</td><td class="score-cell best">80.0</td><td class="score-cell">67.4</td><td class="score-cell">69.5</td><td class="score-cell">69.2</td><td class="score-cell">75.8</td><td class="score-cell">72.6</td><td class="score-cell">53.4</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">73.6</td></tr>
-                                <tr><td class="model-name">Gemini-3.1-Pro</td><td class="score-cell">77.0</td><td class="score-cell">77.0</td><td class="score-cell">80.0</td><td class="score-cell">70.0</td><td class="score-cell">64.9</td><td class="score-cell">69.1</td><td class="score-cell">71.8</td><td class="score-cell">66.7</td><td class="score-cell">60.4</td><td class="score-cell">46.5</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">71.2</td></tr>
-                                <tr><td class="model-name">Kimi-K2.5 Deep Research</td><td class="score-cell">80.0</td><td class="score-cell best">80.0</td><td class="score-cell">79.0</td><td class="score-cell">76.0</td><td class="score-cell">71.9</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">75.7</td></tr>
-                                <tr><td class="model-name">Claude-Opus-4.6</td><td class="score-cell">73.0</td><td class="score-cell">72.0</td><td class="score-cell">74.0</td><td class="score-cell">71.0</td><td class="score-cell">61.1</td><td class="score-cell">70.0</td><td class="score-cell">68.4</td><td class="score-cell">61.8</td><td class="score-cell">59.1</td><td class="score-cell">50.0</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">67.3</td></tr>
-                                <tr><td class="model-name">MiniMax-M2.5</td><td class="score-cell">70.0</td><td class="score-cell">63.0</td><td class="score-cell">74.0</td><td class="score-cell">71.0</td><td class="score-cell">56.1</td><td class="score-cell">59.4</td><td class="score-cell">48.5</td><td class="score-cell">64.2</td><td class="score-cell">59.6</td><td class="score-cell">37.7</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">63.3</td></tr>
-                                <tr><td class="model-name">ChatGLM Agent</td><td class="score-cell">70.0</td><td class="score-cell">63.0</td><td class="score-cell">75.0</td><td class="score-cell">68.0</td><td class="score-cell">56.8</td><td class="score-cell">64.7</td><td class="score-cell">56.5</td><td class="score-cell">69.5</td><td class="score-cell">63.4</td><td class="score-cell">42.1</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">63.2</td></tr>
-                                <tr><td class="model-name">Qwen-3.5-Plus</td><td class="score-cell">64.0</td><td class="score-cell">65.0</td><td class="score-cell">70.0</td><td class="score-cell">68.0</td><td class="score-cell">52.6</td><td class="score-cell">43.2</td><td class="score-cell">43.4</td><td class="score-cell">47.7</td><td class="score-cell">48.9</td><td class="score-cell">27.9</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">60.0</td></tr>
-                                <tr><td class="model-name">Manus-1.6-Max Wide</td><td class="score-cell">61.0</td><td class="score-cell">55.0</td><td class="score-cell">68.0</td><td class="score-cell">66.0</td><td class="score-cell">47.5</td><td class="score-cell">56.2</td><td class="score-cell">47.4</td><td class="score-cell">60.6</td><td class="score-cell">57.2</td><td class="score-cell">36.5</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">55.4</td></tr>
-                                <tr><td class="model-name">Doubao Deep Research</td><td class="score-cell">73.0</td><td class="score-cell">63.0</td><td class="score-cell">75.0</td><td class="score-cell">67.0</td><td class="score-cell">57.9</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">64.2</td></tr>
-                                <tr><td class="model-name">Grok Deep Research</td><td class="score-cell">67.0</td><td class="score-cell">56.0</td><td class="score-cell">75.0</td><td class="score-cell">65.0</td><td class="score-cell">58.7</td><td class="score-cell">63.6</td><td class="score-cell">50.6</td><td class="score-cell">65.6</td><td class="score-cell">57.0</td><td class="score-cell">38.2</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">58.7</td></tr>
-                                <tr class="highlight"><td class="model-name miro">MiroThinker-H1</td><td class="score-cell best">81.7</td><td class="score-cell">73.7</td><td class="score-cell">86.6</td><td class="score-cell">79.9</td><td class="score-cell">68.6</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">–</td></tr>
+                                <tr class="highlight"><td class="model-name miro">MiroThinker-H1</td><td class="score-cell best">80.6</td><td class="score-cell best">80.2</td><td class="score-cell best">85.3</td><td class="score-cell best">81.1</td><td class="score-cell">70.4</td><td class="score-cell best">72.7</td><td class="score-cell best">76.0</td><td class="score-cell best">78.6</td><td class="score-cell best">78.3</td><td class="score-cell best">55.0</td><td class="overall-score top" style="border-left: 2px solid var(--border-color)">76.6</td></tr>
+                                <tr><td class="model-name">Kimi-K2.5 Deep Research</td><td class="score-cell">80.4</td><td class="score-cell">79.8</td><td class="score-cell">78.6</td><td class="score-cell">76.3</td><td class="score-cell best">71.9</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score top" style="border-left: 2px solid var(--border-color)">75.7</td></tr>
+                                <tr class="highlight"><td class="model-name miro">MiroThinker-1.7</td><td class="score-cell">79.2</td><td class="score-cell">74.7</td><td class="score-cell">84.7</td><td class="score-cell">80.1</td><td class="score-cell">68.2</td><td class="score-cell">72.6</td><td class="score-cell">69.2</td><td class="score-cell best">78.6</td><td class="score-cell">75.1</td><td class="score-cell">50.0</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">74.3</td></tr>
+                                <tr class="highlight"><td class="model-name miro">MiroThinker-1.7-mini</td><td class="score-cell">78.8</td><td class="score-cell">75.0</td><td class="score-cell">84.4</td><td class="score-cell">78.7</td><td class="score-cell">68.0</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">74.0</td></tr>
+                                <tr><td class="model-name">OpenAI Deep Research</td><td class="score-cell">78.2</td><td class="score-cell">74.3</td><td class="score-cell">81.6</td><td class="score-cell">77.1</td><td class="score-cell">68.6</td><td class="score-cell">70.6</td><td class="score-cell">63.9</td><td class="score-cell">74.8</td><td class="score-cell">70.5</td><td class="score-cell">53.4</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">73.8</td></tr>
+                                <tr><td class="model-name">Gemini-3.1-Pro Deep Research</td><td class="score-cell">77.4</td><td class="score-cell">76.6</td><td class="score-cell">80.1</td><td class="score-cell">70.1</td><td class="score-cell">64.9</td><td class="score-cell">72.4</td><td class="score-cell">70.8</td><td class="score-cell">72.4</td><td class="score-cell">62.5</td><td class="score-cell">49.8</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">71.2</td></tr>
+                                <tr><td class="model-name">Claude-Opus-4.6 Research</td><td class="score-cell">73.3</td><td class="score-cell">72.0</td><td class="score-cell">73.5</td><td class="score-cell">71.2</td><td class="score-cell">61.1</td><td class="score-cell">68.9</td><td class="score-cell">66.8</td><td class="score-cell">62.8</td><td class="score-cell">59.3</td><td class="score-cell">50.7</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">67.3</td></tr>
+                                <tr><td class="model-name">Doubao Deep Research</td><td class="score-cell">72.9</td><td class="score-cell">62.8</td><td class="score-cell">74.6</td><td class="score-cell">67.2</td><td class="score-cell">57.9</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">64.2</td></tr>
+                                <tr><td class="model-name">ChatGLM Agent</td><td class="score-cell">69.9</td><td class="score-cell">62.8</td><td class="score-cell">74.5</td><td class="score-cell">67.5</td><td class="score-cell">56.8</td><td class="score-cell">67.1</td><td class="score-cell">60.2</td><td class="score-cell">71.7</td><td class="score-cell">65.4</td><td class="score-cell">44.1</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">63.2</td></tr>
+                                <tr><td class="model-name">MiniMax-M2.5 Research</td><td class="score-cell">69.8</td><td class="score-cell">62.7</td><td class="score-cell">74.2</td><td class="score-cell">70.6</td><td class="score-cell">56.1</td><td class="score-cell">63.1</td><td class="score-cell">53.3</td><td class="score-cell">69.1</td><td class="score-cell">62.0</td><td class="score-cell">38.9</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">63.3</td></tr>
+                                <tr><td class="model-name">Qwen-3.5-Plus Deep Research</td><td class="score-cell">64.0</td><td class="score-cell">64.7</td><td class="score-cell">69.9</td><td class="score-cell">67.8</td><td class="score-cell">52.6</td><td class="score-cell">46.8</td><td class="score-cell">46.3</td><td class="score-cell">52.9</td><td class="score-cell">52.6</td><td class="score-cell">27.6</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">60.0</td></tr>
+                                <tr><td class="model-name">Grok Deep Research</td><td class="score-cell">67.0</td><td class="score-cell">56.0</td><td class="score-cell">75.0</td><td class="score-cell">65.0</td><td class="score-cell">58.7</td><td class="score-cell">61.8</td><td class="score-cell">52.5</td><td class="score-cell">68.9</td><td class="score-cell">60.4</td><td class="score-cell">39.7</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">58.7</td></tr>
+                                <tr><td class="model-name">Manus-1.6-Max Wide Research</td><td class="score-cell">61.2</td><td class="score-cell">54.8</td><td class="score-cell">67.9</td><td class="score-cell">65.6</td><td class="score-cell">47.5</td><td class="score-cell">58.7</td><td class="score-cell">50.2</td><td class="score-cell">65.0</td><td class="score-cell">61.2</td><td class="score-cell">38.5</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">55.4</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -2243,18 +2242,19 @@
                             </thead>
                             <tbody>
                                 <tr><td class="model-name">OpenAI Deep Research</td><td class="score-cell">3335</td><td class="score-cell">170</td><td class="score-cell">–</td><td class="score-cell">496</td><td class="score-cell best">83.4</td><td class="score-cell">1062</td><td class="score-cell">100</td><td class="score-cell">36</td><td class="score-cell">157</td><td class="score-cell">77.0</td><td class="overall-score top" style="border-left: 2px solid var(--border-color)">83.4</td></tr>
-                                <tr class="highlight"><td class="model-name miro">MiroThinker-1.7</td><td class="score-cell best">3334</td><td class="score-cell best">181</td><td class="score-cell">–</td><td class="score-cell">670</td><td class="score-cell">79.7</td><td class="score-cell">1306</td><td class="score-cell">103</td><td class="score-cell">63</td><td class="score-cell">235</td><td class="score-cell">78.4</td><td class="overall-score top" style="border-left: 2px solid var(--border-color)">79.7</td></tr>
-                                <tr class="highlight"><td class="model-name miro">MiroThinker-1.7-mini</td><td class="score-cell">3397</td><td class="score-cell">246</td><td class="score-cell">–</td><td class="score-cell">802</td><td class="score-cell">76.4</td><td class="score-cell">1201</td><td class="score-cell">126</td><td class="score-cell">53</td><td class="score-cell">234</td><td class="score-cell">75.8</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">76.4</td></tr>
-                                <tr class="highlight"><td class="model-name miro">MiroThinker-1.5</td><td class="score-cell">3315</td><td class="score-cell">282</td><td class="score-cell">–</td><td class="score-cell">758</td><td class="score-cell">76.1</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">76.1</td></tr>
-                                <tr><td class="model-name">Manus-1.6-Max Wide</td><td class="score-cell">1972</td><td class="score-cell">191</td><td class="score-cell">–</td><td class="score-cell">459</td><td class="score-cell">75.2</td><td class="score-cell">681</td><td class="score-cell">81</td><td class="score-cell">32</td><td class="score-cell">134</td><td class="score-cell">70.0</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">75.2</td></tr>
-                                <tr><td class="model-name">MiniMax-M2.5</td><td class="score-cell">3872</td><td class="score-cell">486</td><td class="score-cell">–</td><td class="score-cell">921</td><td class="score-cell">73.4</td><td class="score-cell">1255</td><td class="score-cell">184</td><td class="score-cell">59</td><td class="score-cell">255</td><td class="score-cell">71.0</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">73.4</td></tr>
-                                <tr><td class="model-name">Qwen-3.5-Plus</td><td class="score-cell">1706</td><td class="score-cell">244</td><td class="score-cell">–</td><td class="score-cell">380</td><td class="score-cell">73.2</td><td class="score-cell">576</td><td class="score-cell">99</td><td class="score-cell">19</td><td class="score-cell">101</td><td class="score-cell">69.9</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">73.2</td></tr>
+                                <tr class="highlight"><td class="model-name miro">MiroThinker-H1</td><td class="score-cell">3746</td><td class="score-cell">161</td><td class="score-cell">–</td><td class="score-cell">673</td><td class="score-cell">81.1</td><td class="score-cell">1316</td><td class="score-cell">82</td><td class="score-cell">56</td><td class="score-cell">238</td><td class="score-cell best">78.5</td><td class="overall-score top" style="border-left: 2px solid var(--border-color)">81.1</td></tr>
+                                <tr class="highlight"><td class="model-name miro">MiroThinker-1.7</td><td class="score-cell">3334</td><td class="score-cell">181</td><td class="score-cell">–</td><td class="score-cell">670</td><td class="score-cell">79.7</td><td class="score-cell">1306</td><td class="score-cell">103</td><td class="score-cell">63</td><td class="score-cell">235</td><td class="score-cell">78.4</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">79.7</td></tr>
+                                <tr class="highlight"><td class="model-name miro">MiroThinker-1.7-mini</td><td class="score-cell">3397</td><td class="score-cell">246</td><td class="score-cell">–</td><td class="score-cell">802</td><td class="score-cell">76.4</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">76.4</td></tr>
+                                <tr><td class="model-name">Manus-1.6-Max Wide Research</td><td class="score-cell">1972</td><td class="score-cell">191</td><td class="score-cell">–</td><td class="score-cell">459</td><td class="score-cell">75.2</td><td class="score-cell">681</td><td class="score-cell">81</td><td class="score-cell">32</td><td class="score-cell">134</td><td class="score-cell">70.0</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">75.2</td></tr>
+                                <tr><td class="model-name">MiniMax-M2.5 Research</td><td class="score-cell">3872</td><td class="score-cell">486</td><td class="score-cell">–</td><td class="score-cell">921</td><td class="score-cell">73.4</td><td class="score-cell">1255</td><td class="score-cell">184</td><td class="score-cell">59</td><td class="score-cell">255</td><td class="score-cell">71.0</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">73.4</td></tr>
+                                <tr><td class="model-name">Qwen-3.5-Plus Deep Research</td><td class="score-cell">1706</td><td class="score-cell">244</td><td class="score-cell">–</td><td class="score-cell">380</td><td class="score-cell">73.2</td><td class="score-cell">576</td><td class="score-cell">99</td><td class="score-cell">19</td><td class="score-cell">101</td><td class="score-cell">69.9</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">73.2</td></tr>
+
                                 <tr><td class="model-name">ChatGLM Agent</td><td class="score-cell">4096</td><td class="score-cell">580</td><td class="score-cell">–</td><td class="score-cell">981</td><td class="score-cell">72.4</td><td class="score-cell">1038</td><td class="score-cell">144</td><td class="score-cell">46</td><td class="score-cell">215</td><td class="score-cell">71.6</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">72.4</td></tr>
-                                <tr><td class="model-name">Gemini-3.1-Pro</td><td class="score-cell">4039</td><td class="score-cell">526</td><td class="score-cell">–</td><td class="score-cell">1068</td><td class="score-cell">71.7</td><td class="score-cell">1502</td><td class="score-cell">158</td><td class="score-cell">94</td><td class="score-cell">302</td><td class="score-cell">73.7</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">71.7</td></tr>
-                                <tr><td class="model-name">Claude-Opus-4.6</td><td class="score-cell">2838</td><td class="score-cell">338</td><td class="score-cell">–</td><td class="score-cell">910</td><td class="score-cell">69.5</td><td class="score-cell">964</td><td class="score-cell">84</td><td class="score-cell">44</td><td class="score-cell">243</td><td class="score-cell">70.7</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">69.5</td></tr>
+                                <tr><td class="model-name">Gemini-3.1-Pro Deep Research</td><td class="score-cell">4039</td><td class="score-cell">526</td><td class="score-cell">–</td><td class="score-cell">1068</td><td class="score-cell">71.7</td><td class="score-cell">1502</td><td class="score-cell">158</td><td class="score-cell">94</td><td class="score-cell">302</td><td class="score-cell">73.7</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">71.7</td></tr>
+                                <tr><td class="model-name">Claude-Opus-4.6 Research</td><td class="score-cell">2838</td><td class="score-cell">338</td><td class="score-cell">–</td><td class="score-cell">910</td><td class="score-cell">69.5</td><td class="score-cell">964</td><td class="score-cell">84</td><td class="score-cell">44</td><td class="score-cell">243</td><td class="score-cell">70.7</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">69.5</td></tr>
                                 <tr><td class="model-name">Kimi-K2.5 Deep Research</td><td class="score-cell">3702</td><td class="score-cell">595</td><td class="score-cell">–</td><td class="score-cell">1256</td><td class="score-cell">66.7</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">66.7</td></tr>
-                                <tr><td class="model-name">Doubao Deep Research</td><td class="score-cell">3890</td><td class="score-cell">780</td><td class="score-cell">–</td><td class="score-cell">1393</td><td class="score-cell">64.2</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">64.2</td></tr>
                                 <tr><td class="model-name">Grok Deep Research</td><td class="score-cell">1924</td><td class="score-cell">368</td><td class="score-cell">–</td><td class="score-cell">699</td><td class="score-cell">64.3</td><td class="score-cell">734</td><td class="score-cell">104</td><td class="score-cell">37</td><td class="score-cell">163</td><td class="score-cell">71.5</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">64.3</td></tr>
+                                <tr><td class="model-name">Doubao Deep Research</td><td class="score-cell">3890</td><td class="score-cell">780</td><td class="score-cell">–</td><td class="score-cell">1393</td><td class="score-cell">64.2</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">64.2</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -2270,15 +2270,15 @@
                             <thead>
                                 <tr>
                                     <th rowspan="3">Model</th>
-                                    <th colspan="9" class="table-header-group">Text-Only</th>
-                                    <th colspan="9" class="table-header-group">MultiModal</th>
+                                    <th colspan="10" class="table-header-group">Text-Only</th>
+                                    <th colspan="10" class="table-header-group">MultiModal</th>
                                     <th rowspan="3" class="text-center" style="border-left: 2px solid var(--border-color)">Overall</th>
                                 </tr>
                                 <tr>
                                     <th colspan="6" class="table-header-group" style="font-size:0.7rem; padding:4px 8px;">Intrinsic</th>
-                                    <th colspan="3" class="table-header-group" style="font-size:0.7rem; padding:4px 8px;">Alignment</th>
+                                    <th colspan="4" class="table-header-group" style="font-size:0.7rem; padding:4px 8px;">Alignment</th>
                                     <th colspan="6" class="table-header-group" style="font-size:0.7rem; padding:4px 8px;">Intrinsic</th>
-                                    <th colspan="3" class="table-header-group" style="font-size:0.7rem; padding:4px 8px;">Alignment</th>
+                                    <th colspan="4" class="table-header-group" style="font-size:0.7rem; padding:4px 8px;">Alignment</th>
                                 </tr>
                                 <tr class="sub-header">
                                     <th class="text-center">Brdth</th>
@@ -2289,6 +2289,7 @@
                                     <th class="text-center">Avg</th>
                                     <th class="text-center">F&#8594;R</th>
                                     <th class="text-center">R&#8594;P</th>
+                                    <th class="text-center">Contr</th>
                                     <th class="text-center">Avg</th>
                                     <th class="text-center">Brdth</th>
                                     <th class="text-center">Depth</th>
@@ -2298,28 +2299,29 @@
                                     <th class="text-center">Avg</th>
                                     <th class="text-center">F&#8594;R</th>
                                     <th class="text-center">R&#8594;P</th>
+                                    <th class="text-center">Contr</th>
                                     <th class="text-center">Avg</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td class="model-name">OpenAI Deep Research</td><td class="score-cell best">77.4</td><td class="score-cell">67.3</td><td class="score-cell best">76.7</td><td class="score-cell best">74.7</td><td class="score-cell">63.7</td><td class="score-cell best">72.0</td><td class="score-cell">83.6</td><td class="score-cell">59.0</td><td class="score-cell best">74.1</td><td class="score-cell">65.5</td><td class="score-cell">62.1</td><td class="score-cell">73.8</td><td class="score-cell">70.0</td><td class="score-cell">54.5</td><td class="score-cell">65.2</td><td class="score-cell">77.2</td><td class="score-cell">56.2</td><td class="score-cell">68.5</td><td class="overall-score top" style="border-left: 2px solid var(--border-color)">73.1</td></tr>
-                                <tr class="highlight"><td class="model-name miro">MiroThinker-1.7</td><td class="score-cell">74.4</td><td class="score-cell best">64.4</td><td class="score-cell">75.7</td><td class="score-cell">71.6</td><td class="score-cell best">64.6</td><td class="score-cell">70.1</td><td class="score-cell best">83.7</td><td class="score-cell best">59.4</td><td class="score-cell">75.2</td><td class="score-cell">65.0</td><td class="score-cell">57.0</td><td class="score-cell">72.0</td><td class="score-cell">63.0</td><td class="score-cell">57.7</td><td class="score-cell">62.9</td><td class="score-cell">80.7</td><td class="score-cell">58.7</td><td class="score-cell">71.8</td><td class="overall-score top" style="border-left: 2px solid var(--border-color)">72.7</td></tr>
-                                <tr class="highlight"><td class="model-name miro">MiroThinker-1.7-mini</td><td class="score-cell">75.5</td><td class="score-cell">56.3</td><td class="score-cell">71.3</td><td class="score-cell">70.9</td><td class="score-cell">59.0</td><td class="score-cell">60.6</td><td class="score-cell">79.7</td><td class="score-cell">56.3</td><td class="score-cell">70.4</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">68.5</td></tr>
-                                <tr class="highlight"><td class="model-name miro">MiroThinker-1.5</td><td class="score-cell">75.7</td><td class="score-cell">57.2</td><td class="score-cell">69.0</td><td class="score-cell">69.6</td><td class="score-cell">60.7</td><td class="score-cell">66.4</td><td class="score-cell">79.1</td><td class="score-cell">56.6</td><td class="score-cell">70.2</td><td class="score-cell">64.0</td><td class="score-cell">55.0</td><td class="score-cell">68.3</td><td class="score-cell">59.7</td><td class="score-cell">60.0</td><td class="score-cell">61.4</td><td class="score-cell">80.0</td><td class="score-cell">57.0</td><td class="score-cell">72.3</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">68.3</td></tr>
-                                <tr><td class="model-name">Gemini-3.1-Pro</td><td class="score-cell">75.4</td><td class="score-cell">66.6</td><td class="score-cell">75.9</td><td class="score-cell">64.1</td><td class="score-cell">59.0</td><td class="score-cell">68.2</td><td class="score-cell">72.9</td><td class="score-cell">50.6</td><td class="score-cell">66.0</td><td class="score-cell">69.7</td><td class="score-cell">65.3</td><td class="score-cell">71.0</td><td class="score-cell">58.3</td><td class="score-cell">47.0</td><td class="score-cell">62.3</td><td class="score-cell">75.7</td><td class="score-cell">49.0</td><td class="score-cell">65.9</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">67.1</td></tr>
-                                <tr><td class="model-name">MiniMax-M2.5</td><td class="score-cell">71.9</td><td class="score-cell">62.2</td><td class="score-cell">70.3</td><td class="score-cell">62.5</td><td class="score-cell">63.5</td><td class="score-cell">66.0</td><td class="score-cell">77.4</td><td class="score-cell">53.0</td><td class="score-cell">68.3</td><td class="score-cell">51.0</td><td class="score-cell">59.0</td><td class="score-cell">65.0</td><td class="score-cell">43.7</td><td class="score-cell">63.0</td><td class="score-cell">56.3</td><td class="score-cell">77.0</td><td class="score-cell">52.0</td><td class="score-cell">68.0</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">67.1</td></tr>
-                                <tr><td class="model-name">ChatGLM Agent</td><td class="score-cell">76.2</td><td class="score-cell">59.4</td><td class="score-cell">67.1</td><td class="score-cell">59.3</td><td class="score-cell">59.0</td><td class="score-cell">64.2</td><td class="score-cell">77.1</td><td class="score-cell">51.4</td><td class="score-cell">67.0</td><td class="score-cell">52.7</td><td class="score-cell">52.3</td><td class="score-cell">55.7</td><td class="score-cell">44.7</td><td class="score-cell">54.3</td><td class="score-cell">51.9</td><td class="score-cell">73.0</td><td class="score-cell">47.0</td><td class="score-cell">63.6</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">65.6</td></tr>
-                                <tr><td class="model-name">Kimi-K2.5 Deep Research</td><td class="score-cell">77.5</td><td class="score-cell">59.4</td><td class="score-cell">71.0</td><td class="score-cell">67.6</td><td class="score-cell">53.5</td><td class="score-cell">65.8</td><td class="score-cell">70.7</td><td class="score-cell">46.8</td><td class="score-cell">62.6</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">64.2</td></tr>
-                                <tr><td class="model-name">Qwen-3.5-Plus</td><td class="score-cell">74.4</td><td class="score-cell">64.1</td><td class="score-cell">75.0</td><td class="score-cell">74.1</td><td class="score-cell">65.2</td><td class="score-cell">70.2</td><td class="score-cell">59.6</td><td class="score-cell">39.7</td><td class="score-cell">52.1</td><td class="score-cell">57.0</td><td class="score-cell">51.3</td><td class="score-cell">58.7</td><td class="score-cell">57.7</td><td class="score-cell">51.3</td><td class="score-cell">55.2</td><td class="score-cell">61.7</td><td class="score-cell">39.3</td><td class="score-cell">52.4</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">61.1</td></tr>
-                                <tr><td class="model-name">Claude-Opus-4.6</td><td class="score-cell">74.3</td><td class="score-cell">42.6</td><td class="score-cell">51.7</td><td class="score-cell">47.0</td><td class="score-cell">55.7</td><td class="score-cell">54.3</td><td class="score-cell">68.8</td><td class="score-cell">37.2</td><td class="score-cell">55.9</td><td class="score-cell">74.8</td><td class="score-cell">28.8</td><td class="score-cell">38.8</td><td class="score-cell">29.2</td><td class="score-cell">42.8</td><td class="score-cell">42.9</td><td class="score-cell">59.6</td><td class="score-cell">30.8</td><td class="score-cell">49.2</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">55.1</td></tr>
-                                <tr><td class="model-name">Manus-1.6-Max Wide</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell">52.4</td><td class="score-cell">57.2</td><td class="score-cell">60.7</td><td class="score-cell">43.4</td><td class="score-cell">65.9</td><td class="score-cell">55.9</td><td class="score-cell">74.5</td><td class="score-cell">54.5</td><td class="score-cell">67.7</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">–</td></tr>
-                                <tr><td class="model-name">Grok Deep Research</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell">41.9</td><td class="score-cell">44.3</td><td class="score-cell">52.4</td><td class="score-cell">42.4</td><td class="score-cell">59.5</td><td class="score-cell">48.1</td><td class="score-cell">72.4</td><td class="score-cell">41.4</td><td class="score-cell">59.7</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">–</td></tr>
-                                <tr><td class="model-name">Doubao Deep Research</td><td class="score-cell">59.3</td><td class="score-cell">41.6</td><td class="score-cell">59.6</td><td class="score-cell">55.7</td><td class="score-cell">53.3</td><td class="score-cell">53.9</td><td class="score-cell">65.7</td><td class="score-cell">36.8</td><td class="score-cell">52.2</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">53.1</td></tr>
+                                <tr class="highlight"><td class="model-name miro">MiroThinker-H1</td><td class="score-cell">75.1</td><td class="score-cell">64.3</td><td class="score-cell">74.0</td><td class="score-cell">69.0</td><td class="score-cell">68.1</td><td class="score-cell">70.1</td><td class="score-cell best">87.4</td><td class="score-cell best">64.6</td><td class="score-cell best">88.4</td><td class="score-cell best">80.1</td><td class="score-cell">66.7</td><td class="score-cell">60.7</td><td class="score-cell">73.0</td><td class="score-cell">62.3</td><td class="score-cell">60.7</td><td class="score-cell">64.7</td><td class="score-cell best">82.0</td><td class="score-cell best">61.7</td><td class="score-cell best">81.0</td><td class="score-cell best">74.9</td><td class="overall-score top" style="border-left: 2px solid var(--border-color)">75.1</td></tr>
+                                <tr><td class="model-name">OpenAI Deep Research</td><td class="score-cell">77.4</td><td class="score-cell best">67.3</td><td class="score-cell best">76.7</td><td class="score-cell best">74.7</td><td class="score-cell">63.7</td><td class="score-cell best">72.0</td><td class="score-cell">83.6</td><td class="score-cell">59.0</td><td class="score-cell">79.9</td><td class="score-cell">74.1</td><td class="score-cell">65.5</td><td class="score-cell">62.1</td><td class="score-cell best">73.8</td><td class="score-cell best">70.0</td><td class="score-cell">54.5</td><td class="score-cell best">65.2</td><td class="score-cell">77.2</td><td class="score-cell">56.2</td><td class="score-cell">72.1</td><td class="score-cell">68.5</td><td class="overall-score top" style="border-left: 2px solid var(--border-color)">73.1</td></tr>
+                                <tr class="highlight"><td class="model-name miro">MiroThinker-1.7</td><td class="score-cell">74.4</td><td class="score-cell">64.4</td><td class="score-cell">75.7</td><td class="score-cell">71.6</td><td class="score-cell">64.6</td><td class="score-cell">70.1</td><td class="score-cell">83.7</td><td class="score-cell">59.4</td><td class="score-cell">82.5</td><td class="score-cell">75.2</td><td class="score-cell">65.0</td><td class="score-cell">57.0</td><td class="score-cell">72.0</td><td class="score-cell">63.0</td><td class="score-cell">57.7</td><td class="score-cell">62.9</td><td class="score-cell">80.7</td><td class="score-cell">58.7</td><td class="score-cell">76.0</td><td class="score-cell">71.8</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">72.7</td></tr>
+                                <tr class="highlight"><td class="model-name miro">MiroThinker-1.7-mini</td><td class="score-cell">75.5</td><td class="score-cell">56.3</td><td class="score-cell">71.3</td><td class="score-cell">70.9</td><td class="score-cell">59.0</td><td class="score-cell">66.6</td><td class="score-cell">79.7</td><td class="score-cell">56.3</td><td class="score-cell">75.2</td><td class="score-cell">70.4</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">68.5</td></tr>
+                                <tr><td class="model-name">Gemini-3.1-Pro Deep Research</td><td class="score-cell">75.4</td><td class="score-cell">66.6</td><td class="score-cell">75.9</td><td class="score-cell">64.1</td><td class="score-cell">59.0</td><td class="score-cell">68.2</td><td class="score-cell">72.9</td><td class="score-cell">50.6</td><td class="score-cell">74.4</td><td class="score-cell">66.0</td><td class="score-cell">69.7</td><td class="score-cell best">65.3</td><td class="score-cell">71.0</td><td class="score-cell">58.3</td><td class="score-cell">47.0</td><td class="score-cell">62.3</td><td class="score-cell">75.7</td><td class="score-cell">49.0</td><td class="score-cell">73.0</td><td class="score-cell">65.9</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">67.1</td></tr>
+                                <tr><td class="model-name">MiniMax-M2.5 Research</td><td class="score-cell">71.9</td><td class="score-cell">62.2</td><td class="score-cell">70.1</td><td class="score-cell">62.5</td><td class="score-cell">63.5</td><td class="score-cell">66.0</td><td class="score-cell">77.4</td><td class="score-cell">53.0</td><td class="score-cell">74.3</td><td class="score-cell">68.3</td><td class="score-cell">51.0</td><td class="score-cell">59.0</td><td class="score-cell">65.0</td><td class="score-cell">43.7</td><td class="score-cell">63.0</td><td class="score-cell">56.3</td><td class="score-cell">77.0</td><td class="score-cell">52.0</td><td class="score-cell">75.0</td><td class="score-cell">68.0</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">67.1</td></tr>
+                                <tr><td class="model-name">Claude-Opus-4.6 Research</td><td class="score-cell best">79.6</td><td class="score-cell">59.6</td><td class="score-cell">67.9</td><td class="score-cell">57.2</td><td class="score-cell">62.8</td><td class="score-cell">65.4</td><td class="score-cell">82.1</td><td class="score-cell">47.6</td><td class="score-cell">74.4</td><td class="score-cell">68.0</td><td class="score-cell best">75.2</td><td class="score-cell">60.7</td><td class="score-cell">69.6</td><td class="score-cell">59.3</td><td class="score-cell">60.0</td><td class="score-cell">65.0</td><td class="score-cell">78.9</td><td class="score-cell">49.3</td><td class="score-cell">72.6</td><td class="score-cell">66.9</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">66.7</td></tr>
+                                <tr><td class="model-name">ChatGLM Agent</td><td class="score-cell">76.2</td><td class="score-cell">59.4</td><td class="score-cell">67.1</td><td class="score-cell">59.3</td><td class="score-cell">59.0</td><td class="score-cell">64.2</td><td class="score-cell">77.1</td><td class="score-cell">51.4</td><td class="score-cell">72.3</td><td class="score-cell">67.0</td><td class="score-cell">52.7</td><td class="score-cell">52.3</td><td class="score-cell">55.7</td><td class="score-cell">44.7</td><td class="score-cell">54.3</td><td class="score-cell">51.9</td><td class="score-cell">73.0</td><td class="score-cell">47.0</td><td class="score-cell">70.7</td><td class="score-cell">63.6</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">65.6</td></tr>
+                                <tr><td class="model-name">Kimi-K2.5 Deep Research</td><td class="score-cell">77.5</td><td class="score-cell">59.4</td><td class="score-cell">71.0</td><td class="score-cell">67.6</td><td class="score-cell">53.5</td><td class="score-cell">65.8</td><td class="score-cell">70.7</td><td class="score-cell">46.8</td><td class="score-cell">70.4</td><td class="score-cell">62.6</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">64.2</td></tr>
+                                <tr><td class="model-name">Manus-1.6-Max Wide Research</td><td class="score-cell">62.8</td><td class="score-cell">58.4</td><td class="score-cell">60.6</td><td class="score-cell">53.5</td><td class="score-cell best">68.6</td><td class="score-cell">60.8</td><td class="score-cell">75.1</td><td class="score-cell">51.3</td><td class="score-cell">76.3</td><td class="score-cell">67.6</td><td class="score-cell">52.4</td><td class="score-cell">57.2</td><td class="score-cell">60.7</td><td class="score-cell">43.4</td><td class="score-cell best">65.9</td><td class="score-cell">55.9</td><td class="score-cell">74.5</td><td class="score-cell">54.5</td><td class="score-cell">74.1</td><td class="score-cell">67.7</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">64.2</td></tr>
+                                <tr><td class="model-name">Qwen-3.5-Plus Deep Research</td><td class="score-cell">74.4</td><td class="score-cell">64.1</td><td class="score-cell">75.0</td><td class="score-cell">74.1</td><td class="score-cell">63.2</td><td class="score-cell">70.2</td><td class="score-cell">59.6</td><td class="score-cell">39.7</td><td class="score-cell">56.9</td><td class="score-cell">52.1</td><td class="score-cell">57.0</td><td class="score-cell">51.3</td><td class="score-cell">58.7</td><td class="score-cell">57.7</td><td class="score-cell">51.3</td><td class="score-cell">55.2</td><td class="score-cell">61.7</td><td class="score-cell">39.3</td><td class="score-cell">56.3</td><td class="score-cell">52.4</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">61.1</td></tr>
+                                <tr><td class="model-name">Grok Deep Research</td><td class="score-cell">50.9</td><td class="score-cell">49.4</td><td class="score-cell">61.0</td><td class="score-cell">54.6</td><td class="score-cell">64.7</td><td class="score-cell">56.1</td><td class="score-cell">74.6</td><td class="score-cell">42.2</td><td class="score-cell">64.6</td><td class="score-cell">60.4</td><td class="score-cell">41.9</td><td class="score-cell">44.3</td><td class="score-cell">52.4</td><td class="score-cell">42.4</td><td class="score-cell">59.5</td><td class="score-cell">48.1</td><td class="score-cell">72.4</td><td class="score-cell">41.4</td><td class="score-cell">65.2</td><td class="score-cell">59.7</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">58.3</td></tr>
+                                <tr><td class="model-name">Doubao Deep Research</td><td class="score-cell">59.3</td><td class="score-cell">41.6</td><td class="score-cell">59.6</td><td class="score-cell">55.7</td><td class="score-cell">53.3</td><td class="score-cell">53.9</td><td class="score-cell">65.7</td><td class="score-cell">36.8</td><td class="score-cell">54.2</td><td class="score-cell">52.2</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="score-cell na">–</td><td class="overall-score" style="border-left: 2px solid var(--border-color)">53.1</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <p class="table-note">Table 5: Process evaluation results. Intrinsic metrics: Search Breadth, Analytical Depth, Progressive Refinement, Critical Thinking, and Efficiency. Alignment metrics: Findings&#8594;Report coverage, Report&#8594;Process traceability. Text-Only comprises 70 tasks; MultiModal comprises 30 tasks. "–" indicates data is unavailable.</p>
+                <p class="table-note">Table 5: Process evaluation results. Intrinsic metrics: Search Breadth, Analytical Depth, Progressive Refinement, Critical Thinking, and Efficiency. Alignment metrics: Findings&#8594;Report coverage, Report&#8594;Process traceability, and Contribution. Text-Only comprises 70 tasks; MultiModal comprises 30 tasks. "–" indicates data is unavailable.</p>
             </div>
 
             <!-- ===== Analysis Tab ===== -->
@@ -2337,7 +2339,7 @@
                 <div class="analysis-finding">
                     <div class="finding-num">Finding 02</div>
                     <h3>Strong Output ≠ Strong Process</h3>
-                    <p>Claude-Opus-4.6 produces reports of reasonable quality (67.3) but its Process score (55.1) is among the lowest, revealing that a polished report can mask a weak research procedure. The gap between Findings→Report coverage and Report→Process traceability further highlights this disconnect.</p>
+                    <p>Claude-Opus-4.6 shows the largest gap between Findings→Report coverage (82.1) and Report→Process traceability (47.6), a 34.5-point disconnect revealing that polished reports can mask weak research grounding. This pattern persists across both Text-Only and Multimodal settings.</p>
                     <div class="pipeline-figure" style="margin-top: 20px;">
                         <iframe src="fingers/fig2b_fr_rp_dumbbell.html" title="Process-Report Alignment Gap" style="display:block; width:100%; height:525px; border:none; border-radius:8px; background:transparent;" allowtransparency="true"></iframe>
                         <p class="figure-caption">F→R vs. R→P: Process-Report Alignment Gap — Dumbbell chart comparing Findings→Report coverage and Report→Process traceability across Text-Only and Multimodal settings.</p>
@@ -2357,7 +2359,7 @@
                 <div class="analysis-finding">
                     <div class="finding-num">Finding 04</div>
                     <h3>Precision-Volume Trade-off in Factuality</h3>
-                    <p>ChatGLM Agent generates the most claims (4,096 right) but also the most wrong ones (580). MiroThinker-1.7 achieves balance: 3,334 right claims with only 181 wrong — the fewest among top systems.</p>
+                    <p>ChatGLM Agent generates the most claims (4,096 right) but also the most wrong ones (580). MiroThinker-H1 achieves the best balance: 3,746 right claims with only 161 wrong — the fewest among all systems.</p>
                     <div class="pipeline-figure" style="margin-top: 20px;">
                         <iframe src="fingers/heatmap_table.html" title="Heatmap Table" style="width:100%; height:700px; border:none; border-radius:8px; background:transparent;" allowtransparency="true"></iframe>
                         <p class="figure-caption">Precision-Volume Trade-off — Heatmap showing claim counts and accuracy across all evaluated systems.</p>

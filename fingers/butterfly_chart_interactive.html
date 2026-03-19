@@ -238,6 +238,10 @@ body {
 <!-- Legend -->
 <div class="legend">
   <div class="legend-item">
+    <span class="legend-swatch" style="background:#6B9E74;"></span>
+    H1 = MiroThinker-H1 (Ours)
+  </div>
+  <div class="legend-item">
     <span class="legend-swatch" style="background:#8FB396;"></span>
     v1.7 = MiroThinker-1.7 (Ours)
   </div>
@@ -262,14 +266,14 @@ body {
 // ══════════════════════════════════════════════════════════════
 const DATA = {
   "Text-Only": {
-    "Report": {"MiroThinker-1.7":74.3,"MiroThinker-1.7-mini":74.0,"OpenAI":73.8,"Gemini":71.2,"Claude":67.3,"ChatGLM":63.2,"MiniMax":63.3,"Doubao":64.2,"Qwen":60.0,"Grok":58.7,"Manus":55.4},
-    "Factuality": {"MiroThinker-1.7":79.7,"MiroThinker-1.7-mini":76.4,"OpenAI":83.4,"Gemini":71.7,"Claude":69.5,"ChatGLM":72.4,"MiniMax":73.4,"Doubao":64.2,"Qwen":73.2,"Grok":64.3,"Manus":75.2},
-    "Process": {"MiroThinker-1.7":72.7,"MiroThinker-1.7-mini":68.5,"OpenAI":73.1,"Gemini":67.1,"Claude":55.1,"ChatGLM":65.6,"MiniMax":67.1,"Doubao":61.1,"Qwen":53.1}
+    "Report": {"MiroThinker-H1":76.6,"MiroThinker-1.7":74.3,"MiroThinker-1.7-mini":74.0,"Kimi":75.7,"OpenAI":73.8,"Gemini":71.2,"Claude":67.3,"Doubao":64.2,"MiniMax":63.3,"ChatGLM":63.2,"Qwen":60.0,"Grok":58.7,"DeepSeek":57.4,"Manus":55.4},
+    "Factuality": {"MiroThinker-H1":81.1,"MiroThinker-1.7":79.7,"MiroThinker-1.7-mini":76.4,"OpenAI":83.4,"Kimi":66.7,"Gemini":71.7,"Claude":69.5,"MiniMax":73.4,"ChatGLM":72.4,"Qwen":73.2,"Manus":75.2,"DeepSeek":73.0,"Doubao":64.2,"Grok":64.3},
+    "Process": {"MiroThinker-H1":75.1,"MiroThinker-1.7":72.7,"MiroThinker-1.7-mini":68.5,"OpenAI":73.1,"Kimi":64.2,"Gemini":67.1,"Claude":66.7,"MiniMax":67.1,"ChatGLM":65.6,"Manus":64.2,"Qwen":61.1,"Grok":58.3,"Doubao":53.1}
   },
   "MultiModal": {
-    "Report": {"MiroThinker-1.7":66.9,"OpenAI":65.3,"Gemini":63.9,"Claude":63.1,"ChatGLM":59.0,"MiniMax":53.1,"Grok":55.0,"Manus":51.4,"Qwen":41.0},
-    "Factuality": {"MiroThinker-1.7":78.4,"OpenAI":77.0,"Gemini":73.7,"Claude":70.7,"ChatGLM":71.6,"MiniMax":71.0,"Grok":71.5,"Manus":70.0,"Qwen":69.9},
-    "Process": {"MiroThinker-1.7":66.2,"OpenAI":66.4,"Gemini":63.6,"MiniMax":60.7,"Manus":60.3,"ChatGLM":56.3,"Qwen":54.2,"Grok":52.4,"Claude":45.2}
+    "Report": {"MiroThinker-H1":71.5,"MiroThinker-1.7":69.0,"OpenAI":66.7,"Gemini":66.4,"Claude":62.5,"ChatGLM":61.6,"MiniMax":56.8,"Grok":56.3,"Manus":54.3,"Qwen":44.6},
+    "Factuality": {"MiroThinker-H1":78.5,"MiroThinker-1.7":78.4,"OpenAI":77.0,"Gemini":73.7,"ChatGLM":71.6,"Grok":71.5,"MiniMax":71.0,"Claude":70.7,"Manus":70.0,"Qwen":69.9},
+    "Process": {"MiroThinker-H1":69.8,"MiroThinker-1.7":66.2,"OpenAI":66.4,"Claude":66.0,"Gemini":63.6,"MiniMax":60.7,"Manus":60.3,"ChatGLM":56.3,"Qwen":54.2,"Grok":52.4}
   }
 };
 
@@ -277,27 +281,33 @@ const DIMS = ["Report", "Factuality", "Process"];
 const MODALITIES = ["Text-Only", "MultiModal"];
 
 const MODEL_COLORS = {
+  "MiroThinker-H1":       "#6B9E74",
   "MiroThinker-1.7":      "#8FB396",
   "MiroThinker-1.7-mini": "#B0C8B0",
   "OpenAI":               "#C8C8C8",
-  "Gemini":               "#D5D5D5",
-  "Claude":               "#D7D7D7",
-  "ChatGLM":              "#D9D9D9",
-  "MiniMax":              "#DBDBDB",
-  "Doubao":               "#DCDCDC",
-  "Qwen":                 "#DEDEDE",
-  "Grok":                 "#DFDFDF",
-  "Manus":                "#E1E1E1",
+  "Kimi":                 "#CCCCCC",
+  "Gemini":               "#D0D0D0",
+  "Claude":               "#D4D4D4",
+  "ChatGLM":              "#D7D7D7",
+  "MiniMax":              "#DADADA",
+  "DeepSeek":             "#DCDCDC",
+  "Doubao":               "#DEDEDE",
+  "Qwen":                 "#E0E0E0",
+  "Grok":                 "#E1E1E1",
+  "Manus":                "#E3E3E3",
 };
 
 const LOGO_MAP = {
+  "MiroThinker-H1": "miromind.png",
   "MiroThinker-1.7": "miromind.png",
   "MiroThinker-1.7-mini": "miromind.png",
   "OpenAI": "openai.png",
+  "Kimi": "kimi.png",
   "Gemini": "google.png",
   "Claude": "anthropic.jpg",
   "ChatGLM": "zhipu.png",
   "MiniMax": "minimax.png",
+  "DeepSeek": "deepseek.png",
   "Qwen": "tongyi.png",
   "Grok": "grok.png",
   "Manus": "manus.png",
@@ -305,6 +315,7 @@ const LOGO_MAP = {
 };
 
 const DISPLAY_NAMES = {
+  "MiroThinker-H1": "H1",
   "MiroThinker-1.7": "v1.7",
   "MiroThinker-1.7-mini": "v1.7-mini",
 };
@@ -331,7 +342,7 @@ let hoveredModel = null;
 // ══════════════════════════════════════════════════════════════
 //  LAYOUT
 // ══════════════════════════════════════════════════════════════
-const SVG_W = 1500, SPLIT_H = 820, COMPARE_H = 470;
+const SVG_W = 1500, SPLIT_H = 1000, COMPARE_H = 550;
 const MARGIN = { top: 20, right: 35, bottom: 10, left: 100 };
 const COL_GAP = 65, ROW_GAP = 22;
 const CELL_INNER = { left: 82, right: 50, top: 17, bottom: 4 };

@@ -86,29 +86,31 @@ body {
 <script>
 /* ═══════════════════════  DATA  ═══════════════════════ */
 const textRaw = [
-    {name:"ChatGPT",          fr:8.36, rp:5.98},
-    {name:"MiroThinker v1.7", fr:8.37, rp:5.94},
-    {name:"MiroThinker Base", fr:7.97, rp:5.63},
-    {name:"MiroThinker v1.0", fr:7.91, rp:5.66},
-    {name:"MiniMax",          fr:7.74, rp:5.30},
-    {name:"Gemini",           fr:7.29, rp:5.06},
-    {name:"GLM",              fr:7.71, rp:5.14},
-    {name:"Kimi",             fr:7.07, rp:4.68},
-    {name:"Qwen",             fr:5.96, rp:3.97},
-    {name:"Claude",           fr:6.88, rp:3.72},
-    {name:"Doubao",           fr:6.57, rp:3.68},
+    {name:"OpenAI",                fr:8.36, rp:5.90},
+    {name:"Kimi",                  fr:7.07, rp:4.68},
+    {name:"Gemini",                fr:7.29, rp:5.06},
+    {name:"Claude",                fr:8.21, rp:4.76},
+    {name:"MiniMax",               fr:7.74, rp:5.30},
+    {name:"GLM",                   fr:7.71, rp:5.14},
+    {name:"Qwen",                  fr:5.96, rp:3.97},
+    {name:"Manus",                 fr:7.51, rp:5.13},
+    {name:"Doubao",                fr:6.57, rp:3.68},
+    {name:"Grok",                  fr:7.46, rp:4.22},
+    {name:"MiroThinker v1.7-mini", fr:7.97, rp:5.63},
+    {name:"MiroThinker v1.7",      fr:8.37, rp:5.94},
+    {name:"MiroThinker H1",        fr:8.74, rp:6.46},
 ];
 const multiRaw = [
     {name:"OpenAI",           fr:7.72, rp:5.62},
-    {name:"MiroThinker v1.7", fr:8.07, rp:5.87},
-    {name:"MiroThinker v1.0", fr:8.00, rp:5.70},
     {name:"Gemini",           fr:7.57, rp:4.90},
+    {name:"GLM",              fr:7.30, rp:4.70},
     {name:"MiniMax",          fr:7.70, rp:5.20},
     {name:"Manus",            fr:7.45, rp:5.45},
-    {name:"GLM",              fr:7.30, rp:4.70},
     {name:"Qwen",             fr:6.17, rp:3.93},
     {name:"Grok",             fr:7.24, rp:4.14},
-    {name:"Claude",           fr:5.96, rp:3.08},
+    {name:"Claude",           fr:7.89, rp:4.93},
+    {name:"MiroThinker v1.7", fr:8.07, rp:5.87},
+    {name:"MiroThinker H1",   fr:8.20, rp:6.17},
 ];
 
 function prepare(arr) {
@@ -131,14 +133,14 @@ const MIRO   = "#7AA383";
 const FR_COL = "#5B9BD5";
 const RP_COL = "#ED7D31";
 
-const W = 1172, H = 540;
-const labelW = 135, chartW = 420, padR = 15;
+const W = 1260, H = 600;
+const labelW = 155, chartW = 420, padR = 15;
 const panelW = labelW + chartW + padR;          // 570
 const panelGap = W - 2 * panelW;                // 160
-const chartTop = 95, chartH = 380;
+const chartTop = 95, chartH = 440;
 const DOT_R = 5.5;
 
-const crossMap = { ChatGPT: "OpenAI", OpenAI: "ChatGPT" };
+const crossMap = {};
 function crossN(n) { return crossMap[n] || n; }
 
 function sortCmp(key) {
