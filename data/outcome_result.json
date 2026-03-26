@@ -1,0 +1,183 @@
+{
+  "table": "Combined evaluation on Report quality and Factuality",
+  "label": "tab:outcome-result",
+  "description": "Report is assessed across five dimensions (Coverage, Insight, Instruction-following, Clarity, and Query Specification). Factuality is measured by the average right ratio (scaled to [0, 100]). Overall is the average of Report Avg and Factuality Ratio.",
+  "columns": {
+    "report": ["coverage", "insight", "instruction", "clarity", "specification", "avg"],
+    "factuality": ["right", "wrong", "conflicting", "unknown", "ratio"],
+    "overall": "overall"
+  },
+  "text_only": {
+    "task_count": 70,
+    "data": [
+      {
+        "model": "Grok Deep Research",
+        "report": {"coverage": 67.3, "insight": 56.3, "instruction": 74.9, "clarity": 64.7, "specification": 51.1, "avg": 58.7},
+        "factuality": {"right": 1924, "wrong": 368, "conflicting": null, "unknown": 699, "ratio": 63.7},
+        "overall": 61.2
+      },
+      {
+        "model": "Manus-1.6-Max Wide Research",
+        "report": {"coverage": 61.2, "insight": 54.8, "instruction": 67.9, "clarity": 65.6, "specification": 48.1, "avg": 55.4},
+        "factuality": {"right": 1972, "wrong": 191, "conflicting": null, "unknown": 459, "ratio": 72.6},
+        "overall": 64.0
+      },
+      {
+        "model": "Doubao Deep Research",
+        "report": {"coverage": 72.9, "insight": 62.7, "instruction": 74.6, "clarity": 67.2, "specification": 58.2, "avg": 64.2},
+        "factuality": {"right": 3890, "wrong": 780, "conflicting": null, "unknown": 1393, "ratio": 64.9},
+        "overall": 64.6
+      },
+      {
+        "model": "ChatGLM Agent",
+        "report": {"coverage": 69.9, "insight": 62.8, "instruction": 74.5, "clarity": 67.5, "specification": 57.1, "avg": 63.2},
+        "factuality": {"right": 4096, "wrong": 580, "conflicting": null, "unknown": 981, "ratio": 68.6},
+        "overall": 65.9
+      },
+      {
+        "model": "Qwen-3.5-Plus Deep Research",
+        "report": {"coverage": 64.0, "insight": 64.7, "instruction": 69.9, "clarity": 67.8, "specification": 52.6, "avg": 60.0},
+        "factuality": {"right": 1706, "wrong": 244, "conflicting": null, "unknown": 380, "ratio": 73.1},
+        "overall": 66.5
+      },
+      {
+        "model": "MiniMax-M2.5 Research",
+        "report": {"coverage": 69.8, "insight": 62.7, "instruction": 74.2, "clarity": 70.6, "specification": 56.7, "avg": 63.3},
+        "factuality": {"right": 3872, "wrong": 486, "conflicting": null, "unknown": 921, "ratio": 71.8},
+        "overall": 67.5
+      },
+      {
+        "model": "Claude-Opus-4.6 Research",
+        "report": {"coverage": 73.3, "insight": 72.0, "instruction": 73.5, "clarity": 71.2, "specification": 61.1, "avg": 67.3},
+        "factuality": {"right": 2838, "wrong": 338, "conflicting": null, "unknown": 910, "ratio": 69.8},
+        "overall": 68.6
+      },
+      {
+        "model": "Kimi-K2.5 Deep Research",
+        "report": {"coverage": 80.4, "insight": 79.8, "instruction": 78.6, "clarity": 76.3, "specification": 71.7, "avg": 75.7},
+        "factuality": {"right": 3702, "wrong": 595, "conflicting": null, "unknown": 1256, "ratio": 65.4},
+        "overall": 70.6
+      },
+      {
+        "model": "Gemini-3.1-Pro Deep Research",
+        "report": {"coverage": 77.4, "insight": 76.6, "instruction": 80.0, "clarity": 70.1, "specification": 64.9, "avg": 71.2},
+        "factuality": {"right": 4039, "wrong": 526, "conflicting": null, "unknown": 1068, "ratio": 71.3},
+        "overall": 71.3
+      },
+      {
+        "model": "OpenAI Deep Research",
+        "report": {"coverage": 78.2, "insight": 74.3, "instruction": 81.6, "clarity": 77.1, "specification": 69.1, "avg": 73.8},
+        "factuality": {"right": 3335, "wrong": 170, "conflicting": null, "unknown": 496, "ratio": 83.3},
+        "overall": 78.6
+      },
+      {
+        "model": "MiroThinker-1.7-mini",
+        "highlight": true,
+        "report": {"coverage": 78.8, "insight": 75.0, "instruction": 84.3, "clarity": 78.7, "specification": 68.1, "avg": 74.0},
+        "factuality": {"right": 3397, "wrong": 246, "conflicting": null, "unknown": 802, "ratio": 76.2},
+        "overall": 75.1
+      },
+      {
+        "model": "MiroThinker-1.7",
+        "highlight": true,
+        "report": {"coverage": 79.2, "insight": 74.7, "instruction": 84.7, "clarity": 80.1, "specification": 68.4, "avg": 74.3},
+        "factuality": {"right": 3334, "wrong": 181, "conflicting": null, "unknown": 670, "ratio": 79.4},
+        "overall": 76.9
+      },
+      {
+        "model": "MiroThinker-H1",
+        "highlight": true,
+        "report": {"coverage": 80.6, "insight": 80.3, "instruction": 84.7, "clarity": 81.0, "specification": 70.0, "avg": 76.7},
+        "factuality": {"right": 3746, "wrong": 161, "conflicting": null, "unknown": 673, "ratio": 81.1},
+        "overall": 78.9
+      }
+    ],
+    "bold_values": {
+      "report_coverage": "MiroThinker-H1",
+      "report_insight": "MiroThinker-H1",
+      "report_instruction": "MiroThinker-H1",
+      "report_clarity": "MiroThinker-H1",
+      "report_specification": "Kimi-K2.5 Deep Research",
+      "report_avg": "MiroThinker-H1",
+      "factuality_ratio": "OpenAI Deep Research",
+      "overall": "MiroThinker-H1"
+    }
+  },
+  "multimodal": {
+    "task_count": 30,
+    "data": [
+      {
+        "model": "Qwen-3.5-Plus Deep Research",
+        "report": {"coverage": 46.8, "insight": 46.3, "instruction": 52.9, "clarity": 52.6, "specification": 30.1, "avg": 44.6},
+        "factuality": {"right": 576, "wrong": 99, "conflicting": 19, "unknown": 101, "ratio": 69.9},
+        "overall": 57.3
+      },
+      {
+        "model": "Manus-1.6-Max Wide Research",
+        "report": {"coverage": 58.7, "insight": 50.2, "instruction": 65.0, "clarity": 61.2, "specification": 40.4, "avg": 54.3},
+        "factuality": {"right": 681, "wrong": 81, "conflicting": 32, "unknown": 134, "ratio": 70.0},
+        "overall": 62.2
+      },
+      {
+        "model": "MiniMax-M2.5 Research",
+        "report": {"coverage": 63.1, "insight": 53.3, "instruction": 69.1, "clarity": 62.0, "specification": 39.2, "avg": 56.7},
+        "factuality": {"right": 1255, "wrong": 184, "conflicting": 59, "unknown": 255, "ratio": 71.0},
+        "overall": 63.8
+      },
+      {
+        "model": "Grok Deep Research",
+        "report": {"coverage": 61.8, "insight": 52.5, "instruction": 68.9, "clarity": 60.4, "specification": 40.5, "avg": 56.3},
+        "factuality": {"right": 734, "wrong": 104, "conflicting": 37, "unknown": 163, "ratio": 71.5},
+        "overall": 63.9
+      },
+      {
+        "model": "ChatGLM Agent",
+        "report": {"coverage": 67.1, "insight": 60.2, "instruction": 71.7, "clarity": 65.4, "specification": 45.1, "avg": 61.6},
+        "factuality": {"right": 1038, "wrong": 144, "conflicting": 46, "unknown": 215, "ratio": 71.6},
+        "overall": 66.6
+      },
+      {
+        "model": "Claude-Opus-4.6 Research",
+        "report": {"coverage": 68.9, "insight": 66.8, "instruction": 62.8, "clarity": 59.3, "specification": 50.0, "avg": 62.5},
+        "factuality": {"right": 964, "wrong": 84, "conflicting": 44, "unknown": 243, "ratio": 70.7},
+        "overall": 66.6
+      },
+      {
+        "model": "Gemini-3.1-Pro Deep Research",
+        "report": {"coverage": 72.4, "insight": 70.8, "instruction": 72.4, "clarity": 62.5, "specification": 50.1, "avg": 66.4},
+        "factuality": {"right": 1502, "wrong": 158, "conflicting": 94, "unknown": 302, "ratio": 73.7},
+        "overall": 70.0
+      },
+      {
+        "model": "OpenAI Deep Research",
+        "report": {"coverage": 70.6, "insight": 63.9, "instruction": 74.8, "clarity": 70.5, "specification": 54.2, "avg": 66.7},
+        "factuality": {"right": 1062, "wrong": 100, "conflicting": 36, "unknown": 157, "ratio": 77.0},
+        "overall": 71.8
+      },
+      {
+        "model": "MiroThinker-1.7",
+        "highlight": true,
+        "report": {"coverage": 72.6, "insight": 69.2, "instruction": 78.6, "clarity": 75.1, "specification": 53.6, "avg": 69.0},
+        "factuality": {"right": 1306, "wrong": 103, "conflicting": 63, "unknown": 235, "ratio": 78.4},
+        "overall": 73.7
+      },
+      {
+        "model": "MiroThinker-H1",
+        "highlight": true,
+        "report": {"coverage": 72.7, "insight": 76.0, "instruction": 78.6, "clarity": 78.3, "specification": 59.5, "avg": 71.5},
+        "factuality": {"right": 1316, "wrong": 82, "conflicting": 56, "unknown": 238, "ratio": 78.5},
+        "overall": 75.0
+      }
+    ],
+    "bold_values": {
+      "report_coverage": "MiroThinker-H1",
+      "report_insight": "MiroThinker-H1",
+      "report_instruction": "MiroThinker-1.7",
+      "report_clarity": "MiroThinker-H1",
+      "report_specification": "MiroThinker-H1",
+      "report_avg": "MiroThinker-H1",
+      "factuality_ratio": "MiroThinker-H1",
+      "overall": "MiroThinker-H1"
+    }
+  }
+}

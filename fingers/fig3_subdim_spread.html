@@ -75,40 +75,38 @@ body {
 <script>
 /* ═══════════════════  DATA (exact match with Python)  ═══════════════════ */
 const reportText = {
-    "Coverage":            {chatgpt:7.82, kimi:8.04, gemini:7.74, claude:7.33, minimax:6.98, glm:6.99, qwen:6.40, manus:6.12, doubao:7.29, grok:6.70, miromini:7.88, mirov17:7.92, miroh1:8.06},
-    "Insight":             {chatgpt:7.43, kimi:7.98, gemini:7.66, claude:7.20, minimax:6.27, glm:6.28, qwen:6.47, manus:5.48, doubao:6.28, grok:5.60, miromini:7.50, mirov17:7.47, miroh1:8.02},
-    "Instruct\nFollowing": {chatgpt:8.16, kimi:7.86, gemini:8.01, claude:7.35, minimax:7.42, glm:7.45, qwen:6.99, manus:6.79, doubao:7.46, grok:7.50, miromini:8.44, mirov17:8.47, miroh1:8.53},
-    "Clarity":             {chatgpt:7.71, kimi:7.63, gemini:7.01, claude:7.12, minimax:7.06, glm:6.75, qwen:6.78, manus:6.56, doubao:6.72, grok:6.50, miromini:7.87, mirov17:8.01, miroh1:8.11},
-    "Query\nSpec":         {chatgpt:6.86, kimi:7.19, gemini:6.49, claude:6.11, minimax:5.61, glm:5.68, qwen:5.26, manus:4.75, doubao:5.79, grok:5.87, miromini:6.80, mirov17:6.82, miroh1:7.04},
+    "Coverage":            {kimi:80.4,mirov17:79.2,miromini:78.8,openai:78.2,miroh1:80.6,gemini:77.4,claude:73.3,doubao:72.9,minimax:69.8,glm:69.9,qwen:64.0,grok:67.3,manus:61.2},
+    "Insight":             {kimi:79.8,mirov17:74.7,miromini:75.0,openai:74.3,miroh1:80.3,gemini:76.6,claude:72.0,doubao:62.7,minimax:62.7,glm:62.8,qwen:64.7,grok:56.3,manus:54.8},
+    "Instruct\nFollowing": {kimi:78.6,mirov17:84.7,miromini:84.3,openai:81.6,miroh1:84.7,gemini:80.0,claude:73.5,doubao:74.6,minimax:74.2,glm:74.5,qwen:69.9,grok:74.9,manus:67.9},
+    "Clarity":             {kimi:76.3,mirov17:80.1,miromini:78.7,openai:77.1,miroh1:81.0,gemini:70.1,claude:71.2,doubao:67.2,minimax:70.6,glm:67.5,qwen:67.8,grok:64.7,manus:65.6},
+    "Specification":       {kimi:71.7,mirov17:68.4,miromini:68.1,openai:69.1,miroh1:70.0,gemini:64.9,claude:61.1,doubao:58.2,minimax:56.7,glm:57.1,qwen:52.6,grok:51.1,manus:48.1},
 };
 const reportMulti = {
-    "Coverage":            {openai:7.06, gemini:7.24, claude:6.89, glm:6.71, grok:6.18, minimax:6.31, manus:5.87, qwen:4.68, mirov17:7.26, miroh1:7.27},
-    "Insight":             {openai:6.39, gemini:7.08, claude:6.68, glm:6.02, grok:5.25, minimax:5.33, manus:5.02, qwen:4.63, mirov17:6.92, miroh1:7.60},
-    "Instruct\nFollowing": {openai:7.48, gemini:7.24, claude:6.28, glm:7.17, grok:6.89, minimax:6.91, manus:6.50, qwen:5.29, mirov17:7.86, miroh1:7.86},
-    "Clarity":             {openai:7.05, gemini:6.25, claude:5.93, glm:6.54, grok:6.04, minimax:6.20, manus:6.12, qwen:5.26, mirov17:7.51, miroh1:7.83},
-    "Query\nSpec":         {openai:5.34, gemini:4.98, claude:5.07, glm:4.41, grok:3.97, minimax:3.89, manus:3.85, qwen:2.76, mirov17:5.00, miroh1:5.50},
+    "Coverage":            {mirov17:72.6,miroh1:72.7,openai:70.6,gemini:72.4,claude:68.9,glm:67.1,grok:61.8,minimax:63.1,manus:58.7,qwen:46.8},
+    "Insight":             {mirov17:69.2,miroh1:76.0,openai:63.9,gemini:70.8,claude:66.8,glm:60.2,grok:52.5,minimax:53.3,manus:50.2,qwen:46.3},
+    "Instruct\nFollowing": {mirov17:78.6,miroh1:78.6,openai:74.8,gemini:72.4,claude:62.8,glm:71.7,grok:68.9,minimax:69.1,manus:65.0,qwen:52.9},
+    "Clarity":             {mirov17:75.1,miroh1:78.3,openai:70.5,gemini:62.5,claude:59.3,glm:65.4,grok:60.4,minimax:62.0,manus:61.2,qwen:52.6},
+    "Specification":       {mirov17:53.6,miroh1:59.5,openai:54.2,gemini:50.1,claude:50.0,glm:45.1,grok:40.5,minimax:39.2,manus:40.4,qwen:30.1},
 };
 const processText = {
-    "Search\nBreadth":     {chatgpt:7.74, kimi:7.75, gemini:7.54, claude:7.96, minimax:7.19, glm:7.62, qwen:7.44, manus:6.28, doubao:5.93, grok:5.09, miromini:7.55, mirov17:7.44, miroh1:7.51},
-    "Analysis\nDepth":     {chatgpt:6.73, kimi:5.94, gemini:6.66, claude:5.96, minimax:6.22, glm:5.94, qwen:6.41, manus:5.84, doubao:4.16, grok:4.94, miromini:5.63, mirov17:6.44, miroh1:6.43},
-    "Refinement":          {chatgpt:7.67, kimi:7.10, gemini:7.59, claude:6.79, minimax:7.01, glm:6.71, qwen:7.50, manus:6.06, doubao:5.96, grok:6.10, miromini:7.13, mirov17:7.57, miroh1:7.40},
-    "Critical\nThinking":  {chatgpt:7.47, kimi:6.76, gemini:6.41, claude:5.72, minimax:6.25, glm:5.93, qwen:7.41, manus:5.35, doubao:5.57, grok:5.46, miromini:7.09, mirov17:7.16, miroh1:6.90},
-    "Efficiency":          {chatgpt:6.37, kimi:5.35, gemini:5.90, claude:6.28, minimax:6.35, glm:5.90, qwen:6.32, manus:6.86, doubao:5.33, grok:6.47, miromini:5.90, mirov17:6.46, miroh1:6.81},
+    "Search\nBreadth":     {openai:77.4,mirov17:74.4,miromini:75.5,miroh1:74.9,minimax:71.9,gemini:75.4,glm:76.2,kimi:77.5,qwen:74.4,claude:79.1,doubao:59.3,grok:50.9,manus:62.8},
+    "Analysis\nDepth":     {openai:67.3,mirov17:64.4,miromini:56.3,miroh1:64.9,minimax:62.2,gemini:66.6,glm:59.4,kimi:59.4,qwen:64.1,claude:58.8,doubao:41.6,grok:49.4,manus:58.4},
+    "Refinement":          {openai:76.7,mirov17:75.7,miromini:71.3,miroh1:72.2,minimax:70.1,gemini:75.9,glm:67.1,kimi:71.0,qwen:75.0,claude:67.2,doubao:59.6,grok:61.0,manus:60.6},
+    "Critical\nThinking":  {openai:74.7,mirov17:71.6,miromini:70.9,miroh1:69.1,minimax:62.5,gemini:64.1,glm:59.3,kimi:67.6,qwen:74.1,claude:56.7,doubao:55.7,grok:54.6,manus:53.5},
 };
 const processMulti = {
-    "Search\nBreadth":     {openai:6.55, gemini:6.97, glm:5.27, minimax:5.10, manus:5.24, qwen:5.70, grok:4.19, claude:7.52, mirov17:6.50, miroh1:6.67},
-    "Analysis\nDepth":     {openai:6.21, gemini:6.53, glm:5.23, minimax:5.90, manus:5.72, qwen:5.13, grok:4.43, claude:6.07, mirov17:5.70, miroh1:6.07},
-    "Refinement":          {openai:7.38, gemini:7.10, glm:5.57, minimax:6.50, manus:6.07, qwen:5.87, grok:5.24, claude:6.96, mirov17:7.20, miroh1:7.30},
-    "Critical\nThinking":  {openai:7.00, gemini:5.83, glm:4.47, minimax:4.37, manus:4.34, qwen:5.77, grok:4.24, claude:5.93, mirov17:6.30, miroh1:6.23},
-    "Efficiency":          {openai:5.45, gemini:4.70, glm:5.43, minimax:6.30, manus:6.59, qwen:5.13, grok:5.95, claude:6.00, mirov17:5.77, miroh1:6.07},
+    "Search\nBreadth":     {openai:65.5,mirov17:65.0,miroh1:68.6,gemini:69.7,minimax:51.0,manus:52.4,glm:52.7,qwen:57.0,grok:41.9,claude:75.2},
+    "Analysis\nDepth":     {openai:62.1,mirov17:57.0,miroh1:63.1,gemini:65.3,minimax:59.0,manus:57.2,glm:52.3,qwen:51.3,grok:44.3,claude:60.7},
+    "Refinement":          {openai:73.8,mirov17:72.0,miroh1:73.4,gemini:71.0,minimax:65.0,manus:60.7,glm:55.7,qwen:58.7,grok:52.4,claude:69.6},
+    "Critical\nThinking":  {openai:70.0,mirov17:63.0,miroh1:71.0,gemini:58.3,minimax:43.7,manus:43.4,glm:44.7,qwen:57.7,grok:42.4,claude:59.3},
 };
 
 /* ── Model display names ── */
 const NAME = {
-    chatgpt:"OpenAI", openai:"OpenAI", kimi:"Kimi", gemini:"Gemini", claude:"Claude",
-    minimax:"MiniMax", glm:"GLM", qwen:"Qwen", manus:"Manus", deepseek:"DeepSeek",
-    doubao:"Doubao", grok:"Grok",
-    miromini:"MiroThinker 1.7-mini", mirov17:"MiroThinker 1.7", miroh1:"MiroThinker H1",
+    openai:"OpenAI", mirov17:"MiroThinker-1.7", miromini:"MiroThinker-1.7-mini",
+    miroh1:"MiroThinker-H1", gemini:"Gemini", claude:"Claude",
+    doubao:"Doubao", minimax:"MiniMax", glm:"ChatGLM", qwen:"Qwen", grok:"Grok",
+    manus:"Manus", kimi:"Kimi",
 };
 function isMiro(k) { return k.includes("miro"); }
 
@@ -169,7 +167,7 @@ function drawPanel(id, dimData, title, px, py) {
     /* X scale */
     const allV = dims.flatMap(d => Object.values(dimData[d]));
     const xSc = d3.scaleLinear()
-        .domain([d3.min(allV) - 0.3, d3.max(allV) + 0.6])
+        .domain([d3.min(allV) - 3, d3.max(allV) + 6])
         .range([0, chartW]).nice();
 
     /* X grid */
@@ -241,7 +239,7 @@ function drawPanel(id, dimData, title, px, py) {
     rows.append("text").attr("class", "spread-txt")
         .attr("x", d => xSc(d.vmax) + 6).attr("y", 0)
         .attr("dominant-baseline", "central")
-        .attr("fill", d => d.spread > 2.0 ? "#D9534F" : "#888")
+        .attr("fill", d => d.spread > 20.0 ? "#D9534F" : "#888")
         .style("font-size", "11.5px").style("font-weight", "bold")
         .style("font-family", "'Times New Roman',serif")
         .text(d => `\u0394${d.spread.toFixed(1)}`);
@@ -312,7 +310,7 @@ function showLeaderboard(ev, dimD, panelTitle) {
     dimD.entries.forEach((e, i) => {
         const dc = e.miro ? MIRO_COL : DOT_COL;
         const ns = e.miro ? `color:${MIRO_COL};font-weight:bold` : "color:#666";
-        const bw = (e.score / 10) * 70;                     /* 0-10 → 0-70px */
+        const bw = (e.score / 100) * 70;                     /* 0-10 → 0-70px */
         const bc = e.miro ? MIRO_COL : "#ddd";
         items += `<div class="tt-item">
             <span class="tt-rank">${i + 1}</span>
@@ -323,7 +321,7 @@ function showLeaderboard(ev, dimD, panelTitle) {
         </div>`;
     });
 
-    const spColor = dimD.spread > 2.0 ? "#D9534F" : "#888";
+    const spColor = dimD.spread > 20.0 ? "#D9534F" : "#888";
     tooltip.innerHTML = `
         <div class="tt-dim">${dimName}</div>
         <div class="tt-panel">${panelTitle}</div>

@@ -88,21 +88,21 @@ body {
 <div class="tooltip" id="tooltip"></div>
 
 <script>
-/* ── Data (exact match with Python) ── */
+/* ── Data (text-only, from outcome_result.json) ── */
 const data = [
-    {name:"ChatGPT",              stmts:5356,  wrong:270, conflict:36,  unknown:653,  acc:0.8148, group:"openai"},
-    {name:"MiroThinker H1",       stmts:6272,  wrong:243, conflict:56,  unknown:911,  acc:0.8032, group:"miro"},
-    {name:"MiroThinker v1.7",     stmts:5892,  wrong:284, conflict:63,  unknown:905,  acc:0.7931, group:"miro"},
-    {name:"MiroThinker v1.7-mini",stmts:4445,  wrong:246, conflict:0,   unknown:802,  acc:0.764,  group:"miro"},
-    {name:"Manus",                stmts:3550,  wrong:272, conflict:32,  unknown:593,  acc:0.7364, group:"other"},
-    {name:"MiniMax",              stmts:7032,  wrong:670, conflict:59,  unknown:1176, acc:0.7268, group:"other"},
-    {name:"Gemini",               stmts:7689,  wrong:684, conflict:94,  unknown:1370, acc:0.7230, group:"other"},
-    {name:"Qwen",                 stmts:3125,  wrong:343, conflict:19,  unknown:481,  acc:0.7221, group:"other"},
-    {name:"GLM",                  stmts:7100,  wrong:724, conflict:46,  unknown:1196, acc:0.7216, group:"other"},
-    {name:"Claude",               stmts:5421,  wrong:422, conflict:44,  unknown:1153, acc:0.6986, group:"other"},
-    {name:"Kimi",                 stmts:5553,  wrong:595, conflict:0,   unknown:1256, acc:0.667,  group:"other"},
-    {name:"Grok",                 stmts:4029,  wrong:472, conflict:37,  unknown:862,  acc:0.6646, group:"other"},
-    {name:"Doubao",               stmts:6063,  wrong:780, conflict:0,   unknown:1393, acc:0.642,  group:"other"},
+    {name:"ChatGPT",              stmts:4001, wrong:170, conflict:0, unknown:496,  acc:0.8330, group:"openai"},
+    {name:"MiroThinker H1",       stmts:4580, wrong:161, conflict:0, unknown:673,  acc:0.8110, group:"miro"},
+    {name:"MiroThinker v1.7-235B",stmts:4185, wrong:181, conflict:0, unknown:670,  acc:0.7940, group:"miro"},
+    {name:"MiroThinker v1.7-30B", stmts:4445, wrong:246, conflict:0, unknown:802,  acc:0.7620, group:"miro"},
+    {name:"Qwen",                 stmts:2330, wrong:244, conflict:0, unknown:380,  acc:0.7310, group:"other"},
+    {name:"Manus",                stmts:2622, wrong:191, conflict:0, unknown:459,  acc:0.7260, group:"other"},
+    {name:"MiniMax",              stmts:5279, wrong:486, conflict:0, unknown:921,  acc:0.7180, group:"other"},
+    {name:"Gemini",               stmts:5633, wrong:526, conflict:0, unknown:1068, acc:0.7130, group:"other"},
+    {name:"Claude",               stmts:4086, wrong:338, conflict:0, unknown:910,  acc:0.6980, group:"other"},
+    {name:"GLM",                  stmts:5657, wrong:580, conflict:0, unknown:981,  acc:0.6860, group:"other"},
+    {name:"Kimi",                 stmts:5553, wrong:595, conflict:0, unknown:1256, acc:0.6540, group:"other"},
+    {name:"Doubao",               stmts:6063, wrong:780, conflict:0, unknown:1393, acc:0.6490, group:"other"},
+    {name:"Grok",                 stmts:2991, wrong:368, conflict:0, unknown:699,  acc:0.6370, group:"other"},
 ];
 
 data.forEach(d => {
@@ -137,20 +137,16 @@ function lblWeight(g){ return g === "miro" ? "bold"     : "normal"; }
 const U = 9.3;
 const labelCfg = {
     "Kimi":                  {dx:  0.8*U, dy:  0.8*U, anchor:"start"},
-    "Doubao":                {dx:  0.8*U, dy:  0.8*U, anchor:"start"},
+    "Doubao":                {dx:  0.8*U, dy: -0.6*U, anchor:"start"},
     "Gemini":                {dx:  0.8*U, dy: -0.6*U, anchor:"start"},
-    "MiroThinker v1.7-mini": {dx: -0.8*U, dy: -0.8*U, anchor:"end"},
-    "MiroThinker v1.7":      {dx: -0.8*U, dy:  0.5*U, anchor:"end"},
-    "MiroThinker H1":        {dx:  0.8*U, dy: -0.6*U, anchor:"start"},
-    "Qwen":                  {dx: -0.8*U, dy: -0.6*U, anchor:"end"},
-    "MiniMax":               {dx: -0.8*U, dy: -0.6*U, anchor:"end"},
+    "MiroThinker v1.7-30B":  {dx:  0.8*U, dy:  0.8*U, anchor:"start"},
+    "Qwen":                  {dx:  0.8*U, dy: -0.6*U, anchor:"start"},
+    "MiniMax":               {dx: -0.8*U, dy:  0.5*U, anchor:"end"},
     "GLM":                   {dx:  0.8*U, dy:  0.7*U, anchor:"start"},
-    "Claude":                {dx: -0.8*U, dy:  0.5*U, anchor:"end"},
-    "Manus":                 {dx:  0.8*U, dy: -0.6*U, anchor:"start"},
-    "Grok":                  {dx: -0.8*U, dy:  0,     anchor:"end"},
 };
 const defaultLbl = {dx: 0.8*U, dy: 0, anchor: "start"};
 function lblOff(name) { return labelCfg[name] || defaultLbl; }
+
 
 /* ── SVG setup ── */
 const W = 900, H = 600;

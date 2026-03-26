@@ -1,0 +1,189 @@
+{
+  "table": "Process evaluation results",
+  "label": "tab:process-result",
+  "description": "Intrinsic metrics assess the quality of the research process itself across five dimensions (Search Breadth, Analytical Depth, Progressive Refinement, Critical Thinking, and Efficiency). Alignment metrics measure the consistency between the research process and the final report (Findings-to-Report coverage, Report-to-Process traceability, and Contradiction detection). Overall is the average of Intrinsic Avg and Alignment Avg.",
+  "columns": {
+    "intrinsic": ["breadth", "depth", "refinement", "critical", "efficiency", "avg"],
+    "alignment": ["findings_to_report", "report_to_process", "contradiction", "avg"],
+    "overall": "overall"
+  },
+  "text_only": {
+    "task_count": 70,
+    "data": [
+      {
+        "model": "Doubao Deep Research",
+        "intrinsic": {"breadth": 59.3, "depth": 41.6, "refinement": 59.6, "critical": 55.7, "efficiency": 53.3, "avg": 53.9},
+        "alignment": {"findings_to_report": 65.7, "report_to_process": 36.8, "contradiction": 54.2, "avg": 52.2},
+        "overall": 53.1
+      },
+      {
+        "model": "Grok Deep Research",
+        "intrinsic": {"breadth": 50.9, "depth": 49.4, "refinement": 61.0, "critical": 54.6, "efficiency": 64.7, "avg": 56.1},
+        "alignment": {"findings_to_report": 74.6, "report_to_process": 42.2, "contradiction": 64.6, "avg": 60.4},
+        "overall": 58.3
+      },
+      {
+        "model": "Qwen-3.5-Plus Deep Research",
+        "intrinsic": {"breadth": 74.4, "depth": 64.1, "refinement": 75.0, "critical": 74.1, "efficiency": 63.2, "avg": 70.2},
+        "alignment": {"findings_to_report": 59.6, "report_to_process": 39.7, "contradiction": 56.9, "avg": 52.1},
+        "overall": 61.1
+      },
+      {
+        "model": "Manus-1.6-Max Wide Research",
+        "intrinsic": {"breadth": 62.8, "depth": 58.4, "refinement": 60.6, "critical": 53.5, "efficiency": 68.8, "avg": 60.8},
+        "alignment": {"findings_to_report": 75.1, "report_to_process": 51.3, "contradiction": 76.3, "avg": 67.6},
+        "overall": 64.2
+      },
+      {
+        "model": "Kimi-K2.5 Deep Research",
+        "intrinsic": {"breadth": 77.5, "depth": 59.4, "refinement": 71.0, "critical": 67.6, "efficiency": 53.5, "avg": 65.8},
+        "alignment": {"findings_to_report": 70.7, "report_to_process": 46.8, "contradiction": 70.4, "avg": 62.6},
+        "overall": 64.2
+      },
+      {
+        "model": "ChatGLM Agent",
+        "intrinsic": {"breadth": 76.2, "depth": 59.4, "refinement": 67.1, "critical": 59.3, "efficiency": 59.0, "avg": 64.2},
+        "alignment": {"findings_to_report": 77.1, "report_to_process": 51.4, "contradiction": 72.3, "avg": 67.0},
+        "overall": 65.6
+      },
+      {
+        "model": "Claude-Opus-4.6 Research",
+        "intrinsic": {"breadth": 79.1, "depth": 58.8, "refinement": 67.2, "critical": 56.7, "efficiency": 62.2, "avg": 64.8},
+        "alignment": {"findings_to_report": 81.0, "report_to_process": 47.1, "contradiction": 73.5, "avg": 67.2},
+        "overall": 66.0
+      },
+      {
+        "model": "Gemini-3.1-Pro Deep Research",
+        "intrinsic": {"breadth": 75.4, "depth": 66.6, "refinement": 75.9, "critical": 64.1, "efficiency": 59.0, "avg": 68.2},
+        "alignment": {"findings_to_report": 72.9, "report_to_process": 50.6, "contradiction": 74.4, "avg": 66.0},
+        "overall": 67.1
+      },
+      {
+        "model": "MiniMax-M2.5 Research",
+        "intrinsic": {"breadth": 71.9, "depth": 62.2, "refinement": 70.1, "critical": 62.5, "efficiency": 63.5, "avg": 66.0},
+        "alignment": {"findings_to_report": 77.4, "report_to_process": 53.0, "contradiction": 74.3, "avg": 68.3},
+        "overall": 67.1
+      },
+      {
+        "model": "OpenAI Deep Research",
+        "intrinsic": {"breadth": 77.4, "depth": 67.3, "refinement": 76.7, "critical": 74.7, "efficiency": 63.7, "avg": 72.0},
+        "alignment": {"findings_to_report": 83.6, "report_to_process": 59.0, "contradiction": 79.9, "avg": 74.1},
+        "overall": 73.1
+      },
+      {
+        "model": "MiroThinker-1.7-mini",
+        "highlight": true,
+        "intrinsic": {"breadth": 75.5, "depth": 56.3, "refinement": 71.3, "critical": 70.9, "efficiency": 59.0, "avg": 66.6},
+        "alignment": {"findings_to_report": 79.7, "report_to_process": 56.3, "contradiction": 75.2, "avg": 70.4},
+        "overall": 68.5
+      },
+      {
+        "model": "MiroThinker-1.7",
+        "highlight": true,
+        "intrinsic": {"breadth": 74.4, "depth": 64.4, "refinement": 75.7, "critical": 71.6, "efficiency": 64.6, "avg": 70.1},
+        "alignment": {"findings_to_report": 83.7, "report_to_process": 59.4, "contradiction": 82.5, "avg": 75.2},
+        "overall": 72.7
+      },
+      {
+        "model": "MiroThinker-H1",
+        "highlight": true,
+        "intrinsic": {"breadth": 74.9, "depth": 64.9, "refinement": 72.2, "critical": 69.1, "efficiency": 71.0, "avg": 70.4},
+        "alignment": {"findings_to_report": 87.0, "report_to_process": 63.3, "contradiction": 86.4, "avg": 78.9},
+        "overall": 74.7
+      }
+    ],
+    "bold_values": {
+      "intrinsic_breadth": "Claude-Opus-4.6 Research",
+      "intrinsic_depth": "OpenAI Deep Research",
+      "intrinsic_refinement": "OpenAI Deep Research",
+      "intrinsic_critical": "OpenAI Deep Research",
+      "intrinsic_efficiency": "MiroThinker-H1",
+      "intrinsic_avg": "OpenAI Deep Research",
+      "alignment_findings_to_report": "MiroThinker-H1",
+      "alignment_report_to_process": "MiroThinker-H1",
+      "alignment_contradiction": "MiroThinker-H1",
+      "alignment_avg": "MiroThinker-H1",
+      "overall": "MiroThinker-H1"
+    }
+  },
+  "multimodal": {
+    "task_count": 30,
+    "data": [
+      {
+        "model": "Qwen-3.5-Plus Deep Research",
+        "intrinsic": {"breadth": 57.0, "depth": 51.3, "refinement": 58.7, "critical": 57.7, "efficiency": 51.3, "avg": 55.2},
+        "alignment": {"findings_to_report": 61.7, "report_to_process": 39.3, "contradiction": 56.3, "avg": 52.4},
+        "overall": 53.8
+      },
+      {
+        "model": "Grok Deep Research",
+        "intrinsic": {"breadth": 41.9, "depth": 44.3, "refinement": 52.4, "critical": 42.4, "efficiency": 59.5, "avg": 48.1},
+        "alignment": {"findings_to_report": 72.4, "report_to_process": 41.4, "contradiction": 65.2, "avg": 59.7},
+        "overall": 53.9
+      },
+      {
+        "model": "ChatGLM Agent",
+        "intrinsic": {"breadth": 52.7, "depth": 52.3, "refinement": 55.7, "critical": 44.7, "efficiency": 54.3, "avg": 51.9},
+        "alignment": {"findings_to_report": 73.0, "report_to_process": 47.0, "contradiction": 70.7, "avg": 63.6},
+        "overall": 57.7
+      },
+      {
+        "model": "Manus-1.6-Max Wide Research",
+        "intrinsic": {"breadth": 52.4, "depth": 57.2, "refinement": 60.7, "critical": 43.4, "efficiency": 65.9, "avg": 55.9},
+        "alignment": {"findings_to_report": 74.5, "report_to_process": 54.5, "contradiction": 74.1, "avg": 67.7},
+        "overall": 61.8
+      },
+      {
+        "model": "MiniMax-M2.5 Research",
+        "intrinsic": {"breadth": 51.0, "depth": 59.0, "refinement": 65.0, "critical": 43.7, "efficiency": 63.0, "avg": 56.3},
+        "alignment": {"findings_to_report": 77.0, "report_to_process": 52.0, "contradiction": 75.0, "avg": 68.0},
+        "overall": 62.2
+      },
+      {
+        "model": "Gemini-3.1-Pro Deep Research",
+        "intrinsic": {"breadth": 69.7, "depth": 65.3, "refinement": 71.0, "critical": 58.3, "efficiency": 47.0, "avg": 62.3},
+        "alignment": {"findings_to_report": 75.7, "report_to_process": 49.0, "contradiction": 73.0, "avg": 65.9},
+        "overall": 64.1
+      },
+      {
+        "model": "Claude-Opus-4.6 Research",
+        "intrinsic": {"breadth": 75.2, "depth": 60.7, "refinement": 69.6, "critical": 59.3, "efficiency": 60.0, "avg": 65.0},
+        "alignment": {"findings_to_report": 78.9, "report_to_process": 49.3, "contradiction": 72.6, "avg": 66.9},
+        "overall": 65.9
+      },
+      {
+        "model": "OpenAI Deep Research",
+        "intrinsic": {"breadth": 65.5, "depth": 62.1, "refinement": 73.8, "critical": 70.0, "efficiency": 54.5, "avg": 65.2},
+        "alignment": {"findings_to_report": 77.2, "report_to_process": 56.2, "contradiction": 72.1, "avg": 68.5},
+        "overall": 66.8
+      },
+      {
+        "model": "MiroThinker-1.7",
+        "highlight": true,
+        "intrinsic": {"breadth": 65.0, "depth": 57.0, "refinement": 72.0, "critical": 63.0, "efficiency": 57.7, "avg": 62.9},
+        "alignment": {"findings_to_report": 80.7, "report_to_process": 58.7, "contradiction": 76.0, "avg": 71.8},
+        "overall": 67.4
+      },
+      {
+        "model": "MiroThinker-H1",
+        "highlight": true,
+        "intrinsic": {"breadth": 68.6, "depth": 63.1, "refinement": 73.4, "critical": 71.0, "efficiency": 64.1, "avg": 68.1},
+        "alignment": {"findings_to_report": 86.6, "report_to_process": 63.4, "contradiction": 86.9, "avg": 79.0},
+        "overall": 73.5
+      }
+    ],
+    "bold_values": {
+      "intrinsic_breadth": "Claude-Opus-4.6 Research",
+      "intrinsic_depth": "Gemini-3.1-Pro Deep Research",
+      "intrinsic_refinement": "OpenAI Deep Research",
+      "intrinsic_critical": "MiroThinker-H1",
+      "intrinsic_efficiency": "Manus-1.6-Max Wide Research",
+      "intrinsic_avg": "MiroThinker-H1",
+      "alignment_findings_to_report": "MiroThinker-H1",
+      "alignment_report_to_process": "MiroThinker-H1",
+      "alignment_contradiction": "MiroThinker-H1",
+      "alignment_avg": "MiroThinker-H1",
+      "overall": "MiroThinker-H1"
+    }
+  }
+}

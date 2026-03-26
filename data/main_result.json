@@ -1,0 +1,104 @@
+{
+  "table": "Performance comparison of models with MiroEval",
+  "label": "tab:main-result",
+  "columns": {
+    "text_only": ["report", "factuality", "process", "overall"],
+    "multimodal": ["report", "factuality", "process", "overall"],
+    "overall": "overall"
+  },
+  "notes": "Text-Only comprises 70 tasks, Multimodal comprises 30 tasks. Overall = weighted average (70*text + 30*mm)/100. '--' indicates model does not support multimodal.",
+  "data": [
+    {
+      "model": "Kimi-K2.5 Deep Research",
+      "text_only": {"report": 75.7, "factuality": 65.4, "process": 64.2, "overall": 68.4},
+      "multimodal": null,
+      "overall": null
+    },
+    {
+      "model": "Doubao Deep Research",
+      "text_only": {"report": 64.2, "factuality": 64.9, "process": 53.1, "overall": 60.7},
+      "multimodal": null,
+      "overall": null
+    },
+    {
+      "model": "Grok Deep Research",
+      "text_only": {"report": 58.7, "factuality": 63.7, "process": 58.3, "overall": 60.2},
+      "multimodal": {"report": 56.3, "factuality": 71.5, "process": 53.9, "overall": 60.5},
+      "overall": 60.3
+    },
+    {
+      "model": "Qwen-3.5-Plus Deep Research",
+      "text_only": {"report": 60.0, "factuality": 73.1, "process": 61.1, "overall": 64.7},
+      "multimodal": {"report": 44.6, "factuality": 69.9, "process": 53.8, "overall": 56.1},
+      "overall": 62.1
+    },
+    {
+      "model": "Manus-1.6-Max Wide Research",
+      "text_only": {"report": 55.4, "factuality": 72.6, "process": 64.2, "overall": 64.0},
+      "multimodal": {"report": 54.3, "factuality": 70.0, "process": 61.8, "overall": 62.0},
+      "overall": 63.4
+    },
+    {
+      "model": "ChatGLM Agent",
+      "text_only": {"report": 63.2, "factuality": 68.6, "process": 65.6, "overall": 65.8},
+      "multimodal": {"report": 61.6, "factuality": 71.6, "process": 57.7, "overall": 63.6},
+      "overall": 65.1
+    },
+    {
+      "model": "MiniMax-M2.5 Research",
+      "text_only": {"report": 63.3, "factuality": 71.8, "process": 67.1, "overall": 67.4},
+      "multimodal": {"report": 56.7, "factuality": 71.0, "process": 62.2, "overall": 63.3},
+      "overall": 66.2
+    },
+    {
+      "model": "Claude-Opus-4.6 Research",
+      "text_only": {"report": 67.3, "factuality": 69.8, "process": 66.0, "overall": 67.7},
+      "multimodal": {"report": 62.5, "factuality": 70.7, "process": 65.9, "overall": 66.4},
+      "overall": 67.3
+    },
+    {
+      "model": "Gemini-3.1-Pro Deep Research",
+      "text_only": {"report": 71.2, "factuality": 71.3, "process": 67.1, "overall": 69.9},
+      "multimodal": {"report": 66.4, "factuality": 73.7, "process": 64.1, "overall": 68.1},
+      "overall": 69.3
+    },
+    {
+      "model": "OpenAI Deep Research",
+      "text_only": {"report": 73.8, "factuality": 83.3, "process": 73.1, "overall": 76.7},
+      "multimodal": {"report": 66.7, "factuality": 77.0, "process": 66.8, "overall": 70.2},
+      "overall": 74.8
+    },
+    {
+      "model": "MiroThinker-1.7-mini",
+      "highlight": true,
+      "text_only": {"report": 74.0, "factuality": 76.2, "process": 68.5, "overall": 72.9},
+      "multimodal": null,
+      "overall": null
+    },
+    {
+      "model": "MiroThinker-1.7",
+      "highlight": true,
+      "text_only": {"report": 74.3, "factuality": 79.4, "process": 72.7, "overall": 75.5},
+      "multimodal": {"report": 69.0, "factuality": 78.4, "process": 67.4, "overall": 71.6},
+      "overall": 74.3
+    },
+    {
+      "model": "MiroThinker-H1",
+      "highlight": true,
+      "text_only": {"report": 76.7, "factuality": 81.1, "process": 74.7, "overall": 77.5},
+      "multimodal": {"report": 71.5, "factuality": 78.5, "process": 73.5, "overall": 74.5},
+      "overall": 76.6
+    }
+  ],
+  "bold_values": {
+    "text_only_report": "MiroThinker-H1",
+    "text_only_factuality": "OpenAI Deep Research",
+    "text_only_process": "MiroThinker-H1",
+    "text_only_overall": "MiroThinker-H1",
+    "multimodal_report": "MiroThinker-H1",
+    "multimodal_factuality": "MiroThinker-H1",
+    "multimodal_process": "MiroThinker-H1",
+    "multimodal_overall": "MiroThinker-H1",
+    "overall": "MiroThinker-H1"
+  }
+}
