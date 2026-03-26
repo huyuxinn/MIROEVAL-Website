@@ -111,13 +111,19 @@ function nodeColor(d) {
    TOOLTIP
    =========================================================== */
 const tip = d3.select('#tooltip');
+function positionTip(ev) {
+  const rect = tip.node().getBoundingClientRect();
+  let left = ev.clientX + 18, top = ev.clientY - 10;
+  if (top + rect.height > window.innerHeight - 10) top = window.innerHeight - rect.height - 10;
+  if (left + rect.width > window.innerWidth - 10) left = ev.clientX - rect.width - 18;
+  if (top < 10) top = 10;
+  tip.style('left', left + 'px').style('top', top + 'px');
+}
 function showTip(ev, html) {
-  tip.html(html).style('opacity',1)
-     .style('left',(ev.clientX+18)+'px').style('top',(ev.clientY-10)+'px');
+  tip.html(html).style('opacity',1);
+  positionTip(ev);
 }
-function moveTip(ev) {
-  tip.style('left',(ev.clientX+18)+'px').style('top',(ev.clientY-10)+'px');
-}
+function moveTip(ev) { positionTip(ev); }
 function hideTip() { tip.style('opacity',0); }
 
 function domTipHTML(dom) {
@@ -155,7 +161,7 @@ const hier = d3.hierarchy(treeData).sum(d=>d.value||0);
 d3.partition().size([2*Math.PI, 1])(hier);
 const nodes = hier.descendants();
 
-function gIR(d){ return [0,IR,MR][d.depth]; }
+function gIR(d){ return [0,IR,MR-2][d.depth]; }
 function gOR(d){ return [IR,MR,OR][d.depth]; }
 
 const arcGen = d3.arc()
