@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiroEval - Automated Agentic Evaluation for Deep Research Systems</title>
+    <title>MiroEval - Benchmarking Multimodal Deep Research Agents in Process and Outcome</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -926,6 +926,30 @@
             color: var(--text-primary);
         }
 
+        .footer-citation {
+            margin-top: 20px;
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            max-width: 700px;
+        }
+        .footer-citation h4 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .footer-citation pre {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-all;
+            margin: 0;
+        }
+
         .footer-copyright {
             font-size: 0.75rem;
             color: var(--text-tertiary);
@@ -1460,7 +1484,7 @@
             </div>
             <div class="abstract-card reveal">
                 <p>
-                    Recent advancements have empowered Large Language Models to perform increasingly sophisticated tasks, particularly in the domain of deep research. Current benchmarks are often hampered by prohibitive human-expert costs and static evaluation dimensions that lack the granularity needed for multimodal or domain-specific analysis. We introduce <strong>MiroEval</strong>, an automated agentic framework designed to bridge these gaps. MiroEval features a high-quality benchmark of <strong>100 tasks</strong> derived from real-world interactions, supporting native multimodal inputs. Our evaluation pipeline integrates three key innovations: <strong>Comprehensive Adaptive Point-wise Quality Evaluation</strong> for dynamic rubric generation, <strong>Agentic Factuality Evaluation</strong> for verifying uncited claims against multimodal evidence, and <strong>Process-Centric Evaluation</strong> for auditing research trajectories. Experiments across <strong>nine leading systems</strong> identify OpenAI Deep Research and MiroThinker-1.7 as top-tier performers and reveal a strong positive correlation between process quality and output reliability. Notably, our findings indicate that the primary risk to system reliability has shifted from "direct hallucination" to "insufficient grounding," particularly in specialized scenarios requiring complex multimodal analysis.
+                    Recent progress in deep research systems has been impressive, but evaluation still lags behind real user needs. Existing benchmarks assess final reports with fixed rubrics, overlooking the research process; most offer limited multimodal coverage, rely on synthetic tasks, and cannot be refreshed as knowledge evolves. <strong>MiroEval</strong> addresses these gaps with a benchmark of <strong>100 tasks</strong> (70 text-only, 30 multimodal) grounded in real user needs and constructed via a dual-path pipeline that supports periodic updates. The evaluation suite assesses systems along <strong>three complementary dimensions</strong>: adaptive synthesis quality evaluation with task-specific rubrics, <strong>agentic factuality verification</strong> via active retrieval and reasoning over web sources and multimodal attachments, and <strong>process-centric evaluation</strong> that audits how systems search, reason, and refine throughout their investigation. Evaluation across <strong>13 systems</strong> yields three principal findings: the three dimensions capture complementary aspects of capability with each revealing distinct strengths and weaknesses; process quality reliably predicts overall outcome while exposing weaknesses invisible to output-level metrics; and multimodal tasks pose substantially greater challenges, with most systems declining by 3 to 10 points. Validated by a human study achieving <strong>92.0% precision</strong>, MiroEval provides a holistic diagnostic tool for the next generation of deep research agents.
                 </p>
             </div>
 
@@ -1567,6 +1591,60 @@
                 <iframe src="fingers/sunburst_panel_interactive.html" title="Query Distribution Overview" style="width:100%; height:500px; border:none; border-radius:8px; background:transparent;" allowtransparency="true"></iframe>
                 <p class="figure-caption">Query Distribution Overview — (a) Domain x Task sunburst, (b) Domain distribution, (c) Task type distribution across 100 benchmark queries.</p>
             </div>
+
+            <!-- Query Construction -->
+            <div style="margin-top: 48px;">
+                <div class="section-header" style="margin-bottom: 24px;">
+                    <div class="section-label">Benchmark Construction</div>
+                    <h3 class="section-title" style="font-size: 1.5rem;">Dual-Path Query Construction</h3>
+                    <p class="section-desc">100 queries assembled via two complementary paths — grounded in real user needs, with rigorous human verification and support for temporal refresh.</p>
+                </div>
+
+                <div class="findings-grid reveal">
+                    <div class="finding-card">
+                        <div class="finding-num">Path 1</div>
+                        <h4>65 User-Derived Queries</h4>
+                        <p>Inspired by real user query patterns from closed internal testing of MiroMind, covering both text-only and multimodal interactions. Rather than anonymizing original queries, the pipeline produces <strong>entirely new</strong> benchmark queries that preserve the topic distribution, complexity profile, and modality coverage of the original population &mdash; <strong>no original user query appears in any form</strong>. Queries span three difficulty tiers from basic retrieval to multi-step reasoning and contradiction detection, yielding 35 text-only and 30 multimodal tasks with diverse attachments (images, PDFs, spreadsheets, slides).</p>
+                    </div>
+                    <div class="finding-card">
+                        <div class="finding-num">Path 2</div>
+                        <h4>35 Trend-Grounded Queries</h4>
+                        <p>Generated through a fully automated pipeline grounded in real-time web trends across 12 topics. Three-stage quality filtering progressively retains only queries that <strong>expose the limitations of parametric knowledge</strong> &mdash; ensuring each task genuinely requires deep investigation with external sources. <strong>The pipeline supports on-demand re-execution with the latest web trends, preventing the benchmark from becoming stale and reducing the risk of overfitting to known tasks.</strong></p>
+                    </div>
+                </div>
+
+                <!-- Pipeline Figure -->
+                <div class="pipeline-figure">
+                    <img src="fingers/Query Collection and Verification.svg" alt="Query Construction Pipeline" style="width:100%; height:auto; display:block; border-radius: 8px; background:transparent; border:none; box-shadow:none;">
+                    <p class="figure-caption">Overview of the dual-path query construction pipeline — user-derived curation (left) and automated trend-grounded generation (right).</p>
+                </div>
+
+                <!-- Quality Verification -->
+                <div style="margin-top: 40px;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.01em;">Quality Verification</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px;">Three graduate-level annotators independently assess each query on <strong>validity</strong> (legitimate deep-research task) and <strong>non-triviality</strong> (requires web search). Both paths support <strong>periodic re-execution</strong> for temporal refresh — preventing benchmark staleness and reducing overfitting risk.</p>
+                    <div class="table-wrapper">
+                        <div class="table-scroll">
+                            <table class="leaderboard-table">
+                                <thead>
+                                    <tr>
+                                        <th>Metric</th>
+                                        <th class="text-center">User-Derived</th>
+                                        <th class="text-center">Auto-Generated</th>
+                                        <th class="text-center">Aggregated</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Fleiss' &kappa; (validity)</td><td class="score-cell">0.83</td><td class="score-cell">0.79</td><td class="score-cell best">0.81</td></tr>
+                                    <tr><td>Fleiss' &kappa; (non-triviality)</td><td class="score-cell">0.78</td><td class="score-cell">0.74</td><td class="score-cell best">0.76</td></tr>
+                                    <tr><td>Majority-vote precision</td><td class="score-cell">94.0%</td><td class="score-cell">90.0%</td><td class="score-cell best">92.0%</td></tr>
+                                    <tr><td>Unanimous agreement</td><td class="score-cell">86.0%</td><td class="score-cell">82.0%</td><td class="score-cell">—</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -1602,8 +1680,8 @@
                             <line x1="7.5" y1="24" x2="8.5" y2="25" stroke-width="0.7" opacity="0.2"/>
                         </svg>
                     </div>
-                    <h3>Report Quality</h3>
-                    <p>Comprehensive Adaptive Point-wise Quality Evaluation that dynamically generates task-specific dimensions, criteria, and weights. Supports both text-only and attachment-augmented queries with grounding criteria.</p>
+                    <h3>Synthesis Quality</h3>
+                    <p>Comprehensive Adaptive Synthesis Quality Evaluation that dynamically generates task-specific dimensions, criteria, and weights. Supports both text-only and attachment-augmented queries with grounding criteria.</p>
                     <div class="framework-dimensions">
                         <span class="dim-tag">Coverage</span>
                         <span class="dim-tag">Insight</span>
@@ -1657,12 +1735,17 @@
                     </div>
                     <h3>Process-Centric</h3>
                     <p>Audits the research trajectory by decomposing it into atomic units, evaluating intrinsic quality across five dimensions, and measuring alignment between process findings and the final report.</p>
+                    <div class="framework-dimensions" style="margin-bottom: 6px;">
+                        <span class="dim-tag">Breadth</span>
+                        <span class="dim-tag">Depth</span>
+                        <span class="dim-tag">Refinement</span>
+                        <span class="dim-tag">Critical Thinking</span>
+                        <span class="dim-tag">Efficiency</span>
+                    </div>
                     <div class="framework-dimensions">
-                        <span class="dim-tag">Progress</span>
-                        <span class="dim-tag">Redundancy</span>
-                        <span class="dim-tag">Recovery</span>
-                        <span class="dim-tag">Coverage</span>
-                        <span class="dim-tag">Coherence</span>
+                        <span class="dim-tag">F&rarr;R</span>
+                        <span class="dim-tag">R&rarr;P</span>
+                        <span class="dim-tag">Contradiction</span>
                     </div>
                 </div>
             </div>
@@ -1674,80 +1757,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 4C3.5 3.5 4 3 4.5 3L19.5 3.2C20 3.2 20.5 3.8 20.5 4.3L20.3 19.5C20.3 20 19.8 20.5 19.3 20.5L4.2 20.3C3.7 20.3 3.2 19.8 3.2 19.3Z"/><circle cx="8" cy="8.5" r="2" stroke-width="1.3"/><path d="M3.5 16.5C6 13 9 11.5 11.5 13C14 14.5 16.5 12 20.3 14.5"/><line x1="5" y1="5" x2="5.5" y2="5.5" stroke-width="0.8" opacity="0.3"/></svg>
                     <span>Evaluation Pipeline Overview</span>
                 </div>
-                <p class="figure-caption">Overview of the MiroEval evaluation pipeline — integrating Report Quality, Agentic Factuality, and Process-Centric evaluation.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- section divider: dots -->
-    <div class="section-divider-wrap">
-        <svg class="section-divider-svg" viewBox="0 0 600 40" fill="none" preserveAspectRatio="xMidYMid meet">
-            <circle cx="180" cy="20" r="5" fill="#D9D2C9" opacity="0.25"/>
-            <circle cx="210" cy="20" r="4" fill="#D4714E" opacity="0.18"/>
-            <circle cx="236" cy="20" r="3.5" fill="#8B9E6B" opacity="0.2"/>
-            <circle cx="258" cy="20" r="3" fill="#D9D2C9" opacity="0.22"/>
-            <circle cx="278" cy="20" r="4.5" fill="#D4714E" opacity="0.15"/>
-            <circle cx="302" cy="20" r="5.5" fill="#8B9E6B" opacity="0.2"/>
-            <circle cx="328" cy="20" r="4" fill="#D9D2C9" opacity="0.25"/>
-            <circle cx="352" cy="20" r="3" fill="#D4714E" opacity="0.18"/>
-            <circle cx="374" cy="20" r="3.5" fill="#8B9E6B" opacity="0.15"/>
-            <circle cx="398" cy="20" r="5" fill="#D9D2C9" opacity="0.2"/>
-            <circle cx="422" cy="20" r="4.5" fill="#D4714E" opacity="0.12"/>
-        </svg>
-    </div>
-
-    <!-- Benchmark Construction -->
-    <section class="section">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-label">Benchmark Construction</div>
-                <h2 class="section-title">Dual-Path Query Construction</h2>
-                <p class="section-desc">100 high-quality tasks assembled from two complementary sources with rigorous human verification.</p>
-            </div>
-
-            <div class="findings-grid reveal">
-                <div class="finding-card">
-                    <div class="finding-num">User-Derived Path</div>
-                    <h4>65 Curated Queries</h4>
-                    <p>Rewritten from patterns observed during internal testing of MiroMind's deep research system. Covers text-only and multimodal interactions with privacy filtering, entity replacement, and feature-balanced routing across 6 difficulty-stratified rewriting strategies.</p>
-                </div>
-                <div class="finding-card">
-                    <div class="finding-num">Auto-Generated Path</div>
-                    <h4>35 Trend-Grounded Queries</h4>
-                    <p>Produced by a fully automated pipeline grounded in real-time web trends. 180 candidates are filtered through three stages: search validation (84.4%), deep-research necessity (63.2%), and inverse quality assessment (52.1%), yielding 35 final queries.</p>
-                </div>
-            </div>
-
-            <!-- Query Pipeline Figure -->
-            <div class="pipeline-figure">
-                <img src="fingers/Query Collection and Verification.svg" alt="Benchmark Construction Pipeline" style="width:100%; height:auto; display:block; border-radius: 8px; background:transparent; border:none; box-shadow:none;">
-                <p class="figure-caption">Overview of the dual-path query construction pipeline including user-derived curation and automated trend-grounded generation.</p>
-            </div>
-
-            <!-- Human Verification -->
-            <div style="margin-top: 40px;">
-                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.01em;">Human Verification Results</h3>
-                <div class="table-wrapper">
-                    <div class="table-scroll">
-                        <table class="leaderboard-table">
-                            <thead>
-                                <tr>
-                                    <th>Metric</th>
-                                    <th class="text-center">User-Derived</th>
-                                    <th class="text-center">Auto-Generated</th>
-                                    <th class="text-center">Aggregated</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td>Fleiss' &kappa; (validity)</td><td class="score-cell">0.83</td><td class="score-cell">0.79</td><td class="score-cell best">0.81</td></tr>
-                                <tr><td>Fleiss' &kappa; (non-triviality)</td><td class="score-cell">0.78</td><td class="score-cell">0.74</td><td class="score-cell best">0.76</td></tr>
-                                <tr><td>Majority-vote precision</td><td class="score-cell">94.0%</td><td class="score-cell">90.0%</td><td class="score-cell best">92.0%</td></tr>
-                                <tr><td>Unanimous agreement</td><td class="score-cell">86.0%</td><td class="score-cell">82.0%</td><td class="score-cell">—</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <p class="table-note">Three annotators with graduate-level research experience independently assess each query on validity and non-triviality.</p>
+                <p class="figure-caption">Overview of the MiroEval evaluation pipeline — integrating Synthesis Quality, Agentic Factuality, and Process-Centric evaluation.</p>
             </div>
         </div>
     </section>
@@ -1775,12 +1785,12 @@
                 <div class="finding-card">
                     <div class="finding-num">Finding 01</div>
                     <h4>Rankings Shift Across Dimensions</h4>
-                    <p>Kimi-K2.5 achieves the highest Report score among non-MiroThinker systems at 75.7, yet its Factuality ranks near the bottom. Manus obtains the lowest Report at 55.4, yet its Factuality surpasses several stronger-report systems.</p>
+                    <p>Kimi-K2.5 achieves the highest Synthesis score among non-MiroThinker systems at 75.7, yet its Factuality ranks near the bottom. Manus obtains the lowest Synthesis score at 55.4, yet its Factuality surpasses several stronger-synthesis systems.</p>
                 </div>
                 <div class="finding-card">
                     <div class="finding-num">Finding 02</div>
                     <h4>Process Predicts Outcome</h4>
-                    <p>The top three systems on Process (MiroThinker-H1, OpenAI, MiroThinker-1.7) are also the top three on overall outcome, and the weakest process system (Doubao) also produces a near-bottom outcome.</p>
+                    <p>The top three systems on Process (MiroThinker-H1, OpenAI, MiroThinker-1.7) are also the top three on overall outcome, and the weakest process system (Doubao) also produces a near-bottom outcome. The Pearson correlation between Process and combined Outcome reaches <strong>0.88</strong>.</p>
                 </div>
                 <div class="finding-card">
                     <div class="finding-num">Finding 03</div>
@@ -1807,7 +1817,7 @@
                 <div class="section-header" style="margin-top: 40px;">
                     <div class="section-label">Benchmark Results</div>
                     <h2 class="section-title">Leaderboard</h2>
-                    <p class="section-desc">Performance comparison of leading deep research systems across Report Quality, Factuality, and Process dimensions.</p>
+                    <p class="section-desc">Performance comparison of leading deep research systems across Synthesis Quality, Factuality, and Process dimensions.</p>
                 </div>
 
                 <!-- Leaderboard doodle: scholar's desk panorama -->
@@ -1948,7 +1958,7 @@
             <!-- Sub-tabs for different views -->
             <div class="leaderboard-tabs">
                 <button class="lb-tab active" onclick="switchLbTab('main')">Overview</button>
-                <button class="lb-tab" onclick="switchLbTab('report')">Report</button>
+                <button class="lb-tab" onclick="switchLbTab('report')">Synthesis</button>
                 <button class="lb-tab" onclick="switchLbTab('factuality')">Factuality</button>
                 <button class="lb-tab" onclick="switchLbTab('process')">Process</button>
                 <button class="lb-tab" onclick="switchLbTab('analysis')">Analysis</button>
@@ -1970,11 +1980,11 @@
                                 <tr class="sub-header">
                                     <th></th>
                                     <th></th>
-                                    <th class="text-center">Report</th>
+                                    <th class="text-center">Synthesis</th>
                                     <th class="text-center">Factuality</th>
                                     <th class="text-center">Process</th>
                                     <th class="text-center">Overall</th>
-                                    <th class="text-center">Report</th>
+                                    <th class="text-center">Synthesis</th>
                                     <th class="text-center">Factuality</th>
                                     <th class="text-center">Process</th>
                                     <th class="text-center">Overall</th>
@@ -2155,12 +2165,12 @@
                         </table>
                     </div>
                 </div>
-                <p class="table-note">Performance comparison of models on long report evaluation. Text-Only comprises 70 tasks; MultiModal comprises 30 tasks. Systems are ranked by Text-Only Overall score. "–" indicates the system does not support multimodal deep research or data is unavailable.</p>
+                <p class="table-note">Performance comparison of models with MiroEval. Text-Only comprises 70 tasks; MultiModal comprises 30 tasks. Systems are ranked by Text-Only Overall score. "–" indicates the system does not support multimodal deep research or data is unavailable.</p>
 
                 <!-- Heatmaps -->
                 <div class="pipeline-figure" style="margin-top: 32px;">
                     <iframe src="fingers/heatmap_table.html" title="Benchmark Heatmap Table" style="width:100%; height:700px; border:none; border-radius:8px; background:transparent;" allowtransparency="true"></iframe>
-                    <p class="figure-caption">Detailed score heatmap across Report, Factuality, and Process sub-metrics for Text-Only (70 tasks) and Multimodal (30 tasks) settings.</p>
+                    <p class="figure-caption">Detailed score heatmap across Synthesis, Factuality, and Process sub-metrics for Text-Only (70 tasks) and Multimodal (30 tasks) settings.</p>
                 </div>
             </div>
 
@@ -2207,7 +2217,7 @@
                         </table>
                     </div>
                 </div>
-                <p class="table-note">Report quality sub-metrics across five dimensions: Coverage, Insight, Instruction-following, Clarity, and Query Specification. Text-Only comprises 70 tasks; MultiModal comprises 30 tasks. "–" indicates data is unavailable.</p>
+                <p class="table-note">Synthesis quality sub-metrics across five dimensions: Coverage, Insight, Instruction-following, Clarity, and Query Specification. Text-Only comprises 70 tasks; MultiModal comprises 30 tasks. "–" indicates data is unavailable.</p>
             </div>
 
             <!-- ===== Factuality Tab ===== -->
@@ -2315,38 +2325,74 @@
                         </table>
                     </div>
                 </div>
-                <p class="table-note">Process evaluation results. Intrinsic metrics: Search Breadth, Analytical Depth, Progressive Refinement, Critical Thinking, and Efficiency. Alignment metrics: Findings&#8594;Report coverage, Report&#8594;Process traceability, and Contribution. Text-Only comprises 70 tasks; MultiModal comprises 30 tasks. "–" indicates data is unavailable.</p>
+                <p class="table-note">Process evaluation results. Intrinsic metrics: Search Breadth, Analytical Depth, Progressive Refinement, Critical Thinking, and Efficiency. Alignment metrics: Findings&#8594;Report coverage, Report&#8594;Process traceability, and Contradiction detection. Text-Only comprises 70 tasks; MultiModal comprises 30 tasks. "–" indicates data is unavailable.</p>
             </div>
 
             <!-- ===== Analysis Tab ===== -->
             <div id="lb-analysis" class="lb-content">
+                <!-- 01: 总论 — 三维互补 -->
                 <div class="analysis-finding">
                     <div class="finding-num">Finding 01</div>
                     <h3>Rankings Shift Substantially Across Dimensions</h3>
-                    <p>Kimi-K2.5 achieves the highest Report score among non-MiroThinker systems in the Text-Only setting at 75.7, yet its Factuality ranks near the bottom, trailing OpenAI Deep Research by nearly 17 points on this axis. Conversely, Manus obtains the lowest Report score at 55.4, yet its Factuality surpasses several systems with much stronger reports, including Gemini-3.1-Pro and MiniMax-M2.5. These two cases jointly illustrate that a polished report does not guarantee factual grounding, nor does a factually disciplined system necessarily produce well-structured output.</p>
+                    <p>The three dimensions capture fundamentally different aspects of system capability. Kimi-K2.5 tops Synthesis at 75.7 yet ranks near-bottom on Factuality; Manus shows the opposite pattern at 55.4 Synthesis but competitive Factuality. <strong>A polished report does not guarantee factual grounding, nor vice versa.</strong></p>
                     <div class="pipeline-figure" style="margin-top: 20px;">
                         <iframe src="fingers/fig1_dimension_rank_bump.html" title="Dimension-Level Rank Shifts" style="width:100%; height:650px; border:none; border-radius:8px; background:transparent;" allowtransparency="true"></iframe>
-                        <p class="figure-caption">Dimension-Level Rank Shifts — Bump chart showing how system rankings change across Report, Factuality, and Process dimensions. Kimi (orange) drops sharply from Report to Factuality; Manus (blue) rises substantially.</p>
+                        <p class="figure-caption">Dimension-Level Rank Shifts — Bump chart showing how system rankings change across Synthesis, Factuality, and Process dimensions.</p>
                     </div>
                 </div>
 
+                <!-- 02: Synthesis 深入 -->
                 <div class="analysis-finding">
                     <div class="finding-num">Finding 02</div>
-                    <h3>Process Quality Is Broadly Predictive of Outcome</h3>
-                    <p>Across the Text-Only setting, the top three systems on Process (MiroThinker-H1 at 74.7, OpenAI at 73.1, and MiroThinker-1.7 at 72.7) are also the top three on overall outcome, and the weakest process system, Doubao at 53.1, also produces a near-bottom outcome. While a small number of systems deviate from this trend, the overall alignment suggests that process-level evaluation captures a meaningful signal about final output quality.</p>
+                    <h3>Specificity is the Bottleneck, Insight is the Differentiator</h3>
+                    <p>Specificity is the universal bottleneck, trailing Coverage by 10&ndash;14 points across all systems &mdash; <strong>systems find relevant topics but struggle with granular, evidence-grounded details</strong>. Insight shows the widest spread (54.8&ndash;80.3), making it the most discriminative sub-metric for differentiating capability.</p>
                     <div class="pipeline-figure" style="margin-top: 20px;">
-                        <iframe src="fingers/fig2_process_outcome_scatter.html" title="Process vs. Overall Outcome" style="display:block; width:100%; height:620px; border:none; border-radius:8px; background:transparent;" allowtransparency="true"></iframe>
-                        <p class="figure-caption">Process Quality vs. Overall Outcome — Scatter plot with linear regression showing strong positive correlation between Process scores and Overall scores across all systems in the Text-Only setting.</p>
+                        <iframe src="fingers/fig3_subdim_spread.html" title="Sub-dimension Score Spread" style="display:block; width:100%; height:520px; border:none; border-radius:8px; background:transparent;" allowtransparency="true"></iframe>
+                        <p class="figure-caption">Sub-dimension Score Spread &mdash; Specificity is consistently the lowest sub-metric across systems, while Insight exhibits the widest variance.</p>
                     </div>
                 </div>
 
+                <!-- 03: Factuality 深入 -->
                 <div class="analysis-finding">
                     <div class="finding-num">Finding 03</div>
+                    <h3>Factual Claims: A Precision&ndash;Volume Trade-off</h3>
+                    <p>A fundamental tension exists between claim volume and accuracy. ChatGLM and Gemini produce 4,000+ correct claims but with 500+ errors (Ratio ~70%); OpenAI generates fewer but achieves the highest Ratio at 83.3. <strong>The MiroThinker series balances both: H1 produces the most claims among top systems (3,746) with the fewest errors (161).</strong></p>
+                    <div class="pipeline-figure" style="margin-top: 20px;">
+                        <iframe src="fingers/fig1b_verbosity_accuracy.html" title="Statement Volume vs. Precision" style="display:block; width:100%; height:520px; border:none; border-radius:8px; background:transparent;" allowtransparency="true"></iframe>
+                        <p class="figure-caption">Statement Volume vs. Factual Precision &mdash; the trade-off between broad claim coverage and strict factual discipline, with the MiroThinker series achieving a distinctive balance.</p>
+                    </div>
+                </div>
+
+                <!-- 04: Process 宏观 — 预测力 -->
+                <div class="analysis-finding">
+                    <div class="finding-num">Finding 04</div>
+                    <h3>Process Quality Predicts Overall Outcome</h3>
+                    <p>The top three Process systems are also the top three on overall outcome; the weakest (Doubao at 53.1) produces a near-bottom result. The Pearson correlation between Process and combined Outcome reaches <strong>r&thinsp;=&thinsp;0.88</strong>, confirming process quality as a reliable predictor.</p>
+                    <div class="pipeline-figure" style="margin-top: 20px;">
+                        <iframe src="fingers/fig2_process_outcome_scatter.html" title="Process vs. Overall Outcome" style="display:block; width:100%; height:620px; border:none; border-radius:8px; background:transparent;" allowtransparency="true"></iframe>
+                        <p class="figure-caption">Process Quality vs. Overall Outcome &mdash; strong positive correlation (r&thinsp;=&thinsp;0.88) across all systems in the Text-Only setting.</p>
+                    </div>
+                </div>
+
+                <!-- 05: Process 微观 — 可追溯性缺口 -->
+                <div class="analysis-finding">
+                    <div class="finding-num">Finding 05</div>
+                    <h3>The Traceability Gap: Reports Outrun the Process</h3>
+                    <p>Process evaluation exposes a gap invisible to output-level metrics. F&rarr;R scores are generally above 70 (findings reach the report), but R&rarr;P falls below 55 for most systems &mdash; even MiroThinker-H1 achieves only 63.3. <strong>A substantial portion of report content cannot be traced back to the documented research process.</strong></p>
+                    <div class="pipeline-figure" style="margin-top: 20px;">
+                        <iframe src="fingers/fig2b_fr_rp_dumbbell.html" title="F→R vs. R→P Alignment Gap" style="display:block; width:100%; height:620px; border:none; border-radius:8px; background:transparent;" allowtransparency="true"></iframe>
+                        <p class="figure-caption">Process&ndash;Report Alignment Gap &mdash; F&rarr;R (blue) vs. R&rarr;P (orange). The gap reveals reports routinely contain content not originating from the documented research process.</p>
+                    </div>
+                </div>
+
+                <!-- 06: 跨维度挑战 — 多模态 -->
+                <div class="analysis-finding">
+                    <div class="finding-num">Finding 06</div>
                     <h3>Multimodal Tasks Pose Greater Challenges</h3>
-                    <p>Overall scores drop by 3 to 10 points for most systems when moving from the Text-Only to the MultiModal setting, with the tier structure broadly preserved but individual systems showing varying degrees of degradation. MiroThinker-H1 proves the most resilient with a decline of only 3.0 points, while Qwen-3.5-Plus suffers the largest drop. A detailed cross-setting comparison is shown below.</p>
+                    <p>Overall scores drop by 3 to 10 points for most systems when moving from Text-Only to MultiModal. MiroThinker-H1 proves the most resilient with a decline of only 3.0 points, while Qwen-3.5-Plus suffers the largest drop.</p>
                     <div class="pipeline-figure" style="margin-top: 20px;">
                         <iframe src="fingers/fig3_textonly_multimodal_dumbbell.html" title="Text-Only vs. Multimodal" style="display:block; width:100%; height:520px; border:none; border-radius:8px; background:transparent;" allowtransparency="true"></iframe>
-                        <p class="figure-caption">Text-Only vs. Multimodal — Dumbbell chart comparing overall scores across both settings. Blue dots mark Text-Only scores; orange dots mark Multimodal scores. The gap indicates performance degradation on multimodal tasks.</p>
+                        <p class="figure-caption">Text-Only vs. Multimodal &mdash; Dumbbell chart comparing overall scores across both settings. The gap indicates performance degradation on multimodal tasks.</p>
                     </div>
                 </div>
             </div>
@@ -2364,6 +2410,10 @@
             <div class="footer-links">
                 <a href="#" target="_blank">Dataset</a>
                 <a href="https://arxiv.org/abs/placeholder" target="_blank">Paper</a>
+            </div>
+            <div class="footer-citation">
+                <h4>Citation</h4>
+                <pre>Coming soon.</pre>
             </div>
             <div class="footer-copyright">
                 &copy; 2025 MiroMind Team. MiroEval is an open research benchmark.

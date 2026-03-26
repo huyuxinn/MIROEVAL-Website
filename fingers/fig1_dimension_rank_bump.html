@@ -92,9 +92,9 @@ dims.forEach(dim => {
 });
 
 /* ── Colors & styles ── */
-const COLORS   = { miro:"#7AA383", openai:"#555555", kimi:"#D4714E", manus:"#5B9BD5", other:"#C8C8C8" };
-const STROKE_W = { miro:2.5, openai:2.0, kimi:2.5, manus:2.5, other:1.2 };
-const DOT_R    = { miro:5, openai:4.5, kimi:5, manus:5, other:3.5 };
+const COLORS   = { miro:"#7AA383", openai:"#888888", kimi:"#C4A48A", manus:"#94B8D0", other:"#C8C8C8" };
+const STROKE_W = { miro:1.8, openai:1.5, kimi:1.8, manus:1.8, other:1.0 };
+const DOT_R    = { miro:4, openai:3.5, kimi:4, manus:4, other:3 };
 const LBL_W    = { miro:"bold", openai:"normal", kimi:"bold", manus:"bold", other:"normal" };
 const Z_ORDER  = { other:0, openai:1, kimi:2, manus:2, miro:3 };
 const LBL_SIZE = { miro:"11.5px", openai:"11px", kimi:"11.5px", manus:"11.5px", other:"10px" };
@@ -122,7 +122,7 @@ merge.append("feMergeNode").attr("in","SourceGraphic");
 
 /* Title */
 svg.append("text")
-    .attr("x", W / 2).attr("y", 28)
+    .attr("x", W / 2).attr("y", 18)
     .attr("text-anchor","middle").attr("fill","#1a1a2e")
     .style("font-size","19px").style("font-weight","bold")
     .style("font-family","'Times New Roman',serif")
@@ -135,7 +135,7 @@ const xScale = d3.scalePoint().domain([0,1,2]).range([0, iW]);
 const yScale = d3.scaleLinear().domain([1, N]).range([0, iH]);
 
 /* Column headers */
-const dimLabels = ["Report", "Factuality", "Process"];
+const dimLabels = ["Synthesis", "Factuality", "Process"];
 dimLabels.forEach((label, i) => {
     g.append("text")
         .attr("x", xScale(i)).attr("y", -30)
@@ -183,7 +183,7 @@ modelGroups.append("path").attr("class","line")
     .attr("fill","none")
     .attr("stroke", m => COLORS[m.group])
     .attr("stroke-width", m => STROKE_W[m.group])
-    .attr("stroke-opacity", m => m.group === "other" ? 0.45 : 0.85)
+    .attr("stroke-opacity", m => m.group === "other" ? 0.35 : 0.6)
     .attr("stroke-linecap","round")
     .style("pointer-events","none");
 
@@ -278,8 +278,22 @@ function showTip(ev, m) {
 function hideTip() { tooltip.classList.remove("visible"); }
 
 /* ── Hover interactions ── */
+let activeModel = null;
+
+function resetAllLines() {
+    modelGroups.each(function(d) {
+        d3.select(this).select(".line")
+            .attr("stroke-width", STROKE_W[d.group])
+            .attr("stroke-opacity", d.group === "other" ? 0.35 : 0.6)
+            .attr("filter", null);
+        d3.select(this).selectAll(".dot").attr("r", DOT_R[d.group]);
+    });
+}
+
 modelGroups.select(".hit")
     .on("mouseenter", function(ev, m) {
+        activeModel = m.name;
+        resetAllLines();
         modelGroups.style("opacity", 0.08);
         const parent = d3.select(this.parentNode);
         parent.raise().style("opacity", 1);
@@ -292,23 +306,20 @@ modelGroups.select(".hit")
     })
     .on("mousemove", function(ev, m) { showTip(ev, m); })
     .on("mouseleave", function(ev, m) {
+        if (activeModel !== m.name) return;
+        activeModel = null;
         modelGroups.style("opacity", 1);
-        const parent = d3.select(this.parentNode);
-        parent.select(".line")
-            .attr("stroke-width", STROKE_W[m.group])
-            .attr("stroke-opacity", m.group === "other" ? 0.45 : 0.85)
-            .attr("filter", null);
-        parent.selectAll(".dot").attr("r", DOT_R[m.group]);
+        resetAllLines();
         hideTip();
     });
 
 /* ── Legend ── */
 const legData = [
-    {label:"MiroThinker", color:COLORS.miro, r:5},
-    {label:"OpenAI", color:COLORS.openai, r:4.5},
-    {label:"Kimi-K2.5", color:COLORS.kimi, r:5},
-    {label:"Manus", color:COLORS.manus, r:5},
-    {label:"Others", color:COLORS.other, r:3.5},
+    {label:"MiroThinker", color:COLORS.miro, r:4},
+    {label:"OpenAI", color:COLORS.openai, r:3.5},
+    {label:"Kimi-K2.5", color:COLORS.kimi, r:4},
+    {label:"Manus", color:COLORS.manus, r:4},
+    {label:"Others", color:COLORS.other, r:3},
 ];
 const legG = svg.append("g").attr("transform", `translate(${W/2}, ${H - 8})`);
 let lx = -220;
